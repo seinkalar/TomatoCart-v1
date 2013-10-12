@@ -59,6 +59,8 @@
   define('TABLE_GIFT_CERTIFICATES_REDEEM_HISTORY', DB_TABLE_PREFIX . 'gift_certificates_redeem_history');
   define('TABLE_GOOGLE_ORDERS', DB_TABLE_PREFIX . 'google_orders');
   define('TABLE_LANGUAGES', DB_TABLE_PREFIX . 'languages');
+  define('TABLE_LENGTH_CLASSES', DB_TABLE_PREFIX . 'length_classes');
+  define('TABLE_LENGTH_CLASSES_RULES', DB_TABLE_PREFIX . 'length_classes_rules');
   define('TABLE_LANGUAGES_DEFINITIONS', DB_TABLE_PREFIX . 'languages_definitions');
   define('TABLE_MANUFACTURERS', DB_TABLE_PREFIX . 'manufacturers');
   define('TABLE_MANUFACTURERS_INFO', DB_TABLE_PREFIX . 'manufacturers_info');
