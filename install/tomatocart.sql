@@ -624,6 +624,22 @@ CREATE TABLE toc_languages_definitions (
   KEY IDX_LANGUAGES_DEFINITIONS_GROUPS (content_group)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS toc_length_classes;
+CREATE TABLE IF NOT EXISTS toc_length_classes (
+  length_class_id int(11) NOT NULL DEFAULT '0',
+  length_class_key varchar(4) NOT NULL DEFAULT '',
+  language_id int(11) NOT NULL DEFAULT '0',
+  length_class_title varchar(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (length_class_id, language_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS toc_length_classes_rules;
+CREATE TABLE IF NOT EXISTS toc_length_classes_rules (
+  length_class_from_id int(11) NOT NULL DEFAULT '0',
+  length_class_to_id int(11) NOT NULL DEFAULT '0',
+  length_class_rule decimal(15,4) NOT NULL DEFAULT '0.0000'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS toc_manufacturers;
 CREATE TABLE toc_manufacturers (
@@ -1598,7 +1614,8 @@ INSERT INTO toc_configuration (configuration_title, configuration_key, configura
 INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('Enter the Maximum Package Weight you will ship', 'SHIPPING_MAX_WEIGHT', '50', 'Carriers have a max weight limit for a single package. This is a common one for all.', '7', '3', now());
 INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('Package Tare weight.', 'SHIPPING_BOX_WEIGHT', '3', 'What is the weight of typical packaging of small to medium packages?', '7', '4', now());
 INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('Larger packages - percentage increase.', 'SHIPPING_BOX_PADDING', '10', 'For 10% enter 10', '7', '5', now());
-INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, use_function, set_function, date_added) VALUES ('Default Shipping Unit', 'SHIPPING_WEIGHT_UNIT',2, 'Select the unit of weight to be used for shipping.', '7', '6', 'osC_Weight::getTitle', 'osc_cfg_set_weight_classes_pulldown_menu', now());
+INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, use_function, set_function) VALUES ('Default Shipping Length Unit', 'SHIPPING_LENGTH_UNIT', '1', 'Select the unit of length to be used for shipping.', 7, 6, NULL, now(), 'osC_Length::getTitle', 'osc_cfg_set_length_classes_pulldown_menu');
+INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, use_function, set_function, date_added) VALUES ('Default Shipping Unit', 'SHIPPING_WEIGHT_UNIT',2, 'Select the unit of weight to be used for shipping.', '7', '7', 'osC_Weight::getTitle', 'osc_cfg_set_weight_classes_pulldown_menu', now());
 INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('Default Unit Class', 'DEFAULT_UNIT_CLASSES', '1', 'Default Unit Class', '6', '0', now());
 
 INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) VALUES ('Display Product Image', 'PRODUCT_LIST_IMAGE', '1', 'Do you want to display the Product Image?', '8', '1', now());
@@ -6742,6 +6759,20 @@ INSERT INTO toc_configuration (configuration_title, configuration_key, configura
 INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Maximum Entries To Display', 'MODULE_CONTENT_UPCOMING_PRODUCTS_MAX_DISPLAY', '10', 'Maximum number of upcoming products to display', '6', '0', now());
 INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Cache Contents', 'MODULE_CONTENT_UPCOMING_PRODUCTS_CACHE', '1440', 'Number of minutes to keep the contents cached (0 = no cache)', '6', '0', now());
 INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Maximum Entries To Display', 'MODULE_CONTENT_FEATURE_PRODUCTS_MAX_DISPLAY', '9', 'Maximum number of new products to display', '6', '0', now());
+
+# Length Classes
+INSERT INTO toc_length_classes (length_class_id, length_class_key, language_id, length_class_title) VALUES
+(1, 'cm', 1, 'Centimeter'),
+(2, 'in', 1, 'Inch'),
+(3, 'mm', 1, 'Millimeter');
+
+INSERT INTO toc_length_classes_rules (length_class_from_id, length_class_to_id, length_class_rule) VALUES
+(1, 2, 0.3900),
+(2, 1, 2.5400),
+(1, 3, 10.0000),
+(3, 1, 0.1000),
+(2, 3, 25.4000),
+(3, 2, 0.0400);
 
 # Weight Classes
 INSERT INTO toc_weight_classes VALUES (1, 'g', 1, 'Gram(s)');
