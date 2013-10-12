@@ -94,6 +94,10 @@ field_customization_type_file = Upload File Field
 field_customization_type = Field Type:
 field_customization_required = Is Required:
 field_customization_name = Field Name:
+field_length_classes = Length Class:
+field_width = Width:
+field_height = Height:
+field_length = Length:
 
 field_status = Status:
 

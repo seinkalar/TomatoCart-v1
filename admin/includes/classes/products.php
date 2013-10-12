@@ -99,10 +99,10 @@
 
           //products
       if (is_numeric($id)) {
-        $Qproduct = $osC_Database->query('update :table_products set products_type = :products_type, products_sku = :products_sku, products_model = :products_model, products_price = :products_price, products_quantity = :products_quantity, products_moq = :products_moq, products_max_order_quantity = :products_max_order_quantity, order_increment = :order_increment, quantity_unit_class = :quantity_unit_class, products_date_available = :products_date_available, products_weight = :products_weight, products_weight_class = :products_weight_class, products_status = :products_status, products_tax_class_id = :products_tax_class_id, manufacturers_id = :manufacturers_id, quantity_discount_groups_id = :quantity_discount_groups_id, products_last_modified = now(), products_attributes_groups_id = :products_attributes_groups_id where products_id = :products_id');
+        $Qproduct = $osC_Database->query('update :table_products set products_type = :products_type, products_sku = :products_sku, products_model = :products_model, products_price = :products_price, products_quantity = :products_quantity, products_moq = :products_moq, products_max_order_quantity = :products_max_order_quantity, order_increment = :order_increment, quantity_unit_class = :quantity_unit_class, products_date_available = :products_date_available, products_weight = :products_weight, products_weight_class = :products_weight_class, products_length_class = :products_length_class, products_width = :products_width, products_height = :products_height, products_length = :products_length, products_status = :products_status, products_tax_class_id = :products_tax_class_id, manufacturers_id = :manufacturers_id, quantity_discount_groups_id = :quantity_discount_groups_id, products_last_modified = now(), products_attributes_groups_id = :products_attributes_groups_id where products_id = :products_id');
         $Qproduct->bindInt(':products_id', $id);
       } else {
-        $Qproduct = $osC_Database->query('insert into :table_products (products_type, products_sku, products_model, products_price, products_quantity, products_moq, products_max_order_quantity, order_increment, quantity_unit_class, products_date_available, products_weight, products_weight_class, products_status, products_tax_class_id, manufacturers_id, products_date_added, quantity_discount_groups_id, products_attributes_groups_id) values (:products_type, :products_sku, :products_model, :products_price, :products_quantity, :products_moq, :products_max_order_quantity, :order_increment, :quantity_unit_class, :products_date_available, :products_weight, :products_weight_class, :products_status, :products_tax_class_id, :manufacturers_id, :products_date_added, :quantity_discount_groups_id, :products_attributes_groups_id)');
+        $Qproduct = $osC_Database->query('insert into :table_products (products_type, products_sku, products_model, products_price, products_quantity, products_moq, products_max_order_quantity, order_increment, quantity_unit_class, products_date_available, products_weight, products_weight_class, products_length_class, products_width, products_height, products_length, products_status, products_tax_class_id, manufacturers_id, products_date_added, quantity_discount_groups_id, products_attributes_groups_id) values (:products_type, :products_sku, :products_model, :products_price, :products_quantity, :products_moq, :products_max_order_quantity, :order_increment, :quantity_unit_class, :products_date_available, :products_weight, :products_weight_class, :products_length_class, :products_width, :products_height, :products_length, :products_status, :products_tax_class_id, :manufacturers_id, :products_date_added, :quantity_discount_groups_id, :products_attributes_groups_id)');
         $Qproduct->bindRaw(':products_date_added', 'now()');
       }
 
@@ -125,6 +125,10 @@
       
       $Qproduct->bindValue(':products_weight', $data['weight']);
       $Qproduct->bindInt(':products_weight_class', $data['weight_class']);
+      $Qproduct->bindInt(':products_length_class', $data['length_class']);
+      $Qproduct->bindInt(':products_width', $data['width']);
+      $Qproduct->bindInt(':products_height', $data['height']);
+      $Qproduct->bindInt(':products_length', $data['length']);
       $Qproduct->bindInt(':products_status', $data['status']);
       $Qproduct->bindInt(':products_tax_class_id', $data['tax_class_id']);
       $Qproduct->bindInt(':manufacturers_id', $data['manufacturers_id']);
@@ -138,7 +142,7 @@
       
       $Qproduct->setLogging($_SESSION['module'], $id);
       $Qproduct->execute();
-
+      
       if ($osC_Database->isError()) {
         $error = true;
       } else {
@@ -799,7 +803,6 @@
         osC_Cache::clear('sefu-products');
         osC_Cache::clear('new_products');
         osC_Cache::clear('feature-products');
-        osC_Cache::clear('upcoming_products');
 
         return $products_id;
       }
@@ -1617,7 +1620,6 @@
       $Qstatus->execute();
       
       if(!$osC_Database->isError()) {
-      	osC_Cache::clear('new_products');
         osC_Cache::clear('feature-products');
         
         return true;

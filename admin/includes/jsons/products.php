@@ -559,6 +559,25 @@
       echo $toC_Json->encode($response);
     }
     
+    function getLengthClasses() {
+      global $toC_Json, $osC_Database, $osC_Language;
+      
+      $Qlc = $osC_Database->query('select length_class_id, length_class_title from :table_length_classes where language_id = :language_id order by length_class_title');
+      $Qlc->bindTable(':table_length_classes', TABLE_LENGTH_CLASSES);
+      $Qlc->bindInt(':language_id', $osC_Language->getID());
+      $Qlc->execute();
+    
+      $length_class_array = array();
+      while ($Qlc->next()) {
+        $length_class_array[] = array('id' => $Qlc->valueInt('length_class_id'),
+                                      'text' => $Qlc->value('length_class_title'));
+      }
+      
+      $response = array(EXT_JSON_READER_ROOT => $length_class_array);   
+                           
+      echo $toC_Json->encode($response);
+    }
+    
     function getQuantityDiscountGroups() {
       global $toC_Json, $osC_Database, $osC_Language;
      
@@ -714,6 +733,10 @@
                     'weight' => $_REQUEST['products_weight'],
                     'quantity_discount_groups_id' => $_REQUEST['quantity_discount_groups_id'],
                     'weight_class' => $_REQUEST['products_weight_class'],
+                    'length_class' => $_REQUEST['products_length_class'],
+                    'width' => $_REQUEST['products_width'],
+                    'height' => $_REQUEST['products_height'],
+                    'length' => $_REQUEST['products_length'],
                     'status' => $_REQUEST['products_status'],
                     'tax_class_id' => $_REQUEST['products_tax_class_id'],
                     'manufacturers_id' => $_REQUEST['manufacturers_id'],

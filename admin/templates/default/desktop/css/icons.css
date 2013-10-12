@@ -162,6 +162,10 @@
 	background-image: url(../../images/icons/16x16/tax_classes.png) !important;
 }
 
+.icon-length_classes-win {
+    background-image: url(../../images/icons/16x16/unit_classes.png) !important;
+}
+
 .icon-weight_classes-win {
 	background-image: url(../../images/icons/16x16/weight_classes.png) !important;
 }

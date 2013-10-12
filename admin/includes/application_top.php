@@ -102,6 +102,9 @@
 
   require('../includes/classes/address.php');
   require('../includes/classes/weight.php');
+  
+  //add the length class
+  require('../includes/classes/length.php');
   require('../includes/classes/xml.php');
   require('../includes/classes/datetime.php');
   

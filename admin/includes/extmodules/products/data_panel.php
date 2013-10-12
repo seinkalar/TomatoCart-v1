@@ -120,6 +120,37 @@ Ext.extend(Toc.products.DataPanel, Ext.TabPanel, {
       editable: false,
       forceSelection: true     
     });
+    
+    dsLengthClasses = new Ext.data.Store({
+      url:Toc.CONF.CONN_URL,
+      baseParams: {
+        module: 'products',
+        action: 'get_length_classes'
+      },
+      reader: new Ext.data.JsonReader({
+          fields: ['id', 'text'],
+          root: Toc.CONF.JSON_READER_ROOT
+      }),
+      autoLoad: true,
+      listeners: {
+        load: function() {this.cboLengthClasses.setValue('<?php echo SHIPPING_LENGTH_UNIT; ?>');},
+        scope: this
+      }
+    });
+    
+    this.cboLengthClasses = new Ext.form.ComboBox({
+      fieldLabel: '<?php echo $osC_Language->get('field_length_classes'); ?>', 
+      xtype: 'combo', 
+      store: dsLengthClasses, 
+      id: 'combLengthClasses', 
+      name: 'products_length_class_ids', 
+      hiddenName: 'products_length_class', 
+      displayField: 'text', 
+      valueField: 'id', 
+      triggerAction: 'all', 
+      editable: false,
+      forceSelection: true     
+    });
 
       
     this.fsStatus = new Ext.form.FieldSet({
@@ -162,7 +193,11 @@ Ext.extend(Toc.products.DataPanel, Ext.TabPanel, {
                 }
               ]
             },
-            {fieldLabel: '<?php echo $osC_Language->get('field_date_available'); ?>', name: 'products_date_available', format: 'Y-m-d', xtype: 'datefield', readOnly: true, width: 165}         
+            {fieldLabel: '<?php echo $osC_Language->get('field_date_available'); ?>', name: 'products_date_available', format: 'Y-m-d', xtype: 'datefield', readOnly: true, width: 165},
+            this.cboLengthClasses,
+            {fieldLabel: '<?php echo $osC_Language->get('field_width'); ?>', xtype:'textfield', name: 'products_width'},
+            {fieldLabel: '<?php echo $osC_Language->get('field_height'); ?>', xtype:'textfield', name: 'products_height'},
+            {fieldLabel: '<?php echo $osC_Language->get('field_length'); ?>', xtype:'textfield', name: 'products_length'},         
           ]
         },
         {

@@ -145,6 +145,11 @@
   filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='templates/default/images/icons/48x48/tax_classes.png', sizingMethod='scale');
 }
 
+.icon-length_classes-shortcut img {
+  background-image: url(../../images/icons/48x48/unit_classes.png);
+  filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='templates/default/images/icons/48x48/unit_classes.png', sizingMethod='scale');
+}
+
 .icon-weight_classes-shortcut img {
   background-image: url(../../images/icons/48x48/weight_classes.png);
   filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='templates/default/images/icons/48x48/weight_classes.png', sizingMethod='scale');
