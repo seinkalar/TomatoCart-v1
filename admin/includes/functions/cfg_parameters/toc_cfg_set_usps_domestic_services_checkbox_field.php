@@ -37,7 +37,7 @@
 
     $control = array();
     $control['name'] = $name;
-    $control['type'] = 'usps_checkbox';
+    $control['type'] = 'checkbox';
     $control['values'] = $dometric_services;
 
     return $control;
