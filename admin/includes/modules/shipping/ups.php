@@ -19,7 +19,7 @@
         $_status = false,
         $_sort_order;
 
-// class constructor
+		// class constructor
     function osC_Shipping_ups() {
       global $osC_Language;
 
@@ -27,42 +27,75 @@
 
       $this->_title = $osC_Language->get('shipping_ups_title');
       $this->_description = $osC_Language->get('shipping_ups_description');
-      $this->_status = (defined('MODULE_SHIPPING_UPS_STATUS') && (MODULE_SHIPPING_UPS_STATUS == 'True') ? true : false);
+      $this->_status = (defined('MODULE_SHIPPING_UPS_STATUS') && (MODULE_SHIPPING_UPS_STATUS == 'Yes') ? true : false);
       $this->_sort_order = (defined('MODULE_SHIPPING_UPS_SORT_ORDER') ? MODULE_SHIPPING_UPS_SORT_ORDER : null);
     }
 
-// class methods
+		//check module installation
     function isInstalled() {
       return (bool)defined('MODULE_SHIPPING_UPS_STATUS');
     }
 
+    //install the module
     function install() {
-      global $osC_Database;
+      global $osC_Database, $osC_Language;
 
       parent::install();
 
-      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Enable UPS Shipping', 'MODULE_SHIPPING_UPS_STATUS', 'True', 'Do you want to offer UPS shipping?', '6', '0', 'osc_cfg_set_boolean_value(array(\'True\', \'False\'))', now())");
-      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('UPS Pickup Method', 'MODULE_SHIPPING_UPS_PICKUP', 'cc', 'How do you give packages to UPS? CC - Customer Counter, RDP - Daily Pickup, OTP - One Time Pickup, LC - Letter Center, OCA - On Call Air', '6', '0', now())");
-      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('UPS Packaging?', 'MODULE_SHIPPING_UPS_PACKAGE', 'CP', 'CP - Your Packaging, ULE - UPS Letter, UT - UPS Tube, UBE - UPS Express Box', '6', '0', now())");
-      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Residential Delivery?', 'MODULE_SHIPPING_UPS_RES', 'RES', 'Quote for Residential (RES) or Commercial Delivery (COM)', '6', '0', now())");
-      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Handling Fee', 'MODULE_SHIPPING_UPS_HANDLING', '0', 'Handling fee for this shipping method.', '6', '0', now())");
-      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, use_function, set_function, date_added) values ('Tax Class', 'MODULE_SHIPPING_UPS_TAX_CLASS', '0', 'Use the following tax class on the shipping fee.', '6', '0', 'osc_cfg_use_get_tax_class_title', 'osc_cfg_set_tax_classes_pull_down_menu', now())");
-      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, use_function, set_function, date_added) values ('Shipping Zone', 'MODULE_SHIPPING_UPS_ZONE', '0', 'If a zone is selected, only enable this shipping method for that zone.', '6', '0', 'osc_cfg_use_get_zone_class_title', 'osc_cfg_set_zone_classes_pull_down_menu', now())");
-      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Sort oder of display', 'MODULE_SHIPPING_UPS_SORT_ORDER', '0', 'Sort order of display. Lowest is displayed first.', '6', '0', now())");
-      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Shipping Methods', 'MODULE_SHIPPING_UPS_TYPES', '1DM, 1DML, 1DA, 1DAL, 1DAPI, 1DP, 1DPL, 2DM, 2DML, 2DA, 2DAL, 3DS, GND, STD, XPR, XPRL, XDM, XDML, XPD', 'Select the USPS services to be offered in the combox. The selected services will be displayed in the input field.', '6', '13', 'osc_cfg_set_select_multioption', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_status') . "', 'MODULE_SHIPPING_UPS_STATUS', 'Yes', '" . $osC_Language->get('shipping_ups_status_description') . "', '6', '0', 'osc_cfg_set_boolean_value(array(\'Yes\', \'No\'))', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('<span style=\'color:red;\'><b>* </b></span>" . $osC_Language->get('shipping_ups_access_key') . "', 'MODULE_SHIPPING_UPS_ACCESS_KEY', '', '" . $osC_Language->get('shipping_ups_access_key_description') . "', '6', '1', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('<span style=\'color:red;\'><b>* </b></span>" . $osC_Language->get('shipping_ups_username') . "', 'MODULE_SHIPPING_UPS_USRERNAME', '', '" . $osC_Language->get('shipping_ups_username_description') . "', '6', '2', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('<span style=\'color:red;\'><b>* </b></span>" . $osC_Language->get('shipping_ups_password') . "', 'MODULE_SHIPPING_UPS_PASSWORD', '', '" . $osC_Language->get('shipping_ups_password_description') . "', '6', '3', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, use_function, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_pickup') . "', 'MODULE_SHIPPING_UPS_PICKUP', '01', '" . $osC_Language->get('shipping_ups_pickup_description') . "', '6', '4', 'osc_cfg_use_get_pickup_method_title', 'osc_cfg_set_ups_pickup_pull_down_menu', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, use_function, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_packaging_type') . "', 'MODULE_SHIPPING_UPS_PACKAGING_TYPE', '02', '" . $osC_Language->get('shipping_ups_packaging_type_description') . "', '6', '5', 'osc_cfg_use_get_packaging_title', 'osc_cfg_set_ups_packaging_pull_down_menu', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_classification') . "', 'MODULE_SHIPPING_UPS_CLASSIFICATION', '01', '" . $osC_Language->get('shipping_ups_classification_description') . "', '6', '6', 'osc_cfg_set_ups_classification_pull_down_menu', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, use_function, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_origin') . "', 'MODULE_SHIPPING_UPS_ORIGIN', 'US', '" . $osC_Language->get('shipping_ups_origin_description') . "', '6', '7', 'osc_cfg_use_get_origin_title', 'osc_cfg_set_ups_origin_pull_down_menu', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('<span style=\'color:red;\'><b>* </b></span>" . $osC_Language->get('shipping_ups_city') . "', 'MODULE_SHIPPING_UPS_CITY', '', '" . $osC_Language->get('shipping_ups_city_description') . "', '6', '8', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('<span style=\'color:red;\'><b>* </b></span>" . $osC_Language->get('shipping_ups_state') . "', 'MODULE_SHIPPING_UPS_STATE', '', '" . $osC_Language->get('shipping_ups_state_description') . "', '6', '9', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('<span style=\'color:red;\'><b>* </b></span>" . $osC_Language->get('shipping_ups_country') . "', 'MODULE_SHIPPING_UPS_COUNTRY', '', '" . $osC_Language->get('shipping_ups_country_description') . "', '6', '10', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('" . $osC_Language->get('shipping_ups_postcode') . "', 'MODULE_SHIPPING_UPS_POSTCODE', '', '" . $osC_Language->get('shipping_ups_postcode_description') . "', '6', '11', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_test') . "', 'MODULE_SHIPPING_UPS_TEST_MODE', 'Yes', '" . $osC_Language->get('shipping_ups_test_description') . "', '6', '12', 'osc_cfg_set_boolean_value(array(\'Yes\', \'No\'))', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, use_function, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_quote_type') . "', 'MODULE_SHIPPING_UPS_QUOTE_TYPE', 'residential', '" . $osC_Language->get('shipping_ups_quote_type_description') . "', '6', '13', 'osc_cfg_use_get_quote_type_title', 'osc_cfg_set_ups_quote_type_pull_down_menu', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_enable_insurance') . "', 'MODULE_SHIPPING_UPS_ENABLE_INSURANCE', 'No', '" . $osC_Language->get('shipping_ups_enable_insurance_description') . "', '6', '14', 'osc_cfg_set_boolean_value(array(\'Yes\', \'No\'))', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_display_weight') . "', 'MODULE_SHIPPING_UPS_DISPLAY_WEIGHT', 'No', '" . $osC_Language->get('shipping_ups_display_weight_description') . "', '6', '15', 'osc_cfg_set_boolean_value(array(\'Yes\', \'No\'))', now())");
+      
+      //services
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_us_service') . "', 'MODULE_SHIPPING_UPS_US_SERVICES', '', '', '6', '15', 'osc_cfg_set_ups_us_services_checkbox_field', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_ca_service') . "', 'MODULE_SHIPPING_UPS_CA_SERVICES', '', '', '6', '16', 'osc_cfg_set_ups_ca_services_checkbox_field', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_eu_service') . "', 'MODULE_SHIPPING_UPS_EU_SERVICES', '', '', '6', '17', 'osc_cfg_set_ups_eu_services_checkbox_field', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_mx_service') . "', 'MODULE_SHIPPING_UPS_MX_SERVICES', '', '', '6', '18', 'osc_cfg_set_ups_mx_services_checkbox_field', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_pr_service') . "', 'MODULE_SHIPPING_UPS_PR_SERVICES', '', '', '6', '19', 'osc_cfg_set_ups_pr_services_checkbox_field', now())");
+      $osC_Database->simpleQuery("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('" . $osC_Language->get('shipping_ups_other_service') . "', 'MODULE_SHIPPING_UPS_OTHER_SERVICES', '', '', '6', '20', 'osc_cfg_set_ups_other_services_checkbox_field', now())");
     }
 
+    //get the configurations keys for this module
     function getKeys() {
       if (!isset($this->_keys)) {
-        $this->_keys = array('MODULE_SHIPPING_UPS_STATUS',
-                             'MODULE_SHIPPING_UPS_PICKUP',
-                             'MODULE_SHIPPING_UPS_PACKAGE',
-                             'MODULE_SHIPPING_UPS_RES',
-                             'MODULE_SHIPPING_UPS_HANDLING',
-                             'MODULE_SHIPPING_UPS_TAX_CLASS',
-                             'MODULE_SHIPPING_UPS_ZONE',
-                             'MODULE_SHIPPING_UPS_SORT_ORDER', 
-                             'MODULE_SHIPPING_UPS_TYPES');
+        $this->_keys = array(
+					'MODULE_SHIPPING_UPS_STATUS',
+					'MODULE_SHIPPING_UPS_ACCESS_KEY',
+					'MODULE_SHIPPING_UPS_USRERNAME', 
+					'MODULE_SHIPPING_UPS_PASSWORD', 
+        	'MODULE_SHIPPING_UPS_PICKUP', 
+					'MODULE_SHIPPING_UPS_PACKAGING_TYPE', 
+					'MODULE_SHIPPING_UPS_CLASSIFICATION', 
+					'MODULE_SHIPPING_UPS_ORIGIN', 
+					'MODULE_SHIPPING_UPS_CITY', 
+					'MODULE_SHIPPING_UPS_STATE', 
+					'MODULE_SHIPPING_UPS_COUNTRY', 
+					'MODULE_SHIPPING_UPS_POSTCODE', 
+					'MODULE_SHIPPING_UPS_TEST_MODE', 
+					'MODULE_SHIPPING_UPS_QUOTE_TYPE',
+					'MODULE_SHIPPING_UPS_ENABLE_INSURANCE',
+					'MODULE_SHIPPING_UPS_DISPLAY_WEIGHT',
+        				
+					'MODULE_SHIPPING_UPS_US_SERVICES',
+					'MODULE_SHIPPING_UPS_CA_SERVICES',
+					'MODULE_SHIPPING_UPS_EU_SERVICES',
+					'MODULE_SHIPPING_UPS_MX_SERVICES',
+					'MODULE_SHIPPING_UPS_PR_SERVICES', 
+					'MODULE_SHIPPING_UPS_OTHER_SERVICES'
+				);
       }
 
       return $this->_keys;

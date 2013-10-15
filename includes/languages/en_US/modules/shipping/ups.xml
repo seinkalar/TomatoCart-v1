@@ -11,5 +11,500 @@
       <value><![CDATA[United Parcel Service.]]></value>
       <group>modules-shipping</group>
     </definition>
+    <definition>
+      <key>shipping_ups_status</key>
+      <value><![CDATA[Enable UPS Shipping]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_status_description</key>
+      <value><![CDATA[Do you want to offer UPS shipping?]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_access_key</key>
+      <value><![CDATA[Access Key]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_access_key_description</key>
+      <value><![CDATA[Enter the XML rates access key assigned to you by UPS]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_username</key>
+      <value><![CDATA[Username]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_username_description</key>
+      <value><![CDATA[Enter your UPS Services account username]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_password</key>
+      <value><![CDATA[Password]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_password_description</key>
+      <value><![CDATA[Enter your UPS Services account password]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_pickup</key>
+      <value><![CDATA[Pickup Method]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_pickup_description</key>
+      <value><![CDATA[How do you give packages to UPS (only used when origin is US)?]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_packaging_type</key>
+      <value><![CDATA[Packaging Type]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_packaging_type_description</key>
+      <value><![CDATA[What kind of packaging do you use?]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_classification</key>
+      <value><![CDATA[Customer Classification Code]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_classification_description</key>
+      <value><![CDATA[01 - If you are billing to a UPS account and have a daily UPS pickup, 03 - If you do not have a UPS account or you are billing to a UPS account but do not have a daily pickup, 04 - If you are shipping from a retail outlet (only used when origin is US)]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_origin</key>
+      <value><![CDATA[Shipping Origin Code]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_origin_description</key>
+      <value><![CDATA[What origin point should be used (this setting affects only what UPS product names are shown to the user)]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_city</key>
+      <value><![CDATA[Origin City]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_city_description</key>
+      <value><![CDATA[Enter the name of the origin city]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_state</key>
+      <value><![CDATA[Origin State/Province]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_state_description</key>
+      <value><![CDATA[Enter the two-letter code for your origin state/province]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_country</key>
+      <value><![CDATA[Origin Country]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_country_description</key>
+      <value><![CDATA[Enter the two-letter code for your origin country]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_postcode</key>
+      <value><![CDATA[Origin Zip/Postal Code]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_postcode_description</key>
+      <value><![CDATA[Enter your origin zip/postalcode]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_test</key>
+      <value><![CDATA[Test Mode]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_test_description</key>
+      <value><![CDATA[Use this module in Test (YES) or Production mode (NO)?]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_quote_type</key>
+      <value><![CDATA[Quote Type]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_quote_type_description</key>
+      <value><![CDATA[Quote for Residential or Commercial Delivery]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_us_service</key>
+      <value><![CDATA[Services For US Origin]]></value>
+      <group>modules-shipping</group>
+    </definition>
+     <definition>
+      <key>shipping_ups_ca_service</key>
+      <value><![CDATA[Services For Canada Origin]]></value>
+      <group>modules-shipping</group>
+    </definition>
+     <definition>
+      <key>shipping_ups_eu_service</key>
+      <value><![CDATA[Services For European Union Origin]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_mx_service</key>
+      <value><![CDATA[Services For Mexico Origin]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_pr_service</key>
+      <value><![CDATA[Services For Puerto Rico Origin]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_other_service</key>
+      <value><![CDATA[Services For All Other Origins]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_insurance</key>
+      <value><![CDATA[Enable Insurance]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_insurance_description</key>
+      <value><![CDATA[Enables insurance with product total as the value]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_display_weight</key>
+      <value><![CDATA[Display Delivery Weight]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_display_weight_description</key>
+      <value><![CDATA[Do you want to display the shipping weight? (e.g. Delivery Weight : 2.7674 Kg\'s)]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_weight_class</key>
+      <value><![CDATA[Weight Class]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_weight_class_description</key>
+      <value><![CDATA[Set to kilograms or pounds]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_length_class</key>
+      <value><![CDATA[Length Class]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_length_class_description</key>
+      <value><![CDATA[Set to centimeters or inches]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_dimension</key>
+      <value><![CDATA[Dimensions (L x W x H)]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_dimension_description</key>
+      <value><![CDATA[This is assumed to be your average packing box size. Individual item dimensions are not supported at this time so you must enter average dimensions like 5x5x5]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_tax_class</key>
+      <value><![CDATA[Tax Class]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_tax_class_description</key>
+      <value><![CDATA[Use the following tax class on the shipping fee]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_handling_fee</key>
+      <value><![CDATA[Handling Fee]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_handling_fee_description</key>
+      <value><![CDATA[Handling fee for this shipping method]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_shipping_zone</key>
+      <value><![CDATA[Shipping Zone]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_shipping_zone_description</key>
+      <value><![CDATA[If a zone is selected, only enable this shipping method for that zone]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_sort_order</key>
+      <value><![CDATA[Sort oder of display]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_sort_order_description</key>
+      <value><![CDATA[Sort order of display. Lowest is displayed first]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_daily_pickup</key>
+      <value><![CDATA[Daily Pickup]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_customer_counter</key>
+      <value><![CDATA[Customer Counter]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_one_time_pickup</key>
+      <value><![CDATA[One Time Pickup]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_on_call_air_pickup</key>
+      <value><![CDATA[On Call Air Pickup]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_letter_center</key>
+      <value><![CDATA[Letter Center]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_air_service_center</key>
+      <value><![CDATA[Air Service Center]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_suggested_retail_rates</key>
+      <value><![CDATA[Suggested Retail Rates (UPS Store)]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_package</key>
+      <value><![CDATA[Package]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_letter</key>
+      <value><![CDATA[UPS Letter]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_tube</key>
+      <value><![CDATA[UPS Tube]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_pak</key>
+      <value><![CDATA[UPS Pak]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_express_box</key>
+      <value><![CDATA[UPS Express Box]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_25kg_box</key>
+      <value><![CDATA[UPS 25kg box]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_10kg_box</key>
+      <value><![CDATA[UPS 10kg box]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_origin_us</key>
+      <value><![CDATA[US Origin]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_origin_ca</key>
+      <value><![CDATA[Canada Origin]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_origin_eu</key>
+      <value><![CDATA[European Union Origin]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_origin_pr</key>
+      <value><![CDATA[Puerto Rico Origin]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_origin_mx</key>
+      <value><![CDATA[Mexico Origin]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_origin_other</key>
+      <value><![CDATA[All Other Origins]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_quote_residential</key>
+      <value><![CDATA[Residential]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_quote_commercial</key>
+      <value><![CDATA[Commercial]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_enable_insurance</key>
+      <value><![CDATA[Enable Insurance]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_enable_insurance_description</key>
+      <value><![CDATA[Enables insurance with product total as the value]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_display_weight</key>
+      <value><![CDATA[Display Delivery Weight]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_display_weight_description</key>
+      <value><![CDATA[Do you want to display the shipping weight? (e.g. Delivery Weight : 2.7674 Kg\'s)]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_next_day_air</key>
+      <value><![CDATA[UPS Next Day Air]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_2nd_day_air</key>
+      <value><![CDATA[UPS Second Day Air]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_ground</key>
+      <value><![CDATA[UPS Ground]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_3_day_select</key>
+      <value><![CDATA[UPS Three-Day Select]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_next_day_air_saver</key>
+      <value><![CDATA[UPS Next Day Air Saver]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_next_day_air_early_am</key>
+      <value><![CDATA[UPS Next Day Air Early A.M.]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_2nd_day_air_am</key>
+      <value><![CDATA[UPS Second Day Air A.M.]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_saver</key>
+      <value><![CDATA[UPS Saver]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_worldwide_express</key>
+      <value><![CDATA[UPS Worldwide Express]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_worldwide_expedited</key>
+      <value><![CDATA[UPS Worldwide Expedited]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_standard</key>
+      <value><![CDATA[UPS Standard]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_worldwide_express_plus</key>
+      <value><![CDATA[UPS Worldwide Express Plus]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_express</key>
+      <value><![CDATA[UPS Express]]></value>
+      <group>modules-shipping</group>
+    </definition>
+     <definition>
+      <key>shipping_ups_expedited</key>
+      <value><![CDATA[UPS Expedited]]></value>
+      <group>modules-shipping</group>
+    </definition>
+     <definition>
+      <key>shipping_ups_express_early_am</key>
+      <value><![CDATA[UPS Express Early A.M.]]></value>
+      <group>modules-shipping</group>
+    </definition>
+     <definition>
+      <key>shipping_ups_express_plus</key>
+      <value><![CDATA[UPS Express Plus]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_today_standard</key>
+      <value><![CDATA[UPS Today Standard]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_today_dedicated_courier</key>
+      <value><![CDATA[UPS Today Dedicated Courier]]></value>
+      <group>modules-shipping</group>
+    </definition>
+     <definition>
+      <key>shipping_ups_today_intercity</key>
+      <value><![CDATA[UPS Today Intercity]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_today_express</key>
+      <value><![CDATA[UPS Today Express]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_today_express_saver</key>
+      <value><![CDATA[UPS Today Express Saver]]></value>
+      <group>modules-shipping</group>
+    </definition>
   </definitions>
 </language>

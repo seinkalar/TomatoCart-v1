@@ -24,6 +24,8 @@ Toc.modules_shipping.ShippingModuleConfigDialog = function(config) {
   config.iconCls = 'icon-modules_shipping-win';
   config.layout = 'border';
   config.items = this.buildForm(config.code);
+ 	config.checkboxes = [];
+  config.originId = 'US';
   
   config.buttons = [
     {
@@ -118,6 +120,24 @@ Ext.extend(Toc.modules_shipping.ShippingModuleConfigDialog, Ext.Window, {
             });
               
             this.moduleForm.add(combo);
+            
+            if (field.name.indexOf('[MODULE_SHIPPING_UPS_ORIGIN]') != -1) {
+            	this.originId = combo.getValue();
+            	
+            	combo.on('select', function(combo, record) {
+            		var origin_id = record.get('id');
+            		
+            		if (this.checkboxes.length > 0) {
+            			Ext.each(this.checkboxes, function(checkbox) {
+	            			if (checkbox.getName().indexOf(origin_id) == -1) {
+	            				checkbox.disable();
+	            			}else {
+	            				checkbox.enable();
+	            			}
+            			}, this);
+            		}
+            	}, this);
+            }
           } else if (field.type == 'multiselect') {
             var multiS = new Ext.ux.Andrie.Select(Ext.applyIf({
               fieldLabel: '<b>' + field.title + '</b><br/>' + field.description,
@@ -146,7 +166,7 @@ Ext.extend(Toc.modules_shipping.ShippingModuleConfigDialog, Ext.Window, {
             
             this.moduleForm.add(multiS);
             this.moduleForm.add(multiSvalue);
-          } else if (field.type == 'usps_checkbox') {
+          } else if (field.type == 'checkbox') {
             var selected = field.value.split(',');
             Ext.each(field.values, function(value, i){
               var hideLabel = (i != 0) ? true : false;
@@ -168,12 +188,22 @@ Ext.extend(Toc.modules_shipping.ShippingModuleConfigDialog, Ext.Window, {
                 checked : checked
               });
               
+              this.checkboxes.push(checkBox);
+              
               this.moduleForm.add(checkBox);
             }, this);
           }
         },this);
         
         this.doLayout();
+        
+        if (this.checkboxes.length > 0) {
+        	Ext.each(this.checkboxes, function(checkbox) {
+        		if (checkbox.getName().indexOf(this.originId) == -1) {
+        			checkbox.disable();
+        		}
+        	}, this);
+        }
       },
       scope: this
     });
