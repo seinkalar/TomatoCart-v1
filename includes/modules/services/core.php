@@ -32,6 +32,9 @@
 
       include('includes/classes/weight.php');
       $osC_Weight = new osC_Weight();
+      
+      include('includes/classes/length.php');
+      $osC_Length = new osC_Length();
 
       include('includes/classes/shopping_cart.php');
       $osC_ShoppingCart = new osC_ShoppingCart();
