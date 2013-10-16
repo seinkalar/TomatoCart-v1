@@ -192,6 +192,16 @@
       <group>modules-shipping</group>
     </definition>
     <definition>
+      <key>shipping_ups_weight</key>
+      <value><![CDATA[Weight: ]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_error</key>
+      <value><![CDATA[An error occured with the UPS shipping calculations.<br />If you prefer to use UPS as your shipping method, please contact the store owner.]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
       <key>shipping_ups_display_weight</key>
       <value><![CDATA[Display Delivery Weight]]></value>
       <group>modules-shipping</group>

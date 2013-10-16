@@ -8,15 +8,16 @@
   it under the terms of the GNU General Public License v2 (1991)
   as published by the Free Software Foundation.
 */
-  require_once('includes/classes/http_client.php');
-
   class osC_Shipping_ups extends osC_Shipping {
-    var $icon, $countries;
+    var $icon, $countries; 
 
     var $_title,
         $_code = 'ups',
         $_status = false,
-        $_sort_order;
+        $_sort_order,
+        $_error = false,
+        $_error_messages = array(),
+        $_service_code = array();
 
 // class constructor
     function osC_Shipping_ups() {
@@ -26,16 +27,17 @@
 
       $this->_title = $osC_Language->get('shipping_ups_title');
       $this->_description = $osC_Language->get('shipping_ups_description');
-      $this->_status = (defined('MODULE_SHIPPING_UPS_STATUS') && (MODULE_SHIPPING_UPS_STATUS == 'True') ? true : false);
+      $this->_status = (defined('MODULE_SHIPPING_UPS_STATUS') && (MODULE_SHIPPING_UPS_STATUS == 'Yes') ? true : false);
       $this->_sort_order = (defined('MODULE_SHIPPING_UPS_SORT_ORDER') ? MODULE_SHIPPING_UPS_SORT_ORDER : null);
     }
 
 // class methods
     function initialize() {
-      global $osC_Database, $osC_ShoppingCart;
+      global $osC_Database, $osC_Language;
 
       $this->tax_class = MODULE_SHIPPING_UPS_TAX_CLASS;
 
+      //check status and shipping zone
       if ( ($this->_status === true) && ((int)MODULE_SHIPPING_UPS_ZONE > 0) ) {
         $check_flag = false;
 
@@ -59,234 +61,459 @@
           $this->_status = false;
         }
       }
-
-      $this->types = array('1DM' => 'Next Day Air Early AM',
-                           '1DML' => 'Next Day Air Early AM Letter',
-                           '1DA' => 'Next Day Air',
-                           '1DAL' => 'Next Day Air Letter',
-                           '1DAPI' => 'Next Day Air Intra (Puerto Rico)',
-                           '1DP' => 'Next Day Air Saver',
-                           '1DPL' => 'Next Day Air Saver Letter',
-                           '2DM' => '2nd Day Air AM',
-                           '2DML' => '2nd Day Air AM Letter',
-                           '2DA' => '2nd Day Air',
-                           '2DAL' => '2nd Day Air Letter',
-                           '3DS' => '3 Day Select',
-                           'GND' => 'Ground',
-                           'GNDCOM' => 'Ground Commercial',
-                           'GNDRES' => 'Ground Residential',
-                           'STD' => 'Canada Standard',
-                           'XPR' => 'Worldwide Express',
-                           'XPRL' => 'worldwide Express Letter',
-                           'XDM' => 'Worldwide Express Plus',
-                           'XDML' => 'Worldwide Express Plus Letter',
-                           'XPD' => 'Worldwide Expedited');
-    }
-
-    function quote($method = '') {
-      global $osC_Language, $osC_ShoppingCart;
       
-      if ( !empty($method) && (isset($this->types[$method])) ) {
-        $prod = $method;
-      }else if ($osC_ShoppingCart->getShippingAddress('country_iso_code_2') == 'CA') {
-        $prod = 'STD';
-      }else {
-        $prod = 'GNDRES';
-      }
+      /*init service codes for each Shipping Origin*/
       
-      if ($method) $this->_upsAction('3'); // return a single quote
+      //US origin
+      $this->service_code['US'] = array(
+	    	array('id' => '01', 'text' => $osC_Language->get('shipping_ups_next_day_air')),
+				array('id' => '02', 'text' => $osC_Language->get('shipping_ups_2nd_day_air')),
+				array('id' => '03', 'text' => $osC_Language->get('shipping_ups_ground')),
+				array('id' => '07', 'text' => $osC_Language->get('shipping_ups_worldwide_express')),
+				array('id' => '08', 'text' => $osC_Language->get('shipping_ups_worldwide_expedited')),
+				array('id' => '11', 'text' => $osC_Language->get('shipping_ups_standard')),
+				array('id' => '12', 'text' => $osC_Language->get('shipping_ups_3_day_select')),
+				array('id' => '13', 'text' => $osC_Language->get('shipping_ups_next_day_air_saver')),
+				array('id' => '14', 'text' => $osC_Language->get('shipping_ups_next_day_air_early_am')),
+				array('id' => '54', 'text' => $osC_Language->get('shipping_ups_worldwide_express_plus')),
+				array('id' => '59', 'text' => $osC_Language->get('shipping_ups_2nd_day_air_am')),
+				array('id' => '65', 'text' => $osC_Language->get('shipping_ups_saver'))
+			);
       
-      $this->_upsProduct($prod);
+      //Canada Origin
+      $this->service_code['CA'] = array(
+	    	array('id' => '01', 'text' => $osC_Language->get('shipping_ups_express')),
+				array('id' => '02', 'text' => $osC_Language->get('shipping_ups_expedited')),
+				array('id' => '07', 'text' => $osC_Language->get('shipping_ups_worldwide_express')),
+				array('id' => '08', 'text' => $osC_Language->get('shipping_ups_worldwide_expedited')),
+				array('id' => '11', 'text' => $osC_Language->get('shipping_ups_standard')),
+				array('id' => '12', 'text' => $osC_Language->get('shipping_ups_3_day_select')),
+				array('id' => '13', 'text' => $osC_Language->get('shipping_ups_saver')),
+				array('id' => '14', 'text' => $osC_Language->get('shipping_ups_next_day_air_early_am')),
+				array('id' => '54', 'text' => $osC_Language->get('shipping_ups_worldwide_express_plus')),
+				array('id' => '65', 'text' => $osC_Language->get('shipping_ups_saver'))
+			);
       
-      $this->_upsOrigin(SHIPPING_ORIGIN_ZIP, osC_Address::getCountryIsoCode2(SHIPPING_ORIGIN_COUNTRY));
-      $this->_upsDest($osC_ShoppingCart->getShippingAddress('postcode'), $osC_ShoppingCart->getShippingAddress('country_iso_code_2'));
-      $this->_upsRate(MODULE_SHIPPING_UPS_PICKUP);
-      $this->_upsContainer(MODULE_SHIPPING_UPS_PACKAGE);
-      $this->_upsWeight($osC_ShoppingCart->getWeight());
-      $this->_upsRescom(MODULE_SHIPPING_UPS_RES);
-      $upsQuote = $this->_upsGetQuote();
-
-      if ( (is_array($upsQuote)) && (sizeof($upsQuote) > 0) ) {
-        $this->quotes = array('id' => $this->_code,
-                              'module' => $this->_title . ' (' . $osC_ShoppingCart->numberOfShippingBoxes() . ' x ' . $osC_ShoppingCart->getWeight() . 'lbs)');
-
-        $methods = array();
-        $allowed_methods = explode(",", MODULE_SHIPPING_UPS_TYPES);
-        $std_rcd = false;
-        $qsize = sizeof($upsQuote);
-        
-        for ($i=0; $i<$qsize; $i++) {
-          list($type, $cost) = each($upsQuote[$i]);
-          
-          if ($type=='STD') {
-            if ($std_rcd) continue;
-            else $std_rcd = true;
-          };
-          
-          if (!in_array($type, $allowed_methods)) continue;
-          
-          $methods[] = array('id' => $type,
-                             'title' => $this->types[$type],
-                             'cost' => ($cost + MODULE_SHIPPING_UPS_HANDLING) * $osC_ShoppingCart->numberOfShippingBoxes());
-        }
-
-        $this->quotes['methods'] = $methods;
-        if ($this->tax_class > 0) {
-          $this->quotes['tax_class_id'] = $this->tax_class;
-        }
-      } else {
-        $this->quotes = array('module' => $this->_title,
-                              'error' => 'We are unable to obtain a rate quote for UPS shipping.<br>Please contact the store if no other alternative is shown.');
-      }
-
-      if (!empty($this->icon)) $this->quotes['icon'] = osc_image($this->icon, $this->_title);
-
-      return $this->quotes;
-    }
-    
-    function _upsRescom($foo) {
-      switch ($foo) {
-        case 'RES': // Residential Address
-          $this->_upsResComCode = '1';
-          break;
-        case 'COM': // Commercial Address
-          $this->_upsResComCode = '0';
-          break;
-      }
-    }
-    
-    function _upsWeight($foo) {
-      $this->_upsPackageWeight = $foo;
-    }
-    
-    function _upsRate($foo) {
-      switch ($foo) {
-        case 'RDP':
-          $this->_upsRateCode = 'Regular+Daily+Pickup';
-          break;
-        case 'OCA':
-          $this->_upsRateCode = 'On+Call+Air';
-          break;
-        case 'OTP':
-          $this->_upsRateCode = 'One+Time+Pickup';
-          break;
-        case 'LC':
-          $this->_upsRateCode = 'Letter+Center';
-          break;
-        case 'CC':
-          $this->_upsRateCode = 'Customer+Counter';
-          break;
-      }
-    }
-
-    function _upsContainer($foo) {
-      switch ($foo) {
-        case 'CP': // Customer Packaging
-          $this->_upsContainerCode = '00';
-          break;
-        case 'ULE': // UPS Letter Envelope
-          $this->_upsContainerCode = '01';
-          break;
-        case 'UT': // UPS Tube
-          $this->_upsContainerCode = '03';
-          break;
-        case 'UEB': // UPS Express Box
-          $this->_upsContainerCode = '21';
-          break;
-        case 'UW25': // UPS Worldwide 25 kilo
-          $this->_upsContainerCode = '24';
-          break;
-        case 'UW10': // UPS Worldwide 10 kilo
-          $this->_upsContainerCode = '25';
-          break;
-      }
-    }
-    
-    function _upsDest($postal, $country){
-      $postal = str_replace(' ', '', $postal);
-
-      if ($country == 'US') {
-        $this->_upsDestPostalCode = substr($postal, 0, 5);
-      } else {
-        $this->_upsDestPostalCode = $postal;
-      }
-
-      $this->_upsDestCountryCode = $country;
-    }
-    
-    function _upsOrigin($postal, $country){
-      $this->_upsOriginPostalCode = $postal;
-      $this->_upsOriginCountryCode = $country;
-    }
-    
-    function _upsAction($action) {
-      /* 3 - Single Quote
-         4 - All Available Quotes */
-
-      $this->_upsActionCode = $action;
-    }
-    
-    function _upsProduct($prod){
-      $this->_upsProductCode = $prod;
-    }
-    
-    function _upsGetQuote() {
-      if (!isset($this->_upsActionCode)) $this->_upsActionCode = '4';
-
-      $request = join('&', array('accept_UPS_license_agreement=yes',
-                                 '10_action=' . $this->_upsActionCode,
-                                 '13_product=' . $this->_upsProductCode,
-                                 '14_origCountry=' . $this->_upsOriginCountryCode,
-                                 '15_origPostal=' . $this->_upsOriginPostalCode,
-                                 '19_destPostal=' . $this->_upsDestPostalCode,
-                                 '22_destCountry=' . $this->_upsDestCountryCode,
-                                 '23_weight=' . $this->_upsPackageWeight,
-                                 '47_rate_chart=' . $this->_upsRateCode,
-                                 '48_container=' . $this->_upsContainerCode,
-                                 '49_residential=' . $this->_upsResComCode));
-      $http = new httpClient();
-      if ($http->Connect('www.ups.com', 80)) {
-        $http->addHeader('Host', 'www.ups.com');
-        $http->addHeader('User-Agent', 'tomatocart');
-        $http->addHeader('Connection', 'Close');
-
-        if ($http->Get('/using/services/rave/qcostcgi.cgi?' . $request)) $body = $http->getBody();
-
-        $http->Disconnect();
-      } else {
-        return 'error';
-      }
-/*
-    mail('you@yourdomain.com','UPS response',$body,'From: <you@yourdomain.com>');
-*/
-      $body_array = explode("\n", $body);
-
-      $returnval = array();
-      $errorret = 'error'; // only return error if NO rates returned
-
-      $n = sizeof($body_array);
-      for ($i = 0; $i < $n; $i++) {
-        $result = explode('%', $body_array[$i]);
-        $errcode = substr($result[0], -1);
-        switch ($errcode) {
-          case 3:
-            if (is_array($returnval)) $returnval[] = array($result[1] => $result[8]);
-            break;
-          case 4:
-            if (is_array($returnval)) $returnval[] = array($result[1] => $result[8]);
-            break;
-          case 5:
-            $errorret = $result[1];
-            break;
-          case 6:
-            if (is_array($returnval)) $returnval[] = array($result[3] => $result[10]);
-            break;
-        }
-      }
+      //European Union Origin
+      $this->service_code['EU'] = array(
+	    	array('id' => '07', 'text' => $osC_Language->get('shipping_ups_express')),
+				array('id' => '08', 'text' => $osC_Language->get('shipping_ups_expedited')),
+				array('id' => '11', 'text' => $osC_Language->get('shipping_ups_standard')),
+				array('id' => '54', 'text' => $osC_Language->get('shipping_ups_worldwide_express_plus')),
+				array('id' => '65', 'text' => $osC_Language->get('shipping_ups_saver')),
+				array('id' => '82', 'text' => $osC_Language->get('shipping_ups_today_standard')),
+				array('id' => '83', 'text' => $osC_Language->get('shipping_ups_today_dedicated_courier')),
+				array('id' => '84', 'text' => $osC_Language->get('shipping_ups_today_intercity')),
+				array('id' => '85', 'text' => $osC_Language->get('shipping_ups_today_express')),
+				array('id' => '86', 'text' => $osC_Language->get('shipping_ups_today_express_saver')),
+				array('id' => '01', 'text' => $osC_Language->get('shipping_ups_next_day_air')), 
+				array('id' => '02', 'text' => $osC_Language->get('shipping_ups_2nd_day_air')),
+				array('id' => '03', 'text' => $osC_Language->get('shipping_ups_ground')),
+				array('id' => '03', 'text' => $osC_Language->get('shipping_ups_next_day_air_early_am'))
+			);
       
-      if (empty($returnval)) $returnval = $errorret;
+      //Puerto Rico Origin
+      $this->service_code['PR'] = array(
+	    	array('id' => '01', 'text' => $osC_Language->get('shipping_ups_next_day_air')),
+				array('id' => '02', 'text' => $osC_Language->get('shipping_ups_2nd_day_air')),
+				array('id' => '03', 'text' => $osC_Language->get('shipping_ups_ground')),
+				array('id' => '07', 'text' => $osC_Language->get('shipping_ups_worldwide_express')),
+				array('id' => '08', 'text' => $osC_Language->get('shipping_ups_worldwide_expedited')),
+				array('id' => '14', 'text' => $osC_Language->get('shipping_ups_next_day_air_early_am')),
+				array('id' => '54', 'text' => $osC_Language->get('shipping_ups_worldwide_express_plus')),
+				array('id' => '65', 'text' => $osC_Language->get('shipping_ups_saver'))
+			);
+      
+      //Mexico Origin
+      $this->service_code['MX'] = array(
+	    	array('id' => '07', 'text' => $osC_Language->get('shipping_ups_express')),
+				array('id' => '08', 'text' => $osC_Language->get('shipping_ups_expedited')),
+				array('id' => '54', 'text' => $osC_Language->get('shipping_ups_express_plus')),
+				array('id' => '65', 'text' => $osC_Language->get('shipping_ups_saver'))
+			);
+      
+      //All other origins
+      $this->service_code['other'] = array(
+	    	array('id' => '07', 'text' => $osC_Language->get('shipping_ups_express')),
+				array('id' => '08', 'text' => $osC_Language->get('shipping_ups_worldwide_expedited')),
+				array('id' => '11', 'text' => $osC_Language->get('shipping_ups_standard')),
+				array('id' => '54', 'text' => $osC_Language->get('shipping_ups_worldwide_express_plus')),
+				array('id' => '65', 'text' => $osC_Language->get('shipping_ups_saver'))
+			);
+    }
 
-      return $returnval;
+    function quote() {
+    	global $osC_Language, $osC_ShoppingCart;
+    	
+    	//build the api request
+    	$xml = $this->_build_qoute_xml();
+    	
+    	//send the request
+    	$result = $this->_send_quote_request($xml);
+    	
+    	//parse xml response to get the shipping rate
+    	$this->quotes = $this->_parse_quote_response($result);
+    	
+    	//verify whether the weight should be displayed
+    	if (MODULE_SHIPPING_UPS_DISPLAY_WEIGHT == 'Yes') {
+    		$this->quotes['module'] .= ' (' . $osC_Language->get('shipping_usps_weight_text') . $osC_Weight->display($osC_ShoppingCart->getWeight(), SHIPPING_WEIGHT_UNIT) . ')';
+    	}
+    	
+    	//shipping icon
+    	if (!empty($this->icon)) $this->quotes['icon'] = osc_image($this->icon, $this->_title);
+    	
+    	//check error
+    	if ($this->_error === true) {
+    		$this->_set_contact_message();
+    	
+    		$this->quotes['error'] = '<strong style="color:red;">' . implode('<br />', $this->_error_messages) . '</strong>';
+    	}
+    	
+    	return $this->quotes;
+    }
+    
+    /**
+     * Send the api request to get the real-time quote
+     *
+     * @acess private
+     * @param $xml
+     * @return  xml
+     */
+    function _send_quote_request($xml) {
+    	$response = '';
+    	
+    	if (MODULE_SHIPPING_UPS_TEST_MODE == 'Yes') {
+    		$api_url = 'https://wwwcie.ups.com/ups.app/xml/Rate';
+			} else {
+				$api_url = 'https://www.ups.com/ups.app/xml/Rate';
+			}
+    	
+    	//verify whether the curl is supported
+    	if (function_exists('curl_init')) {
+    		$ch = curl_init();
+    		curl_setopt($ch, CURLOPT_URL, $api_url);
+    		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
+    		curl_setopt($ch, CURLOPT_POST, 1);
+    		curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+    		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    		curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+    		
+    		$response .= curl_exec($ch);
+    	
+    		// Verify whether there is any curl error thrown
+    		if(curl_errno($ch)){
+    			$this->_error = true;
+    		}
+    	
+    		curl_close($ch);
+    		
+    	//send the http get request with socket
+    	}else {
+    		//parse the service url
+    		$server = parse_url($api_url);
+    	
+    		$fp = fsockopen($server['host'], 80, $errno, $errstr, 30);
+    	
+    		if (!$fp) {
+    			$this->_error = true;
+    		}else {
+    			$request_line = "POST " . $server['path'] . " HTTP/1.1\r\n";
+    			
+    			$request_header = "Host:" . $server['host'] . "\r\n";
+    			$request_header .= "Content-Type: text/xml\r\n";
+    			$request_header .= "Content-Length: " . strlen($xml) . "\r\n";
+    			$request_header .= "Connection: Close\r\n\r\n";
+    	
+    			fwrite($fp, $request_line . $request_header . $xml);
+    			while(!feof($fp)) {
+    				$response .= fgets($fp, 1024);
+    			}
+    	
+    			fclose($fp);
+    		}
+    	}
+    	
+    	return $response;
+    }
+    
+    /**
+     * Parse quote response to get the real-time shipping quotes
+     *
+     * @acess private
+     * @param $response
+     * @return  array
+     */
+    function _parse_quote_response($result) {
+    	global $osC_Currencies;
+    	
+    	//init quotes
+    	$quotes = array(
+				'id' => $this->_code,
+				'module' => $this->_title,
+    		'methods' => array(),			
+				'tax_class_id' => $this->tax_class
+			);
+    	
+    	//get allowed shipping services for current selected origin
+    	$allowed_codes = array();
+    	switch(MODULE_SHIPPING_UPS_ORIGIN) {
+    		case 'US':
+    			$allowed_codes = explode(',', MODULE_SHIPPING_UPS_US_SERVICES);
+    			break;
+    		case 'CA':
+    			$allowed_codes = explode(',', MODULE_SHIPPING_UPS_CA_SERVICES);
+    			break;
+    		case 'EU':
+    			$allowed_codes = explode(',', MODULE_SHIPPING_UPS_EU_SERVICES);
+    			break;
+				case 'PR':
+					$allowed_codes = explode(',', MODULE_SHIPPING_UPS_PR_SERVICES);
+					break;
+				case 'MX':
+					$allowed_codes = explode(',', MODULE_SHIPPING_UPS_MX_SERVICES);
+					break;
+				case 'other':
+					$allowed_codes = explode(',', MODULE_SHIPPING_UPS_OTHER_SERVICES);
+					break;
+				default:
+					$allowed_codes = explode(',', MODULE_SHIPPING_UPS_US_SERVICES);
+    	}
+    	
+    	
+    	//load the dom based the xml returned from UPS
+    	$dom = new DOMDocument('1.0', 'UTF-8');
+    	$dom->loadXml($result);
+    	
+    	//parse the xml to get the quote methods
+    	$rating_service_selection_response = $dom->getElementsByTagName('RatingServiceSelectionResponse')->item(0);
+    	$response = $rating_service_selection_response->getElementsByTagName('Response')->item(0);
+    	
+    	$response_status_code = $response->getElementsByTagName('ResponseStatusCode');
+    	if ($response_status_code->item(0)->nodeValue != '1') {
+    		$this->_error = true;
+    		$this->$_error_messages[] = $response->getElementsByTagName('Error')->item(0)->getElementsByTagName('ErrorCode')->item(0)->nodeValue . ': ' . $response->getElementsByTagName('Error')->item(0)->getElementsByTagName('ErrorDescription')->item(0)->nodeValue;
+    	}else {
+    		$rated_shipments = $rating_service_selection_response->getElementsByTagName('RatedShipment');
+    		
+    		foreach ($rated_shipments as $rated_shipment) {
+    			$service = $rated_shipment->getElementsByTagName('Service')->item(0);
+    			$code = $service->getElementsByTagName('Code')->item(0)->nodeValue;
+    			$total_charges = $rated_shipment->getElementsByTagName('TotalCharges')->item(0);
+    			$cost = $total_charges->getElementsByTagName('MonetaryValue')->item(0)->nodeValue;
+    			$currency = $total_charges->getElementsByTagName('CurrencyCode')->item(0)->nodeValue;
+    			
+    			if ( ! ($code && $cost)) {
+    				continue;
+    			}
+    			
+    			//convert currency
+    			if ($currency != $osC_Currencies->getCode()) {
+    				$cost = $this->_convert($cost, $currency, $osC_Currencies->getCode());
+    			}
+    			
+    			//check wether it is allowed method for the selected origin
+    			if (in_array($code, $allowed_codes)) {
+    				$quotes['methods'][] = array(
+							'id' => $this->_code . $code,
+							'title' => $this->service_code[MODULE_SHIPPING_UPS_ORIGIN][$code],
+							'cost' => $cost
+						);              
+    			}
+    		}
+    	}
+    	
+    	return $quotes;
+    	
+    }
+    
+    /**
+     * Build the api request for getting the real-time quote
+     *
+     * @acess private
+     * @return  xml
+     */
+    function _build_qoute_xml() {
+    	global $osC_ShoppingCart, $osC_Weight, $osC_Length, $osC_Currencies, $osC_Database, $osC_Language;
+    	
+    	//get the shipping address
+    	$shipping_address = $osC_ShoppingCart->getShippingAddress();
+    	
+    	//get the sub total
+    	$sub_total = $osC_ShoppingCart->getSubTotal();
+    	
+    	//verify whether the default shipping weight unit is pounds. Otherwise, it is necessary to convert it to pounds
+    	$weight = $osC_ShoppingCart->getWeight();
+    	if (SHIPPING_WEIGHT_UNIT != MODULE_SHIPPING_UPS_WEIGHT_CLASS_ID) {
+    		$weight = $osC_Weight->convert($osC_ShoppingCart->getWeight(), SHIPPING_WEIGHT_UNIT, MODULE_SHIPPING_UPS_WEIGHT_CLASS_ID);
+    	}
+    	 
+    	//adjust weight key
+    	$Qweight = $osC_Database->query('select weight_class_key from :table_weight_class where weight_class_id = :weight_class_id and language_id = :language_id');
+    	$Qweight->bindTable(':table_weight_class', TABLE_WEIGHT_CLASS);
+    	$Qweight->bindInt(':weight_class_id', MODULE_SHIPPING_UPS_WEIGHT_CLASS_ID);
+    	$Qweight->bindInt(':language_id', $osC_Language->getID());
+    	$Qweight->execute();
+    	 
+    	$weight_key = strtoupper($Qweight->value('weight_class_key'));
+    	
+    	$Qweight->freeResult();
+    	
+    	if ($weight_key == 'KG') {
+    		$weight_key = 'KGS';
+    	} elseif ($weight_key == 'LB') {
+    		$weight_key = 'LBS';
+    	}
+    		
+    	$weight = ($weight < 0.1 ? 0.1 : $weight);
+    	
+    	//dimensions
+    	$length = $osC_Length->convert(MODULE_SHIPPING_UPS_DIMENSIONS_LENGTH, SHIPPING_LENGTH_UNIT, MODULE_SHIPPING_UPS_LENGTH_CLASS_ID);
+    	$width = $osC_Length->convert(MODULE_SHIPPING_UPS_DIMENSIONS_WIDTH, SHIPPING_LENGTH_UNIT, MODULE_SHIPPING_UPS_LENGTH_CLASS_ID);
+    	$height = $osC_Length->convert(MODULE_SHIPPING_UPS_DIMENSIONS_HEIGHT, SHIPPING_LENGTH_UNIT, MODULE_SHIPPING_UPS_LENGTH_CLASS_ID);
+    	
+    	//length key
+    	$length_key = strtoupper($osC_Length->getKey(MODULE_SHIPPING_UPS_LENGTH_CLASS_ID));
+    	
+    	//build xml data for the request
+    	$xml = '<?xml version="1.0"?>';
+    	$xml .= '<AccessRequest xml:lang="en-US">';
+    	$xml .= '	<AccessLicenseNumber>' . MODULE_SHIPPING_UPS_ACCESS_KEY . '</AccessLicenseNumber>';
+    	$xml .= '	<UserId>' . MODULE_SHIPPING_UPS_USRERNAME . '</UserId>';
+    	$xml .= '	<Password>' . MODULE_SHIPPING_UPS_PASSWORD . '</Password>';
+    	$xml .= '</AccessRequest>';
+    	$xml .= '<?xml version="1.0"?>';
+    	$xml .= '<RatingServiceSelectionRequest xml:lang="en-US">';
+    	$xml .= '	<Request>';
+    	$xml .= '		<TransactionReference>';
+    	$xml .= '			<CustomerContext>Bare Bones Rate Request</CustomerContext>';
+    	$xml .= '			<XpciVersion>1.0001</XpciVersion>';
+    	$xml .= '		</TransactionReference>';
+    	$xml .= '		<RequestAction>Rate</RequestAction>';
+    	$xml .= '		<RequestOption>shop</RequestOption>';
+    	$xml .= '	</Request>';
+    	$xml .= '   <PickupType>';
+    	$xml .= '       <Code>' . MODULE_SHIPPING_UPS_PICKUP . '</Code>';
+    	$xml .= '   </PickupType>';
+    	
+    	if (MODULE_SHIPPING_UPS_COUNTRY == 'US' && MODULE_SHIPPING_UPS_PICKUP == '11') {
+    		$xml .= '   <CustomerClassification>';
+    		$xml .= '       <Code>' . MODULE_SHIPPING_UPS_CLASSIFICATION . '</Code>';
+    		$xml .= '   </CustomerClassification>';
+    	}
+    	
+    	$xml .= '	<Shipment>';
+    	$xml .= '		<Shipper>';
+    	$xml .= '			<Address>';
+    	$xml .= '				<City>' . MODULE_SHIPPING_UPS_CITY . '</City>';
+    	$xml .= '				<StateProvinceCode>'. MODULE_SHIPPING_UPS_STATE . '</StateProvinceCode>';
+    	$xml .= '				<CountryCode>' . MODULE_SHIPPING_UPS_COUNTRY . '</CountryCode>';
+    	$xml .= '				<PostalCode>' . MODULE_SHIPPING_UPS_POSTCODE . '</PostalCode>';
+    	$xml .= '			</Address>';
+    	$xml .= '		</Shipper>';
+    	$xml .= '		<ShipTo>';
+    	$xml .= '			<Address>';
+    	$xml .= ' 				<City>' . $shipping_address['city'] . '</City>';
+    	$xml .= '				<StateProvinceCode>' . $shipping_address['zone_code'] . '</StateProvinceCode>';
+    	$xml .= '				<CountryCode>' . $shipping_address['country_iso_code_2'] . '</CountryCode>';
+    	$xml .= '				<PostalCode>' . $shipping_address['postcode'] . '</PostalCode>';
+    	
+    	if (MODULE_SHIPPING_UPS_QUOTE_TYPE == 'residential') {
+    		$xml .= '				<ResidentialAddressIndicator />';
+    	}
+    	
+    	$xml .= '			</Address>';
+    	$xml .= '		</ShipTo>';
+    	$xml .= '		<ShipFrom>';
+    	$xml .= '			<Address>';
+      $xml .= '				<City>' . MODULE_SHIPPING_UPS_CITY . '</City>';
+    	$xml .= '				<StateProvinceCode>'. MODULE_SHIPPING_UPS_STATE . '</StateProvinceCode>';
+    	$xml .= '				<CountryCode>' . MODULE_SHIPPING_UPS_COUNTRY . '</CountryCode>';
+    	$xml .= '				<PostalCode>' . MODULE_SHIPPING_UPS_POSTCODE . '</PostalCode>';
+    	$xml .= '			</Address>';
+    	$xml .= '		</ShipFrom>';
+    	
+    	$xml .= '		<Package>';
+    	$xml .= '			<PackagingType>';
+    	$xml .= '				<Code>' . MODULE_SHIPPING_UPS_PACKAGING_TYPE . '</Code>';
+    	$xml .= '			</PackagingType>';
+    	
+    	$xml .= '		  <Dimensions>';
+    	$xml .= '				<UnitOfMeasurement>';
+    	$xml .= '					<Code>' . $length_key . '</Code>';
+    	$xml .= '				</UnitOfMeasurement>';
+    	$xml .= '				<Length>' . $length . '</Length>';
+    	$xml .= '				<Width>' . $width . '</Width>';
+    	$xml .= '				<Height>' . $height . '</Height>';
+    	$xml .= '			</Dimensions>';
+    	
+    	$xml .= '			<PackageWeight>';
+    	$xml .= '				<UnitOfMeasurement>';
+    	$xml .= '					<Code>' . $weight_key . '</Code>';
+    	$xml .= '				</UnitOfMeasurement>';
+    	$xml .= '				<Weight>' . $weight . '</Weight>';
+    	$xml .= '			</PackageWeight>';
+    	
+    	if (MODULE_SHIPPING_UPS_ENABLE_INSURANCE == 'Yes') {
+    		$xml .= '           <PackageServiceOptions>';
+    		$xml .= '               <InsuredValue>';
+    		$xml .= '                   <CurrencyCode>' . $osC_Currency->getCode() . '</CurrencyCode>';
+    		$xml .= '                   <MonetaryValue>' . $osC_Currency->format($sub_total) . '</MonetaryValue>';
+    		$xml .= '               </InsuredValue>';
+    		$xml .= '           </PackageServiceOptions>';
+    	}
+    	
+    	$xml .= '		</Package>';
+    	$xml .= '	</Shipment>';
+    	$xml .= '</RatingServiceSelectionRequest>';
+    	
+    	return $xml;
+    }
+    
+    /**
+     * Convert the currency
+     * 
+     * @access private
+     * @param $cost
+     * @param $from
+     * @param $to
+     * @return int
+     */
+    function _convert($cost, $from, $to) {
+    	global $osC_Currencies;
+    	
+    	if (isset($osC_Currencies->exists($from))) {
+    		$from = $osC_Currencies->value($from);
+    	} else {
+    		$from = 0;
+    	}
+    	
+    	if (isset($osC_Currencies->exists($to))) {
+    		$to = $osC_Currencies->value($to);
+    	} else {
+    		$to = 0;
+    	}
+    	
+    	return $cost * ($to / $from);
+    }
+    
+    /**
+     * set the contact message as error happened
+     *
+     * @acess private
+     * @return void
+     */
+    function _set_contact_message() {
+    	global $osC_Language;
+    
+    	$store_info = explode("\n", STORE_NAME_ADDRESS);
+    	$store_telephone = array_pop($store_info);
+    	$this->_error_messages[] = '<div style="border:2px dotted red;padding:0 10px;color: red;margin: 5px 0;">' .
+    					'<p style="font-size:normal;font-weight:normal;">' . $osC_Language->get('shipping_ups_error') . '</p>' .
+    					'<p><strong>' . $store_telephone . '</strong></p>' .
+    					'<p><strong>Email: </strong>' . STORE_OWNER_EMAIL_ADDRESS . '</p>' .
+    					'</div>';
     }
   }
 ?>
