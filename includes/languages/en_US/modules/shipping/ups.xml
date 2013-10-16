@@ -222,13 +222,58 @@
       <group>modules-shipping</group>
     </definition>
     <definition>
-      <key>shipping_ups_dimension</key>
-      <value><![CDATA[Dimensions (L x W x H)]]></value>
+      <key>shipping_ups_dimensions_width</key>
+      <value><![CDATA[Dimensions Width]]></value>
       <group>modules-shipping</group>
     </definition>
     <definition>
-      <key>shipping_ups_dimension_description</key>
-      <value><![CDATA[This is assumed to be your average packing box size. Individual item dimensions are not supported at this time so you must enter average dimensions like 5x5x5]]></value>
+      <key>shipping_ups_dimensions_width_description</key>
+      <value><![CDATA[This is assumed to be your average width of packing boxes . Individual item width is not supported yet.]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_dimensions_height</key>
+      <value><![CDATA[Dimensions Height]]></value>
+      <group>modules-shipping</group>
+    </definition>
+     <definition>
+      <key>shipping_ups_dimensions_height_description</key>
+      <value><![CDATA[This is assumed to be your average height of packing boxes . Individual item height is not supported yet.]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_dimensions_length</key>
+      <value><![CDATA[Dimensions Length]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_dimensions_length_description</key>
+      <value><![CDATA[This is assumed to be your average length of packing boxes . Individual item length is not supported yet.]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_tax_classes</key>
+      <value><![CDATA[Tax Class]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_zone</key>
+      <value><![CDATA[Shipping Zone]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_zone_description</key>
+      <value><![CDATA[If a zone is selected, only enable this shipping method for that zone.]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_zone</key>
+      <value><![CDATA[Sort Order]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_sort_order_description</key>
+      <value><![CDATA[Sort order of display.]]></value>
       <group>modules-shipping</group>
     </definition>
     <definition>
@@ -402,8 +447,18 @@
       <group>modules-shipping</group>
     </definition>
     <definition>
-      <key>shipping_ups_next_day_air</key>
-      <value><![CDATA[UPS Next Day Air]]></value>
+      <key>shipping_ups_display_weight</key>
+      <value><![CDATA[Display Delivery Weight]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_weight_class</key>
+      <value><![CDATA[Weight Class]]></value>
+      <group>modules-shipping</group>
+    </definition>
+    <definition>
+      <key>shipping_ups_weight_class_description</key>
+      <value><![CDATA[Set to kilograms or pounds]]></value>
       <group>modules-shipping</group>
     </definition>
     <definition>
@@ -419,6 +474,11 @@
     <definition>
       <key>shipping_ups_3_day_select</key>
       <value><![CDATA[UPS Three-Day Select]]></value>
+      <group>modules-shipping</group>
+    </definition>
+     <definition>
+      <key>shipping_ups_next_day_air</key>
+      <value><![CDATA[UPS Next Day Air]]></value>
       <group>modules-shipping</group>
     </definition>
     <definition>
