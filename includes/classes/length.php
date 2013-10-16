@@ -33,6 +33,18 @@
 
       return $Qlength->value('length_class_title');
     }
+    
+    function getKey($id) {
+    	global $osC_Database, $osC_Language;
+    	
+    	$Qlength = $osC_Database->query('select length_class_key from :table_length_classes where length_class_id = :length_class_id and language_id = :language_id');
+    	$Qlength->bindTable(':table_length_classes', TABLE_LENGTH_CLASSES);
+    	$Qlength->bindInt(':length_class_id', $id);
+    	$Qlength->bindInt(':language_id', $osC_Language->getID());
+    	$Qlength->execute();
+    	
+    	return $Qlength->value('length_class_key');
+    }
 
     function prepareRules() {
       global $osC_Database, $osC_Language;
