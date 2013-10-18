@@ -13,7 +13,7 @@
 
   class osC_Services_core {
     function start() {
-      global $osC_Customer, $osC_Tax, $osC_Weight, $osC_ShoppingCart, $osC_NavigationHistory, $osC_Image, $toC_Wishlist, $toC_Compare_Products, $toC_Customization_Fields, $toC_Json;
+      global $osC_Customer, $osC_Tax, $osC_Weight, $osC_Length, $osC_ShoppingCart, $osC_NavigationHistory, $osC_Image, $toC_Wishlist, $toC_Compare_Products, $toC_Customization_Fields, $toC_Json;
 
       include('includes/classes/template.php');
       include('includes/classes/modules.php');
