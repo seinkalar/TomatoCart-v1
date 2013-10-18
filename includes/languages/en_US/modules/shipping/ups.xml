@@ -277,11 +277,6 @@
       <group>modules-shipping</group>
     </definition>
     <definition>
-      <key>shipping_ups_zone</key>
-      <value><![CDATA[Sort Order]]></value>
-      <group>modules-shipping</group>
-    </definition>
-    <definition>
       <key>shipping_ups_sort_order_description</key>
       <value><![CDATA[Sort order of display.]]></value>
       <group>modules-shipping</group>

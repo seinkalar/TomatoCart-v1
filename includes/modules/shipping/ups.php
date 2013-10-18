@@ -143,7 +143,7 @@
     }
 
     function quote() {
-    	global $osC_Language, $osC_ShoppingCart;
+    	global $osC_Language, $osC_ShoppingCart, $osC_Weight;
     	
     	//build the api request
     	$xml = $this->_build_qoute_xml();
@@ -156,7 +156,7 @@
     	
     	//verify whether the weight should be displayed
     	if (MODULE_SHIPPING_UPS_DISPLAY_WEIGHT == 'Yes') {
-    		$this->quotes['module'] .= ' (' . $osC_Language->get('shipping_usps_weight_text') . $osC_Weight->display($osC_ShoppingCart->getWeight(), SHIPPING_WEIGHT_UNIT) . ')';
+    		$this->quotes['module'] .= ' (' . $osC_Language->get('shipping_ups_weight') . $osC_Weight->display($osC_ShoppingCart->getWeight(), SHIPPING_WEIGHT_UNIT) . ')';
     	}
     	
     	//shipping icon
@@ -293,7 +293,7 @@
     	$response_status_code = $response->getElementsByTagName('ResponseStatusCode');
     	if ($response_status_code->item(0)->nodeValue != '1') {
     		$this->_error = true;
-    		$this->$_error_messages[] = $response->getElementsByTagName('Error')->item(0)->getElementsByTagName('ErrorCode')->item(0)->nodeValue . ': ' . $response->getElementsByTagName('Error')->item(0)->getElementsByTagName('ErrorDescription')->item(0)->nodeValue;
+    		$this->_error_messages[] = $response->getElementsByTagName('Error')->item(0)->getElementsByTagName('ErrorCode')->item(0)->nodeValue . ': ' . $response->getElementsByTagName('Error')->item(0)->getElementsByTagName('ErrorDescription')->item(0)->nodeValue;
     	}else {
     		$rated_shipments = $rating_service_selection_response->getElementsByTagName('RatedShipment');
     		
@@ -315,9 +315,19 @@
     			
     			//check wether it is allowed method for the selected origin
     			if (in_array($code, $allowed_codes)) {
+    				
+    				//get title
+    				$title = '';
+    				foreach ($this->service_code[MODULE_SHIPPING_UPS_ORIGIN] as $service) {
+    					if ($service['id'] == $code) {
+    						$title = $service['text'];
+    						break;
+    					}
+    				}
+    				
     				$quotes['methods'][] = array(
 							'id' => $this->_code . $code,
-							'title' => $this->service_code[MODULE_SHIPPING_UPS_ORIGIN][$code],
+							'title' => $title,
 							'cost' => $cost
 						);              
     			}
@@ -483,13 +493,13 @@
     function _convert($cost, $from, $to) {
     	global $osC_Currencies;
     	
-    	if (isset($osC_Currencies->exists($from))) {
+    	if ($osC_Currencies->exists($from)) {
     		$from = $osC_Currencies->value($from);
     	} else {
     		$from = 0;
     	}
     	
-    	if (isset($osC_Currencies->exists($to))) {
+    	if ($osC_Currencies->exists($to)) {
     		$to = $osC_Currencies->value($to);
     	} else {
     		$to = 0;

@@ -23,7 +23,7 @@
 			array('id' => '07', 'text' => $osC_Language->get('shipping_ups_on_call_air_pickup')),
 			array('id' => '19', 'text' => $osC_Language->get('shipping_ups_letter_center')),
 			array('id' => '20', 'text' => $osC_Language->get('shipping_ups_air_service_center')),
-			array('id' => '11', 'text' => $osC_Language->get('shipping_ups_suggested_retail_ratesr'))
+			array('id' => '11', 'text' => $osC_Language->get('shipping_ups_suggested_retail_rates'))
 		);
    
     $control = array();
