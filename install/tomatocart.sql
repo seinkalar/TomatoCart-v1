@@ -534,6 +534,52 @@ CREATE TABLE toc_faqs_description (
   PRIMARY KEY  (faqs_id,language_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS toc_filters;
+CREATE TABLE toc_filters(
+  filters_id int(11) NOT NULL AUTO_INCREMENT, 
+  filters_groups_id int(11) NOT NULL, 
+  sort_order int(3) NOT NULL, 
+  PRIMARY KEY (filters_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS toc_filters_description;
+CREATE TABLE toc_filters_description(
+  filters_id int(11) NOT NULL,
+  language_id int(11) NOT NULL, 
+  filters_name varchar(64) NOT NULL,
+  PRIMARY KEY (filters_id, language_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS toc_filters_groups;
+CREATE TABLE toc_filters_groups(
+  filters_groups_id int(11) NOT NULL AUTO_INCREMENT,
+  sort_order int(3) NOT NULL, 
+  PRIMARY KEY (filters_groups_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS toc_filters_groups_description;
+CREATE TABLE toc_filters_groups_description(
+  filters_groups_id int(11) NOT NULL,
+  language_id int(11) NOT NULL,
+  filters_groups_name varchar(64) NOT NULL, 
+  PRIMARY KEY (filters_groups_id,language_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS toc_products_to_filters;
+CREATE TABLE toc_filters_groups_description(
+  products_id int(11) NOT NULL,
+  filters_id int(11) NOT NULL,
+  PRIMARY KEY (products_id,filters_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS toc_categories_to_filters;
+CREATE TABLE toc_categories_to_filters(
+  categories_id int(11) NOT NULL,
+  filters_id int(11) NOT NULL,
+  PRIMARY KEY (categories_id,filters_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
 
 DROP TABLE IF EXISTS toc_geo_zones;
 CREATE TABLE toc_geo_zones (

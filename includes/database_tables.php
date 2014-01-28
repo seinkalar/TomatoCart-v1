@@ -53,6 +53,12 @@
   define('TABLE_EMAIL_TEMPLATES_DESCRIPTION', DB_TABLE_PREFIX . 'email_templates_description');
   define('TABLE_FAQS', DB_TABLE_PREFIX . 'faqs');
   define('TABLE_FAQS_DESCRIPTION', DB_TABLE_PREFIX . 'faqs_description');
+  define('TABLE_FILTERS', DB_TABLE_PREFIX . 'filters');
+  define('TABLE_FILTERS_DESCRIPTION', DB_TABLE_PREFIX . 'filters_description');
+  define('TABLE_FILTERS_GROUPS', DB_TABLE_PREFIX . 'filters_groups');
+  define('TABLE_FILTERS_GROUPS_DESCRIPTION', DB_TABLE_PREFIX . 'filters_groups_description');
+  define('TABLE_CATEGORIES_TO_FILTERS', DB_TABLE_PREFIX . 'categories_to_filters');
+  define('TABLE_PRODUCTS_TO_FILTERS', DB_TABLE_PREFIX . 'products_to_filters');
   define('TABLE_GEO_ZONES', DB_TABLE_PREFIX . 'geo_zones');
   define('TABLE_GIFT_CERTIFICATES', DB_TABLE_PREFIX . 'gift_certificates');
   define('TABLE_GUEST_BOOKS', DB_TABLE_PREFIX . 'guest_books');
