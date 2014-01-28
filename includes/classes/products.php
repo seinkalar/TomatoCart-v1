@@ -15,6 +15,7 @@
     var $_category,
         $_recursive = true,
         $_manufacturer,
+        $_filters = array(),
         $_products_attributes,
         $_sql_query,
         $_sort_by,
@@ -61,6 +62,10 @@
     function setManufacturer($id) {
       $this->_manufacturer = $id;
     }
+    
+    function setFilters($filters) {
+      $this->_filters = $filters;
+    }
 
     function setProductAttributesFilter($products_attributes) {
       $this->_products_attributes = $products_attributes;
@@ -91,31 +96,37 @@
     function setSortByDirection($direction) {
       $this->_sort_by_direction = ($direction == '-') ? '-' : '+';
     }
-
-    function &execute() {
+    
+    function calculateProductsCount($filters_id) {
       global $osC_Database, $osC_Language, $osC_CategoryTree, $osC_Image;
       
-      $Qlisting = $osC_Database->query('select p.*, pd.*, m.*, if(s.status, s.specials_new_products_price, null) as specials_new_products_price, if(s.status, s.specials_new_products_price, if (pv.products_price, pv.products_price, p.products_price)) as final_price, i.image from :table_products p left join :table_products_variants pv on (p.products_id = pv.products_id and pv.is_default = 1) left join :table_manufacturers m using(manufacturers_id) left join :table_specials s on (p.products_id = s.products_id) left join :table_manufacturers_info mi on (m.manufacturers_id = mi.manufacturers_id and mi.languages_id = :languages_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd');
+      $Qlisting = $osC_Database->query('select count(*) as total from :table_products p left join :table_products_variants pv on (p.products_id = pv.products_id and pv.is_default = 1) left join :table_manufacturers m using(manufacturers_id) left join :table_specials s on (p.products_id = s.products_id) left join :table_manufacturers_info mi on (m.manufacturers_id = mi.manufacturers_id and mi.languages_id = :languages_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag)');
       $Qlisting->bindTable(':table_products', TABLE_PRODUCTS);
       $Qlisting->bindTable(':table_products_variants', TABLE_PRODUCTS_VARIANTS);
       $Qlisting->bindTable(':table_manufacturers', TABLE_MANUFACTURERS);
       $Qlisting->bindTable(':table_manufacturers_info', TABLE_MANUFACTURERS_INFO);
       $Qlisting->bindTable(':table_specials', TABLE_SPECIALS);
       $Qlisting->bindTable(':table_products_images', TABLE_PRODUCTS_IMAGES);
-      $Qlisting->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
+      
+      $Qlisting->appendQuery(' inner join :table_products_to_filters ptf on p.products_id = ptf.products_id');
+      $Qlisting->bindTable(':table_products_to_filters', TABLE_PRODUCTS_TO_FILTERS);
       
       if ($this->hasCategory()) {
-        $Qlisting->appendQuery(', :table_categories c, :table_products_to_categories p2c where p.products_id = p2c.products_id and p2c.categories_id = c.categories_id');
+        $Qlisting->appendQuery(', :table_products_description pd, :table_categories c, :table_products_to_categories p2c where p.products_id = p2c.products_id and p2c.categories_id = c.categories_id');
         $Qlisting->bindTable(':table_categories', TABLE_CATEGORIES);
         $Qlisting->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
         $Qlisting->appendQuery('and p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id');
       }else {
-        $Qlisting->appendQuery('where p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id');
+        $Qlisting->appendQuery(', :table_products_description pd where p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id');
       }
       
+      $Qlisting->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
       $Qlisting->bindInt(':default_flag', 1);
       $Qlisting->bindInt(':language_id', $osC_Language->getID());
       $Qlisting->bindInt(':languages_id', $osC_Language->getID());
+      
+      $Qlisting->appendQuery(' and ptf.filters_id = :filters_id');
+      $Qlisting->bindInt(':filters_id', $filters_id);
       
       if ($this->hasCategory()) {
         if ($this->isRecursive()) {
@@ -172,7 +183,111 @@
           }
         }
       }
+      
+      $Qlisting->execute();
+      
+      if ($Qlisting->numberOfROws() == 1) {
+        $count_info = $Qlisting->toArray();
+        
+        return $count_info['total'];
+      }
+      
+      return 0;
+    }
 
+    function &execute() {
+      global $osC_Database, $osC_Language, $osC_CategoryTree, $osC_Image;
+      
+      $Qlisting = $osC_Database->query('select p.*, pd.*, m.*, if(s.status, s.specials_new_products_price, null) as specials_new_products_price, if(s.status, s.specials_new_products_price, if (pv.products_price, pv.products_price, p.products_price)) as final_price, i.image from :table_products p left join :table_products_variants pv on (p.products_id = pv.products_id and pv.is_default = 1) left join :table_manufacturers m using(manufacturers_id) left join :table_specials s on (p.products_id = s.products_id) left join :table_manufacturers_info mi on (m.manufacturers_id = mi.manufacturers_id and mi.languages_id = :languages_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag)');
+      $Qlisting->bindTable(':table_products', TABLE_PRODUCTS);
+      $Qlisting->bindTable(':table_products_variants', TABLE_PRODUCTS_VARIANTS);
+      $Qlisting->bindTable(':table_manufacturers', TABLE_MANUFACTURERS);
+      $Qlisting->bindTable(':table_manufacturers_info', TABLE_MANUFACTURERS_INFO);
+      $Qlisting->bindTable(':table_specials', TABLE_SPECIALS);
+      $Qlisting->bindTable(':table_products_images', TABLE_PRODUCTS_IMAGES);
+      
+      //deal with filters
+      if (count($this->_filters) > 0) {
+        $Qlisting->appendQuery(' inner join :table_products_to_filters ptf on p.products_id = ptf.products_id');
+        $Qlisting->bindTable(':table_products_to_filters', TABLE_PRODUCTS_TO_FILTERS);
+      }
+      
+      if ($this->hasCategory()) {
+        $Qlisting->appendQuery(', :table_products_description pd, :table_categories c, :table_products_to_categories p2c where p.products_id = p2c.products_id and p2c.categories_id = c.categories_id');
+        $Qlisting->bindTable(':table_categories', TABLE_CATEGORIES);
+        $Qlisting->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
+        $Qlisting->appendQuery('and p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id');
+      }else {
+        $Qlisting->appendQuery(', :table_products_description pd where p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id');
+      }
+      
+      $Qlisting->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
+      $Qlisting->bindInt(':default_flag', 1);
+      $Qlisting->bindInt(':language_id', $osC_Language->getID());
+      $Qlisting->bindInt(':languages_id', $osC_Language->getID());
+      
+      //deal with filters
+      if (count($this->_filters) > 0) {
+        $Qlisting->appendQuery(' and ptf.filters_id in (:filters_ids)');
+        $Qlisting->bindRaw(':filters_ids', implode(',', $this->_filters));
+      }
+      
+      if ($this->hasCategory()) {
+        if ($this->isRecursive()) {
+          $subcategories_array = array($this->_category);
+
+          $Qlisting->appendQuery('and p2c.products_id = p.products_id and p2c.products_id = pd.products_id and p2c.categories_id in (:categories_id)');
+          $Qlisting->bindRaw(':categories_id', implode(',', $osC_CategoryTree->getChildren($this->_category, $subcategories_array)));
+        } else {
+          $Qlisting->appendQuery('and p2c.products_id = p.products_id and p2c.products_id = pd.products_id and pd.language_id = :language_id and p2c.categories_id = :categories_id');
+          $Qlisting->bindInt(':language_id', $osC_Language->getID());
+          $Qlisting->bindInt(':categories_id', $this->_category);
+        }
+      }
+      
+      if ($this->hasManufacturer()) {
+        $Qlisting->appendQuery('and m.manufacturers_id = :manufacturers_id');
+        $Qlisting->bindInt(':manufacturers_id', $this->_manufacturer);
+      }
+      
+      $products = array();
+      if ($this->hasProductAttributes()) {
+        foreach ($this->_products_attributes as $products_attributes_values_id => $value) {
+          if( !empty($value) ){
+            $Qproducts = $osC_Database->query('select products_id from :table_products_attributes where products_attributes_values_id = :products_attributes_values_id and value = :value and language_id = :language_id');
+            $Qproducts->bindTable(':table_products_attributes', TABLE_PRODUCTS_ATTRIBUTES);
+            $Qproducts->bindInt(':products_attributes_values_id', $products_attributes_values_id);
+            $Qproducts->bindValue(':value', $value);
+            $Qproducts->bindInt(':language_id', $osC_Language->getID());
+            $Qproducts->execute();
+            
+
+            $tmp_products = array();
+            while ($Qproducts->next()) {
+              $tmp_products[] = $Qproducts->valueInt('products_id');
+            }
+            $products[] = $tmp_products;
+
+            $Qproducts->freeResult();
+          }
+        }
+      
+        if (!empty($products)) {
+          $products_ids = $products[0];
+
+          for($i = 1; $i < sizeof($products); $i++) {
+            $products_ids = array_intersect($products_ids, $products[$i]);
+          }
+
+          if ( !empty($products_ids) ) {
+            $Qlisting->appendQuery('and p.products_id in (' . implode(',', $products_ids) . ' ) ');
+          } else {
+            //if no products match, then do not display any result
+            $Qlisting->appendQuery('and 1 = 0 ');
+          }
+        }
+      }
+      
       $Qlisting->appendQuery('order by');
 
       if (isset($this->_sort_by)) {

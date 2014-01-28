@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language>
+  <definitions>
+    <definition>
+      <key>box_filters_heading</key>
+      <value><![CDATA[Filters]]></value>
+      <group>modules-boxes</group>
+    </definition>
+    <definition>
+      <key>box_filters_show_product_count</key>
+      <value><![CDATA[Show Product Count]]></value>
+      <group>modules-boxes</group>
+    </definition>
+     <definition>
+      <key>box_filters_show_product_description</key>
+      <value><![CDATA[Show the amount of products for each filter]]></value>
+      <group>modules-boxes</group>
+    </definition>
+    <definition>
+      <key>box_filters_button_reset</key>
+      <value><![CDATA[Reset Filters]]></value>
+      <group>modules-boxes</group>
+    </definition>    
+  </definitions>
+</language>

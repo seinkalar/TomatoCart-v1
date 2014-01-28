@@ -146,20 +146,43 @@
       include('includes/classes/products.php');
       $osC_Products = new osC_Products($current_category_id);
 
-      if (isset($_GET['filter']) && is_numeric($_GET['filter']) && ($_GET['filter'] > 0)) {
+      if (isset($_REQUEST['filter']) && is_numeric($_REQUEST['filter']) && ($_REQUEST['filter'] > 0)) {
         $osC_Products->setManufacturer($_GET['filter']);
       }
 
-      if ( isset($_GET['products_attributes']) && is_array($_GET['products_attributes']) ) {
+      if ( isset($_REQUEST['products_attributes']) && is_array($_REQUEST['products_attributes']) ) {
         $osC_Products->setProductAttributesFilter($_GET['products_attributes']);
       }
 
-      if (isset($_GET['sort']) && !empty($_GET['sort'])) {
-        if (strpos($_GET['sort'], '|d') !== false) {
-          $osC_Products->setSortBy(substr($_GET['sort'], 0, -2), '-');
+      if (isset($_REQUEST['sort']) && !empty($_REQUEST['sort'])) {
+        if (strpos($_REQUEST['sort'], '|d') !== false) {
+          $osC_Products->setSortBy(substr($_REQUEST['sort'], 0, -2), '-');
         } else {
-          $osC_Products->setSortBy($_GET['sort']);
+          $osC_Products->setSortBy($_REQUEST['sort']);
         }
+      }
+      
+      //deal with filters
+      $filters = array();
+      $query_params = explode('&', $_SERVER['QUERY_STRING']);
+      
+      if (count($query_params) > 0) {
+        foreach($query_params as $param) {
+        
+          if (preg_match('/^f_[0-9]+=[0-9]+$/', $param)) {
+            $param_parts = explode('=', $param);
+            
+            $param_value = $param_parts[1];
+            
+            if ((int)$param_value > 0) {
+              array_push($filters, $param_value);
+            }
+          }
+        } 
+      }
+      
+      if (count($filters) > 0) {
+        $osC_Products->setFilters($filters);
       }
     }
   }
