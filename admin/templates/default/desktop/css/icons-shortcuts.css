@@ -55,6 +55,11 @@
   filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='templates/default/images/icons/48x48/product_variants.png', sizingMethod='scale');
 }
 
+.icon-product_filters-shortcut img {
+  background-image: url(../../images/icons/48x48/products_filters.png);
+  filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='templates/default/images/icons/48x48/product_filters.png', sizingMethod='scale');
+}
+
 .icon-products_attributes-shortcut img {
   background-image: url(../../images/icons/48x48/products_attributes.png);
   filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='templates/default/images/icons/48x48/products_attributes.png', sizingMethod='scale');

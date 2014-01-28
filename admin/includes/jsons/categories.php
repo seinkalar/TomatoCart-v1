@@ -201,7 +201,8 @@
                     'meta_keywords' => $_REQUEST['meta_keywords'],
                     'meta_description' => $_REQUEST['meta_description'],
                     'flag' => (isset($_REQUEST['product_flag']))? $_REQUEST['product_flag']: 0,
-                    'ratings' => $_REQUEST['ratings']);
+                    'ratings' => $_REQUEST['ratings'], 
+                    'filters' => json_decode($_REQUEST['filters']));
       
       //editing the parent category
       if (isset($_REQUEST['categories_id']) && is_numeric($_REQUEST['categories_id'])) {
@@ -265,6 +266,48 @@
       }
   
       echo $toC_Json->encode($response);
+    }
+    
+    function listFilters() {
+      global $toC_Json, $osC_Language;
+      
+      $start = empty($_REQUEST['start']) ? 0 : $_REQUEST['start']; 
+      $limit = empty($_REQUEST['limit']) ? MAX_DISPLAY_SEARCH_RESULTS : $_REQUEST['limit'];  
+      
+      $categories_id = $_POST['categories_id'];
+      
+      $filters = osC_Categories_Admin::getFilters($categories_id, $start, $limit);
+      
+      $response = array(EXT_JSON_READER_TOTAL => $filters['total'],
+                        EXT_JSON_READER_ROOT => $filters['records']);
+                        
+      echo $toC_Json->encode($response);    
+    }
+    
+    function getFiltersGroups() {
+      global $toC_Json;
+      
+      $records = osC_Categories_Admin::getFiltersGroups();
+      
+      $response = array(EXT_JSON_READER_TOTAL => sizeof($records),
+                        EXT_JSON_READER_ROOT => $records); 
+      
+      echo $toC_Json->encode($response);
+    
+    }
+    
+    function getGroupFilters() {
+      global $toC_Json;
+      
+      $filters_groups_id = $_POST['groups_id'];
+      
+      $records = osC_Categories_Admin::getGroupFilters($filters_groups_id);
+      
+      $response = array(EXT_JSON_READER_TOTAL => sizeof($records),
+                        EXT_JSON_READER_ROOT => $records); 
+      
+      echo $toC_Json->encode($response);
+    
     }
   }
 ?>

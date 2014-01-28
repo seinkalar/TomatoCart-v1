@@ -9,6 +9,7 @@
 # as published by the Free Software Foundation.
 
 heading_title = Categories
+heading_title_filters = Link Filters
 
 tree_root_title = Root
 
@@ -17,11 +18,14 @@ operation_title_search = Search:
 section_general = General
 section_meta = Meta Info
 section_ratings = Ratings
+section_filters = Filters
 
 table_heading_categories = Categories
 table_heading_status = Status
 table_heading_action = Action
 table_heading_ratings = Rating Name
+table_heading_filters_name = Filter Name
+table_heading_filters_groups_name = Group
 
 action_heading_new_category = New Category
 action_heading_batch_delete_categories = Batch Delete Categories
@@ -36,6 +40,8 @@ field_sort_order = Sort Order:
 field_status = Status:
 status_enabled = Enabled
 status_disabled = Disabled
+field_filters_groups = Filters Groups:
+field_group_filters = Filters:
 
 field_page_title = Page Title:
 field_meta_keywords = Keywords:

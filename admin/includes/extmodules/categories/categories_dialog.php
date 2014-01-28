@@ -21,7 +21,9 @@ Toc.categories.CategoriesDialog = function (config) {
   config.height = 380;
   config.modal = true;
   config.iconCls = 'icon-categories-win';
-  config.items = this.buildForm();
+  config.categories_id = config.categories_id || null;
+  this.owner = config.owner || null;
+  config.items = this.buildForm(config.categories_id);
   
   config.buttons = [
     {
@@ -95,10 +97,11 @@ Ext.extend(Toc.categories.CategoriesDialog, Ext.Window, {
     }, this);
   },
   
-  buildForm: function () {
+  buildForm: function (categoriesId) {
     this.pnlGeneral = new Toc.categories.GeneralPanel();
     this.pnlMetaInfo = new Toc.categories.MetaInfoPanel();
     this.pnlRatings = new Toc.categories.RatingsGridPanel();
+    this.pnlFilters = new Toc.categories.FiltersPanel({'categoriesId': categoriesId, 'owner': this.owner});
     
     tabCategories = new Ext.TabPanel({
       activeTab: 0,
@@ -109,6 +112,7 @@ Ext.extend(Toc.categories.CategoriesDialog, Ext.Window, {
       items: [
         this.pnlGeneral,
         this.pnlMetaInfo,
+        this.pnlFilters,
         this.pnlRatings   
       ]
     });
@@ -132,6 +136,7 @@ Ext.extend(Toc.categories.CategoriesDialog, Ext.Window, {
   
   submitForm: function () {
     this.frmCategories.form.baseParams['ratings'] = this.pnlRatings.getSelectionModel().selections.keys;
+    this.frmCategories.form.baseParams['filters'] = Ext.util.JSON.encode(this.pnlFilters.getFilters());
     
     var status = this.pnlGeneral.findById('status').findByType('radio');
     status = status[0].getGroupValue();

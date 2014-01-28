@@ -19,7 +19,7 @@ Toc.products.ProductDialog = function(config) {
   config.title = '<?php echo $osC_Language->get('action_heading_new_product'); ?>';
   config.layout = 'fit';
   config.width = 870;
-  config.height = 600;
+  config.height = 540;
   config.modal = true;
   config.iconCls = 'icon-products-win';
   config.productsId = config.products_id || null;
@@ -67,6 +67,7 @@ Ext.extend(Toc.products.ProductDialog, Ext.Window, {
     this.pnlAttributes = new Toc.products.AttributesPanel({productsId: productsId});
     this.pnlAttachments = new Toc.products.AttachmentsPanel({productsId: productsId, owner: this.owner});
     this.pnlCustomizations = new Toc.products.CustomizationsPanel({productsId: productsId, owner: this.owner});
+    this.pnlFlilters = new Toc.products.FiltersPanel({productsId: productsId, owner: this.owner});
     this.pnlImages = new Toc.products.ImagesPanel({productsId: productsId}); 
     
     this.pnlData.on('producttypechange', this.pnlVariants.onProductTypeChange, this.pnlVariants);
@@ -90,6 +91,7 @@ Ext.extend(Toc.products.ProductDialog, Ext.Window, {
         this.pnlAttributes, 
         this.pnlXsellProducts,
         this.pnlCustomizations,
+        this.pnlFlilters,
         this.pnlAttachments,
         this.pnlAccessories
       ]
@@ -156,7 +158,8 @@ Ext.extend(Toc.products.ProductDialog, Ext.Window, {
       products_id: this.productsId,
       attachments_ids: this.pnlAttachments.getAttachmentsIDs(),
       categories_id: this.pnlCategories.getCategories(),
-      customization_fields: this.pnlCustomizations.getCustomizations()
+      customization_fields: this.pnlCustomizations.getCustomizations(),
+      filters: Ext.util.JSON.encode(this.pnlFlilters.getFilters())
     };
     
     <?php if (USE_WYSIWYG_TINYMCE_EDITOR == '1') { ?>

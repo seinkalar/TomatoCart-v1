@@ -99,10 +99,10 @@
 
           //products
       if (is_numeric($id)) {
-        $Qproduct = $osC_Database->query('update :table_products set products_type = :products_type, products_sku = :products_sku, products_model = :products_model, products_price = :products_price, products_quantity = :products_quantity, products_moq = :products_moq, products_max_order_quantity = :products_max_order_quantity, order_increment = :order_increment, quantity_unit_class = :quantity_unit_class, products_date_available = :products_date_available, products_weight = :products_weight, products_weight_class = :products_weight_class, products_length_class = :products_length_class, products_width = :products_width, products_height = :products_height, products_length = :products_length, products_status = :products_status, products_tax_class_id = :products_tax_class_id, manufacturers_id = :manufacturers_id, quantity_discount_groups_id = :quantity_discount_groups_id, products_last_modified = now(), products_attributes_groups_id = :products_attributes_groups_id where products_id = :products_id');
+        $Qproduct = $osC_Database->query('update :table_products set products_type = :products_type, products_sku = :products_sku, products_model = :products_model, products_price = :products_price, products_quantity = :products_quantity, products_moq = :products_moq, products_max_order_quantity = :products_max_order_quantity, order_increment = :order_increment, quantity_unit_class = :quantity_unit_class, products_date_available = :products_date_available, products_weight = :products_weight, products_weight_class = :products_weight_class, products_status = :products_status, products_tax_class_id = :products_tax_class_id, manufacturers_id = :manufacturers_id, quantity_discount_groups_id = :quantity_discount_groups_id, products_last_modified = now(), products_attributes_groups_id = :products_attributes_groups_id where products_id = :products_id');
         $Qproduct->bindInt(':products_id', $id);
       } else {
-        $Qproduct = $osC_Database->query('insert into :table_products (products_type, products_sku, products_model, products_price, products_quantity, products_moq, products_max_order_quantity, order_increment, quantity_unit_class, products_date_available, products_weight, products_weight_class, products_length_class, products_width, products_height, products_length, products_status, products_tax_class_id, manufacturers_id, products_date_added, quantity_discount_groups_id, products_attributes_groups_id) values (:products_type, :products_sku, :products_model, :products_price, :products_quantity, :products_moq, :products_max_order_quantity, :order_increment, :quantity_unit_class, :products_date_available, :products_weight, :products_weight_class, :products_length_class, :products_width, :products_height, :products_length, :products_status, :products_tax_class_id, :manufacturers_id, :products_date_added, :quantity_discount_groups_id, :products_attributes_groups_id)');
+        $Qproduct = $osC_Database->query('insert into :table_products (products_type, products_sku, products_model, products_price, products_quantity, products_moq, products_max_order_quantity, order_increment, quantity_unit_class, products_date_available, products_weight, products_weight_class, products_status, products_tax_class_id, manufacturers_id, products_date_added, quantity_discount_groups_id, products_attributes_groups_id) values (:products_type, :products_sku, :products_model, :products_price, :products_quantity, :products_moq, :products_max_order_quantity, :order_increment, :quantity_unit_class, :products_date_available, :products_weight, :products_weight_class, :products_status, :products_tax_class_id, :manufacturers_id, :products_date_added, :quantity_discount_groups_id, :products_attributes_groups_id)');
         $Qproduct->bindRaw(':products_date_added', 'now()');
       }
 
@@ -125,10 +125,6 @@
       
       $Qproduct->bindValue(':products_weight', $data['weight']);
       $Qproduct->bindInt(':products_weight_class', $data['weight_class']);
-      $Qproduct->bindInt(':products_length_class', $data['length_class']);
-      $Qproduct->bindInt(':products_width', $data['width']);
-      $Qproduct->bindInt(':products_height', $data['height']);
-      $Qproduct->bindInt(':products_length', $data['length']);
       $Qproduct->bindInt(':products_status', $data['status']);
       $Qproduct->bindInt(':products_tax_class_id', $data['tax_class_id']);
       $Qproduct->bindInt(':manufacturers_id', $data['manufacturers_id']);
@@ -142,7 +138,7 @@
       
       $Qproduct->setLogging($_SESSION['module'], $id);
       $Qproduct->execute();
-      
+
       if ($osC_Database->isError()) {
         $error = true;
       } else {
@@ -788,6 +784,38 @@
         }
       }
       //END: customization fields
+      
+      //BEGIN: products filters
+      if ($error === false) {
+        if (is_numeric($id)) {
+          $Qdelete = $osC_Database->query('delete from :table_products_to_filters where products_id = :products_id ');
+          $Qdelete->bindTable(':table_products_to_filters', TABLE_PRODUCTS_TO_FILTERS);
+          $Qdelete->bindInt(':products_id', $id);
+          $Qdelete->execute();
+
+          if ($osC_Database->isError()) {
+            $error = true;
+          }
+        }
+
+        if ($error === false) {
+          if (count($data['filters']) > 0) {
+            foreach ($data['filters'] as $filter) {
+              $Qfilters = $osC_Database->query('insert into :table_products_to_filters (products_id, filters_id) values (:products_id , :filters_id)');
+              $Qfilters->bindTable(':table_products_to_filters', TABLE_PRODUCTS_TO_FILTERS);
+              $Qfilters->bindInt(':products_id', $products_id);
+              $Qfilters->bindInt(':filters_id', $filter);
+              $Qfilters->execute();
+
+              if ($osC_Database->isError()) {
+                $error = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+      //END: products attributes
       
       if ($error === false) {
         $osC_Database->commitTransaction();
@@ -1667,6 +1695,76 @@
       }
 
       return false;
+    }
+    
+    function getFilters($products_id, $start = NULL, $limit = NULL) {
+      global $osC_Language, $osC_Database;
+      
+      $Qfilters = $osC_Database->query('select ptf.filters_id, f.filters_groups_id, f.sort_order, fd.filters_name, fgd.filters_groups_name from :table_products_to_filters ptf inner join :table_filters f on ptf.filters_id = f.filters_id inner join :table_filters_description fd on (f.filters_id = fd.filters_id and fd.language_id = :language_id) inner join :table_filters_groups fg on f.filters_groups_id = fg.filters_groups_id inner join :table_filters_groups_description fgd on (fg.filters_groups_id = fgd.filters_groups_id and fgd.language_id = :language_id) where ptf.products_id = :products_id');
+      $Qfilters->bindTable(':table_products_to_filters', TABLE_PRODUCTS_TO_FILTERS);
+      $Qfilters->bindTable(':table_filters', TABLE_FILTERS);
+      $Qfilters->bindTable(':table_filters_description', TABLE_FILTERS_DESCRIPTION);
+      $Qfilters->bindTable(':table_filters_groups', TABLE_FILTERS_GROUPS);
+      $Qfilters->bindTable(':table_filters_groups_description', TABLE_FILTERS_GROUPS_DESCRIPTION);
+      $Qfilters->bindInt(':language_id', $osC_Language->getID());
+      $Qfilters->bindInt(':language_id', $osC_Language->getID());
+      $Qfilters->bindInt(':products_id', $products_id);
+      
+      if ($start !== NULL && $limit !== NULL) {
+        $Qfilters->setExtBatchLimit($start, $limit);
+      }
+      
+      $Qfilters->execute();
+      
+      $result = array('total' => 0, 'records' => array());
+      if ($Qfilters->numberOfRows() > 0) {
+        while($Qfilters->next()) {
+          $result['records'][] = $Qfilters->toArray();
+        }
+      }
+      
+      $result['total'] = $Qfilters->getBatchSize();
+      
+      return $result;
+    }
+    
+    function getFiltersGroups() {
+      global $osC_Database, $osC_Language;
+       
+      $Qgroups = $osC_Database->query('select fg.filters_groups_id, fgd.filters_groups_name from :table_filters_groups fg inner join :table_filters_groups_description fgd on (fg.filters_groups_id = fgd.filters_groups_id and fgd.language_id = :language_id)');
+      $Qgroups->bindTable(':table_filters_groups', TABLE_FILTERS_GROUPS);
+      $Qgroups->bindTable(':table_filters_groups_description', TABLE_FILTERS_GROUPS_DESCRIPTION);
+      $Qgroups->bindInt(':language_id', $osC_Language->getID());
+      $Qgroups->execute();
+      
+      $records = array();
+      while ( $Qgroups->next() ) {
+        $records[] = array('id' => $Qgroups->ValueInt('filters_groups_id'),
+                           'text' => $Qgroups->Value('filters_groups_name'));
+      }
+      $Qgroups->freeResult();
+      
+      return $records;
+    }
+    
+    function getGroupFilters($filters_groups_id) {
+      global $osC_Database, $osC_Language;
+      
+      $Qfilters = $osC_Database->query('select f.filters_id, fd.filters_name from :table_filters f inner join :table_filters_description fd on (f.filters_id = fd.filters_id and fd.language_id = :language_id) where f.filters_groups_id = :filters_groups_id');
+      $Qfilters->bindTable(':table_filters', TABLE_FILTERS);
+      $Qfilters->bindTable(':table_filters_description', TABLE_FILTERS_DESCRIPTION);
+      $Qfilters->bindInt(':language_id', $osC_Language->getID());
+      $Qfilters->bindInt(':filters_groups_id', $filters_groups_id);
+      $Qfilters->execute();
+      
+      $records = array();
+      while ( $Qfilters->next() ) {
+        $records[] = array('id' => $Qfilters->ValueInt('filters_id'),
+                           'text' => $Qfilters->Value('filters_name'));
+      }
+      $Qfilters->freeResult();
+      
+      return $records;
     }
   }
 ?>

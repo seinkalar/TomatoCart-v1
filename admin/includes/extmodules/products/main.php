@@ -35,6 +35,8 @@
   include('products_duplicate_dialog.php');
   include('customizations_panel.php');
   include('customizations_dialog.php');
+  include('filters_panel.php');
+  include('filters_dialog.php');
   include('accessories_panel.php');
   include('variants_groups_dialog.php');
   include('categories_tree_panel.php');
@@ -68,7 +70,7 @@ Ext.override(TocDesktop.ProductsWindow, {
       win = desktop.createWindow({
         id: 'products-win',
         title:'<?php echo $osC_Language->get('heading_title'); ?>',
-        width:920,
+        width:870,
         height:400,
         iconCls: 'icon-products-win',
         layout: 'fit',
@@ -182,6 +184,17 @@ Ext.override(TocDesktop.ProductsWindow, {
     if (!dlg) {
       dlg = desktop.createWindow(config, Toc.products.CustomizationsDialog);
     }
+    return dlg;
+  },
+  
+  createFiltersDialog: function(config) {
+    var desktop = this.app.getDesktop();
+    var dlg = desktop.getWindow('filters_dialog-win');
+    
+    if (!dlg) {
+      dlg = desktop.createWindow(config, Toc.products.FiltersDialog);
+    }
+    
     return dlg;
   },
   

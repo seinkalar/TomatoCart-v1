@@ -156,7 +156,7 @@ Ext.extend(Toc.categories.CategoriesGrid, Ext.grid.GridPanel, {
   },
   
   onEdit: function (record) {
-    var dlg = this.owner.createCategoriesDialog();
+    var dlg = this.owner.createCategoriesDialog(record.get('categories_id'));
     dlg.setTitle(record.get('categories_name'));
     
     dlg.on('saveSuccess', function() {

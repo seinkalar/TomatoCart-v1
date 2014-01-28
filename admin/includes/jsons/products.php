@@ -389,17 +389,16 @@
           $in_categories[] = $category['id'];
         }
     
-        $Qproducts = $osC_Database->query('select distinct p.products_id, p.products_type, pd.products_name, p.products_sku, p.products_quantity, p.products_price, p.products_date_added, p.products_last_modified, p.products_date_available, p.products_status from :table_products p, :table_products_description pd, :table_products_to_categories p2c where p.products_id = pd.products_id and pd.language_id = :language_id and p.products_id = p2c.products_id and p2c.categories_id in (:categories_id)');
+        $Qproducts = $osC_Database->query('select distinct p.products_id, p.products_type, pd.products_name, p.products_quantity, p.products_price, p.products_date_added, p.products_last_modified, p.products_date_available, p.products_status from :table_products p, :table_products_description pd, :table_products_to_categories p2c where p.products_id = pd.products_id and pd.language_id = :language_id and p.products_id = p2c.products_id and p2c.categories_id in (:categories_id)');
         $Qproducts->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
         $Qproducts->bindRaw(':categories_id', implode(',', $in_categories));
       } else {
-        $Qproducts = $osC_Database->query('select p.products_id, p.products_type, pd.products_name, p.products_sku, p.products_quantity, p.products_price, p.products_date_added, p.products_last_modified, p.products_date_available, p.products_status from :table_products p, :table_products_description pd where p.products_id = pd.products_id and pd.language_id = :language_id');
+        $Qproducts = $osC_Database->query('select p.products_id, p.products_type, pd.products_name, p.products_quantity, p.products_price, p.products_date_added, p.products_last_modified, p.products_date_available, p.products_status from :table_products p, :table_products_description pd where p.products_id = pd.products_id and pd.language_id = :language_id');
       }
 
       if ( !empty($_REQUEST['search']) ) {
-        $Qproducts->appendQuery('and (pd.products_name like :products_name or p.products_sku like :products_sku)');
+        $Qproducts->appendQuery('and pd.products_name like :products_name');
         $Qproducts->bindValue(':products_name', '%' . $_REQUEST['search'] . '%');
-        $Qproducts->bindValue(':products_sku', '%' . $_REQUEST['search'] . '%');
       }
     
       if ( !empty($_REQUEST['sort']) && !empty($_REQUEST['dir']) ) {
@@ -446,7 +445,6 @@
         $records[] = array(
           'products_id'         => $Qproducts->value('products_id'),
           'products_name'       => $Qproducts->value('products_name'),
-        	'products_sku'				=> $Qproducts->value('products_sku'),
           'products_frontpage'  => $products_frontpage,
           'products_status'     => $Qproducts->value('products_status'),
           'products_price'      => $products_price,
@@ -557,25 +555,6 @@
       }
       
       $response = array(EXT_JSON_READER_ROOT => $weight_class_array);   
-                           
-      echo $toC_Json->encode($response);
-    }
-    
-    function getLengthClasses() {
-      global $toC_Json, $osC_Database, $osC_Language;
-      
-      $Qlc = $osC_Database->query('select length_class_id, length_class_title from :table_length_classes where language_id = :language_id order by length_class_title');
-      $Qlc->bindTable(':table_length_classes', TABLE_LENGTH_CLASSES);
-      $Qlc->bindInt(':language_id', $osC_Language->getID());
-      $Qlc->execute();
-    
-      $length_class_array = array();
-      while ($Qlc->next()) {
-        $length_class_array[] = array('id' => $Qlc->valueInt('length_class_id'),
-                                      'text' => $Qlc->value('length_class_title'));
-      }
-      
-      $response = array(EXT_JSON_READER_ROOT => $length_class_array);   
                            
       echo $toC_Json->encode($response);
     }
@@ -735,10 +714,6 @@
                     'weight' => $_REQUEST['products_weight'],
                     'quantity_discount_groups_id' => $_REQUEST['quantity_discount_groups_id'],
                     'weight_class' => $_REQUEST['products_weight_class'],
-                    'length_class' => $_REQUEST['products_length_class'],
-                    'width' => $_REQUEST['products_width'],
-                    'height' => $_REQUEST['products_height'],
-                    'length' => $_REQUEST['products_length'],
                     'status' => $_REQUEST['products_status'],
                     'tax_class_id' => $_REQUEST['products_tax_class_id'],
                     'manufacturers_id' => $_REQUEST['manufacturers_id'],
@@ -857,6 +832,16 @@
           }
         }
       }
+      
+      $data['filters'] = array();
+      if (isset($_REQUEST['filters'])) {
+        $filters = json_decode($_REQUEST['filters'], true);
+        
+        if (count($filters > 0)) {
+          $data['filters'] = $filters;
+        }
+      } 
+     
       
       //search engine friendly urls
       $return_urls = array();
@@ -1325,5 +1310,47 @@
       
       readfile(DIR_FS_DOWNLOAD . $_REQUEST['cache_filename']);
     } 
+    
+    function listFilters() {
+      global $toC_Json, $osC_Language;
+      
+      $start = empty($_REQUEST['start']) ? 0 : $_REQUEST['start']; 
+      $limit = empty($_REQUEST['limit']) ? MAX_DISPLAY_SEARCH_RESULTS : $_REQUEST['limit'];  
+      
+      $products_id = $_POST['products_id'];
+      
+      $filters = osC_Products_Admin::getFilters($products_id, $start, $limit);
+      
+      $response = array(EXT_JSON_READER_TOTAL => $filters['total'],
+                        EXT_JSON_READER_ROOT => $filters['records']);
+                        
+      echo $toC_Json->encode($response);    
+    }
+    
+    function getFiltersGroups() {
+      global $toC_Json;
+      
+      $records = osC_Products_Admin::getFiltersGroups();
+      
+      $response = array(EXT_JSON_READER_TOTAL => sizeof($records),
+                        EXT_JSON_READER_ROOT => $records); 
+      
+      echo $toC_Json->encode($response);
+    
+    }
+    
+    function getGroupFilters() {
+      global $toC_Json;
+      
+      $filters_groups_id = $_POST['groups_id'];
+      
+      $records = osC_Products_Admin::getGroupFilters($filters_groups_id);
+      
+      $response = array(EXT_JSON_READER_TOTAL => sizeof($records),
+                        EXT_JSON_READER_ROOT => $records); 
+      
+      echo $toC_Json->encode($response);
+    
+    }
   }
 ?>

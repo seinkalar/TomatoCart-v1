@@ -21,6 +21,8 @@
   include('categories_move_dialog.php');
   include('categories_main_panel.php');
   include('categories_ratings_grid_panel.php');
+  include('categories_filters_panel.php');
+  include('categories_filters_dialog.php');
   
 ?>
 
@@ -47,12 +49,12 @@ Ext.override(TocDesktop.CategoriesWindow, {
     win.show();
   },
   
-  createCategoriesDialog: function() {
+  createCategoriesDialog: function(categoriesId) {
     var desktop = this.app.getDesktop();
     var dlg = desktop.getWindow('categories-dialog-win');
     
     if (!dlg) {
-      dlg = desktop.createWindow({}, Toc.categories.CategoriesDialog);
+      dlg = desktop.createWindow({categories_id: categoriesId, owner: this}, Toc.categories.CategoriesDialog);
       
       dlg.on('saveSuccess', function (feedback, categoriesId, text) {
         this.app.showNotification({
@@ -78,6 +80,17 @@ Ext.override(TocDesktop.CategoriesWindow, {
           html: feedback
         });
       }, this);
+    }
+    
+    return dlg;
+  },
+  
+  createFiltersDialog: function(config) {
+    var desktop = this.app.getDesktop();
+    var dlg = desktop.getWindow('categories_filters_dialog-win');
+    
+    if (!dlg) {
+      dlg = desktop.createWindow(config, Toc.categories.FiltersDialog);
     }
     
     return dlg;

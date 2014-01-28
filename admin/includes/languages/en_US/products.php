@@ -13,6 +13,7 @@ heading_attachments_title = Attachments
 heading_title_new_product = New Product
 heading_title_new_attachment = New Attachment
 heading_title_variants = Variants
+heading_title_filters = Link Filters
 
 operation_title_search = Search:
 
@@ -36,6 +37,9 @@ table_heading_customizations_is_required = Is Required
 table_heading_customizations_type = Type
 table_heading_variants = Variants
 table_heading_default = Default
+table_heading_filters_name = Filter Name
+table_heading_filters_groups_name = Group
+table_heading_filters_sort_order = Sort Order
 
 action_heading_new_product = New Product
 action_heading_delete_image = Delete Image
@@ -55,6 +59,7 @@ section_gift_certificates = Gift Certificate Options
 section_attachments = Attachments
 section_customizations = Customizations
 section_accessories = Accessories
+section_filters = Filters
 
 subsection_price = Price
 subsection_data = Data
@@ -94,10 +99,8 @@ field_customization_type_file = Upload File Field
 field_customization_type = Field Type:
 field_customization_required = Is Required:
 field_customization_name = Field Name:
-field_length_classes = Length Class:
-field_width = Width:
-field_height = Height:
-field_length = Length:
+field_filters_groups = Filters Groups:
+field_group_filters = Filters:
 
 field_status = Status:
 

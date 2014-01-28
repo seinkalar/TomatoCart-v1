@@ -78,6 +78,10 @@
 	background-image: url(../../images/icons/16x16/products_variants.png) !important;
 }
 
+.icon-product_filters-win {
+  background-image: url(../../images/icons/16x16/products_filters.png) !important;
+}
+
 .icon-products_attributes-win {
 	background-image: url(../../images/icons/16x16/products_attributes.png) !important;
 }

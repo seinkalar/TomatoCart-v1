@@ -171,6 +171,28 @@
             }
           }
         }
+        
+        if (is_numeric($id)) {
+          $Qdelete = $osC_Database->query('delete from :table_categories_to_filters where categories_id = :categories_id');
+          $Qdelete->bindTable(':table_categories_to_filters', TABLE_CATEGORIES_TO_FILTERS);
+          $Qdelete->bindInt(':categories_id', $id);
+          $Qdelete->execute();
+        }
+        
+        if ( count($data['filters']) > 0 ) {
+          foreach($data['filters'] as $filter){
+            $Qinsert = $osC_Database->query('insert into :table_categories_to_filters (categories_id, filters_id) values (:categories_id, :filters_id)');
+            $Qinsert->bindTable(':table_categories_to_filters', TABLE_CATEGORIES_TO_FILTERS);
+            $Qinsert->bindInt(':categories_id', $category_id);
+            $Qinsert->bindInt(':filters_id', $filter);
+            $Qinsert->execute();
+            
+            if ( $osC_Database->isError() ) {
+              $error = true;
+              break;
+            }
+          }
+        }
 
         if ( $error === false ) {
           $categories_image = new upload($data['image'], realpath('../' . DIR_WS_IMAGES . 'categories'));
@@ -432,6 +454,76 @@
       }
       
       return false;
+    }
+    
+    function getFilters($categories_id, $start = NULL, $limit = NULL) {
+      global $osC_Language, $osC_Database;
+      
+      $Qfilters = $osC_Database->query('select ctf.filters_id, f.filters_groups_id, f.sort_order, fd.filters_name, fgd.filters_groups_name from :table_categories_to_filters ctf inner join :table_filters f on ctf.filters_id = f.filters_id inner join :table_filters_description fd on (f.filters_id = fd.filters_id and fd.language_id = :language_id) inner join :table_filters_groups fg on f.filters_groups_id = fg.filters_groups_id inner join :table_filters_groups_description fgd on (fg.filters_groups_id = fgd.filters_groups_id and fgd.language_id = :language_id) where ctf.categories_id = :categories_id');
+      $Qfilters->bindTable(':table_categories_to_filters', TABLE_CATEGORIES_TO_FILTERS);
+      $Qfilters->bindTable(':table_filters', TABLE_FILTERS);
+      $Qfilters->bindTable(':table_filters_description', TABLE_FILTERS_DESCRIPTION);
+      $Qfilters->bindTable(':table_filters_groups', TABLE_FILTERS_GROUPS);
+      $Qfilters->bindTable(':table_filters_groups_description', TABLE_FILTERS_GROUPS_DESCRIPTION);
+      $Qfilters->bindInt(':language_id', $osC_Language->getID());
+      $Qfilters->bindInt(':language_id', $osC_Language->getID());
+      $Qfilters->bindInt(':categories_id', $categories_id);
+      
+      if ($start !== NULL && $limit !== NULL) {
+        $Qfilters->setExtBatchLimit($start, $limit);
+      }
+      
+      $Qfilters->execute();
+      
+      $result = array('total' => 0, 'records' => array());
+      if ($Qfilters->numberOfRows() > 0) {
+        while($Qfilters->next()) {
+          $result['records'][] = $Qfilters->toArray();
+        }
+      }
+      
+      $result['total'] = $Qfilters->getBatchSize();
+      
+      return $result;
+    }
+    
+    function getFiltersGroups() {
+      global $osC_Database, $osC_Language;
+       
+      $Qgroups = $osC_Database->query('select fg.filters_groups_id, fgd.filters_groups_name from :table_filters_groups fg inner join :table_filters_groups_description fgd on (fg.filters_groups_id = fgd.filters_groups_id and fgd.language_id = :language_id)');
+      $Qgroups->bindTable(':table_filters_groups', TABLE_FILTERS_GROUPS);
+      $Qgroups->bindTable(':table_filters_groups_description', TABLE_FILTERS_GROUPS_DESCRIPTION);
+      $Qgroups->bindInt(':language_id', $osC_Language->getID());
+      $Qgroups->execute();
+      
+      $records = array();
+      while ( $Qgroups->next() ) {
+        $records[] = array('id' => $Qgroups->ValueInt('filters_groups_id'),
+                           'text' => $Qgroups->Value('filters_groups_name'));
+      }
+      $Qgroups->freeResult();
+      
+      return $records;
+    }
+    
+    function getGroupFilters($filters_groups_id) {
+      global $osC_Database, $osC_Language;
+      
+      $Qfilters = $osC_Database->query('select f.filters_id, fd.filters_name from :table_filters f inner join :table_filters_description fd on (f.filters_id = fd.filters_id and fd.language_id = :language_id) where f.filters_groups_id = :filters_groups_id');
+      $Qfilters->bindTable(':table_filters', TABLE_FILTERS);
+      $Qfilters->bindTable(':table_filters_description', TABLE_FILTERS_DESCRIPTION);
+      $Qfilters->bindInt(':language_id', $osC_Language->getID());
+      $Qfilters->bindInt(':filters_groups_id', $filters_groups_id);
+      $Qfilters->execute();
+      
+      $records = array();
+      while ( $Qfilters->next() ) {
+        $records[] = array('id' => $Qfilters->ValueInt('filters_id'),
+                           'text' => $Qfilters->Value('filters_name'));
+      }
+      $Qfilters->freeResult();
+      
+      return $records;
     }
   }
 ?>
