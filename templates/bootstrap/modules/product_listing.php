@@ -45,7 +45,7 @@ if ($Qlisting->numberOfRows() > 0) {
   }
 ?>
 	<div class="products-listing-action">
-		<form id="products-filter" class="form-inline" action="<?php echo $action;  ?>" method="get">
+		<form class="products-filter" class="form-inline" action="<?php echo $action;  ?>" method="get">
 			<?php echo get_filters_params(); ?>
 			<div class="row-fluid">
 				<div class="span2">
@@ -146,19 +146,18 @@ if ($Qlisting->numberOfRows() > 0) {
                     </p>
                 </div>
                 <div class="right">
-                    <span class="price">
-                        <?php echo $osC_Product->getPriceFormated(true); ?></span>
+                    <span class="price"><?php echo $osC_Product->getPriceFormated(true); ?></span>
                     <span class="buttons hidden-phone">
                     	<?php 
                     	    if ($Qlisting->value('products_type') == PRODUCT_TYPE_SIMPLE) {
-														//enable quantity input field
-														if (defined('PRODUCT_LIST_QUANTITY_INPUT') && PRODUCT_LIST_QUANTITY_INPUT == 1) {
+								//enable quantity input field
+								if (defined('PRODUCT_LIST_QUANTITY_INPUT') && PRODUCT_LIST_QUANTITY_INPUT == 1) {
                     	?>
-                    					<input type="text" id="qty_<?php echo $Qlisting->value('products_id'); ?>" value="1" size="1" class="qtyField" />
+									<input type="text" id="qty_<?php echo $Qlisting->value('products_id'); ?>" value="1" size="1" class="qtyField" />
                     	<?php 
-                    				}
+								}
                     	?>	
-                        <a id="ac_productlisting_<?php echo $Qlisting->value('products_id'); ?>" class="btn btn-small btn-info ajaxAddToCart" href="<?php echo $buy_now_link; ?>">
+						<a id="ac_productlisting_<?php echo $Qlisting->value('products_id'); ?>" class="btn btn-small btn-info ajaxAddToCart" href="<?php echo $buy_now_link; ?>">
                     	<?php 
                     	    } else {
                     	?>
@@ -176,26 +175,26 @@ if ($Qlisting->numberOfRows() > 0) {
                 
                 <?php 
                     //variants options is enabled
-										if ($variants_enabled && $view_type=='list') {
-												if ($osC_Product->hasVariants()) {
-													$combobox_array = $osC_Product->getVariantsComboboxArray();
-								?>
-													<ul class="options variants_<?php echo $osC_Product->getID(); ?> clearfix">
-								<?php 
-														foreach ($combobox_array as $groups_name => $combobox) {
-								?>
-															<li class="variant">
-                    							<label><?php echo $groups_name; ?>:</label>
-                    							<?php echo $combobox; ?>
-															</li>
-								<?php
-														}
-								?>						
+					if ($variants_enabled && $view_type=='list') {
+						if ($osC_Product->hasVariants()) {
+							$combobox_array = $osC_Product->getVariantsComboboxArray();
+				?>
+							<ul class="options variants_<?php echo $osC_Product->getID(); ?> clearfix">
+				<?php 
+							foreach ($combobox_array as $groups_name => $combobox) {
+				?>
+								<li class="variant">
+									<label><?php echo $groups_name; ?>:</label>
+									<?php echo $combobox; ?>
+								</li>
+				<?php
+							}
+				?>						
                     		</ul>
-								<?php 			
-												}
-										}
-								?>
+				<?php 			
+						}
+					}
+				?>
     		</li>
         <?php 
             }
@@ -204,7 +203,7 @@ if ($Qlisting->numberOfRows() > 0) {
     </div>
     
 	<div class="products-listing-action">
-		<form id="products-filter" class="form-inline" action="<?php echo osc_href_link($_SERVER['SCRIPT_NAME']); ?>" method="get">
+		<form class="products-filter" class="form-inline" action="<?php echo osc_href_link($_SERVER['SCRIPT_NAME']); ?>" method="get">
 			<?php echo get_filters_params(); ?>
 			<div class="row-fluid">
 				<div class="span2">
