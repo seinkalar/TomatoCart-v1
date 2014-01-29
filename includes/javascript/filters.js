@@ -73,8 +73,19 @@
               });
             }
             
-            if ($('frm-filters') != null) {
-              $('frm-filters').submit();
+            //clear filters in the list form
+            if (this.filtersForms.length > 0) {
+              this.filtersForms.each(function(filterForm) {
+                var filterFields = filterForm.getElements('input.filterOption');
+                
+                if (filterFields.length > 0) {
+                  filterFields.each(function(filterField) {
+                    filterField.destroy();
+                  });
+                }
+              }.bind(this));
+              
+              this.filtersForms[0].submit();
             }
             
             return false;
