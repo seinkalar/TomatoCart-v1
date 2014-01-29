@@ -159,10 +159,12 @@
       $osC_Template->addStyleSheet('ext/qkform/qkform.css');
       
        //css
-      $css = '.filterBox .toggleTrigger {cursor:pointer;padding: 10px 0; font-size: 12px;line-height:20px;}' .
+      $css = '.filterBox .toggleTrigger {margin:0;cursor:pointer;padding: 10px 0; font-size: 12px;line-height:20px;background:url("images/filterarrow_open.gif") no-repeat right center;}' .
+          	 '.filterBox .toggleTrigger.triggerClosed {cursor:pointer;padding: 10px 0; font-size: 12px;line-height:20px;background:url("images/filterarrow_closed.gif") no-repeat right center;}' .
              '.filterBox .groupTitle {padding: 0 10px;background:#FAFAFA;}' . 
-             '.filterBox .filters {padding: 0 10px;overflow:hidden;}' .
-      			 '.filtersLoadingMask {position:absolute;background: #FFFFFF url("images/loading.gif") no-repeat center 20%;opacity: 0.5;}';
+             '#frm-filters .filterBox .filters {padding: 0 10px;overflow:hidden;margin-bottom:1px;}' .
+      			 '.filtersLoadingMask {position:absolute;background: #FFFFFF url("images/loading.gif") no-repeat center 20%;opacity: 0.5;}' .
+      			 '#frm-filters .filterBox .filters li:last-child {border-bottom:0;}';
       
       
       $osC_Template->addStyleDeclaration($css);
