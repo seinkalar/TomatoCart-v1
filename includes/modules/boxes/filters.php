@@ -41,45 +41,8 @@
       
       //verify whether it is located in the products listing page
       if ((int)$current_category_id > 0) {
-        $product_listing = $osC_Products->execute();
-        
-        $Qcategory_filters = $osC_Database->query('select ctf.filters_id, f.filters_groups_id, f.sort_order as filter_sort, fd.filters_name, fg.sort_order as group_sort, fgd.filters_groups_name from :table_categories_to_filters ctf inner join :table_filters f on ctf.filters_id = f.filters_id inner join :table_filters_description fd on (f.filters_id = fd.filters_id and fd.language_id = :language_id) inner join :table_filters_groups fg on f.filters_groups_id = fg.filters_groups_id inner join :table_filters_groups_description fgd on (f.filters_groups_id = fgd.filters_groups_id and fgd.language_id = :language_id) where ctf.categories_id = :categories_id order by fg.sort_order, f.sort_order');
-        $Qcategory_filters->bindTable(':table_categories_to_filters', TABLE_CATEGORIES_TO_FILTERS);
-        $Qcategory_filters->bindTable(':table_filters', TABLE_FILTERS);
-        $Qcategory_filters->bindTable(':table_filters_description', TABLE_FILTERS_DESCRIPTION);
-        $Qcategory_filters->bindTable(':table_filters_groups', TABLE_FILTERS_GROUPS);
-        $Qcategory_filters->bindTable(':table_filters_groups_description', TABLE_FILTERS_GROUPS_DESCRIPTION);
-        $Qcategory_filters->bindInt(':categories_id', $current_category_id);
-        $Qcategory_filters->bindInt(':language_id', $osC_Language->getID());
-        $Qcategory_filters->bindInt(':language_id', $osC_Language->getID());
-        
-        //cache the database query results
-        if (BOX_FILTERS_CACHE > 0) {
-          $Qcategory_filters->setCache('box_filters-' . $current_category_id . '-' . $osC_Language->getCode(), BOX_FILTERS_CACHE);
-        }
-        
-        $Qcategory_filters->execute();
-        
-        //build the filters groups
-        if ($Qcategory_filters->numberOfRows() > 0) {
-          while($Qcategory_filters->next()) {
-            //verify whether the groups is pushed
-            if (!isset($this->filters_groups[$Qcategory_filters->valueInt('filters_groups_id')])) {
-              $this->filters_groups[$Qcategory_filters->valueInt('filters_groups_id')] = array('group_name' => $Qcategory_filters->value('filters_groups_name'), 
-                                                                                               'group_sort' => $Qcategory_filters->value('group_sort'), 
-                                                                                               'filters' => array());
-            }
-            
-            if (defined('BOX_FILTERS_SHOW_PROUDCTS_COUNT') && BOX_FILTERS_SHOW_PROUDCTS_COUNT == 'Yes') {
-              $count = $osC_Products->calculateProductsCount($Qcategory_filters->valueInt('filters_id'));
-            }
-            
-            $this->filters_groups[$Qcategory_filters->valueInt('filters_groups_id')]['filters'][] = array('filters_id' => $Qcategory_filters->valueInt('filters_id'),
-                                                                                                          'filters_name' => $Qcategory_filters->value('filters_name') . ' (' . $count . ')',
-                                                                                                          'filter_sort' => $Qcategory_filters->valueInt('filter_sort'));
-          }
-        }
-        
+      	$this->filters_groups = $osC_Products->getFilterGroups(BOX_FILTERS_CACHE, BOX_FILTERS_SHOW_PROUDCTS_COUNT);
+      	
         //make sure that there are available filters
         if (count($this->filters_groups) > 0) {
           //generate the box content

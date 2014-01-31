@@ -174,7 +174,7 @@
             }
             
             //add Loading Mask
-            if (typeof productList != undefined) {
+            if (typeof productList != 'undefined') {
               var productsPosition = productList.getCoordinates();
               
               $(document.body).adopt(loadingMask);
@@ -186,6 +186,8 @@
               this.appendFilters();
               
               this.filtersForms[0].submit();
+            }else {
+              $('frm-filters').submit();
             }
             
             return false;
