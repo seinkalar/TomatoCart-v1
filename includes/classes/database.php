@@ -426,7 +426,7 @@
         if (!is_null($this->cache_data) && is_array($this->cache_data)) {
           list(, $this->result) = each($this->cache_data);
         } else {
-          list(, $this->result) = '';
+          $this->result = null;
         }
       } else {
         if (!isset($this->query_handler)) {
