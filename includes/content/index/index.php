@@ -115,6 +115,16 @@
             }
           }
         }
+        
+        /**
+         * Using rel=”canonical” links to remove the duplication - same category page
+         * [#210] SEO - Add canonical link for categories, articles categories and articles to remove duplicate content 
+         */
+        if (isset($osC_Services) && $osC_Services->isStarted('sefu')) {
+        	$seo_link = osc_href_link(FILENAME_DEFAULT, 'cPath=' . $cPath);
+        	 
+        	$this->add_canonical($seo_link);
+        }
       } else {
         $code = strtoupper($osC_Language->getCode());
         

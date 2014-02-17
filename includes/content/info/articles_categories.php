@@ -47,6 +47,16 @@
         if ($osC_Services->isStarted('breadcrumb')) {
           $breadcrumb->add($article_categories['articles_categories_name'], osc_href_link(FILENAME_INFO, 'articles_categories&articles_categories_id=' . $_GET['articles_categories_id']));
         }
+        
+        /**
+         * Using rel=”canonical” links to remove the duplication - same article categories page
+         * [#210] SEO - Add canonical link for categories, articles categories and articles to remove duplicate content 
+         */
+        if (isset($osC_Services) && $osC_Services->isStarted('sefu')) {
+        	$seo_link = osc_href_link(FILENAME_INFO, 'articles_categories&articles_categories_id=' . $_GET['articles_categories_id']);
+        
+        	$this->add_canonical($seo_link);
+        }
       } else {
         $this->_page_title = $osC_Language->get('info_not_found_heading');
         $this->_page_contents = 'info_not_found.php';
