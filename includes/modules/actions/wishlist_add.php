@@ -13,12 +13,21 @@
 
   class osC_Actions_wishlist_add {
     function execute() {
-      global $osC_Session, $toC_Wishlist, $osC_Product;
+      global $osC_Session, $toC_Wishlist, $osC_Product, $messageStack, $osC_Language, $osC_Customer, $osC_NavigationHistory;
+      
+      if ($osC_Customer->isLoggedOn() === false) {
+      	$osC_NavigationHistory->setSnapshot();
+      
+      	osc_redirect(osc_href_link(FILENAME_ACCOUNT, 'login', 'SSL'));
+      }
+      
+      //load the language definitions in the account group
+      $osC_Language->load('account');
       
       $id = false;
 
       foreach ($_GET as $key => $value) {
-        if ( (ereg('^[0-9]+(_?([0-9]+:?[0-9]+)+(;?([0-9]+:?[0-9]+)+)*)*$', $key) || ereg('^[a-zA-Z0-9 -_]*$', $key)) && ($key != $osC_Session->getName()) ) {
+        if ( (preg_match('/^[0-9]+(_?([0-9]+:?[0-9]+)+(;?([0-9]+:?[0-9]+)+)*)*$/', $key) || preg_match('/^[a-zA-Z0-9 -_]*$/', $key)) && ($key != $osC_Session->getName()) ) {
           $id = $key;
         }
 
@@ -38,21 +47,13 @@
         $osC_Product = new osC_Product($id);
       }
       
-      if (isset($osC_Product)) {
-        $variants = null;
+      if (isset($osC_Product)) {       
+				$result = $toC_Wishlist->add($id);      
         
-        if (isset($_POST['variants']) && is_array($_POST['variants'])) {
-          $variants = $_POST['variants'];
-        } else if (isset($_GET['variants']) && !empty($_GET['variants'])) {
-          $variants = osc_parse_variants_string($_GET['variants']);
-        }else if (strpos($id, '#') !== false) {
-          $variants = osc_parse_variants_from_id_string($id);
-        }
-        
-        if (!osc_empty($variants)) {
-          $toC_Wishlist->add($osC_Product->getID(), $variants);  
+        if ($result === true) {
+        	$messageStack->add_session('wishlist', $osC_Language->get('success_wishlist_entry_updated'), 'success');
         }else {
-          $toC_Wishlist->add($osC_Product->getID());      
+        	$messageStack->add_session('wishlist', $osC_Language->get('error_wishlist_product_existed'));
         }
       }
 

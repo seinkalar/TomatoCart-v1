@@ -44,6 +44,8 @@ var TocVariants = new Class({
       this.checkCompareProducts();
       this.checkWishlist();
       this.initializeComboBox();
+      
+      this.updateView();
     }
   },
   
@@ -66,6 +68,12 @@ var TocVariants = new Class({
       if (this.linkCpHref.search(/cid=/) !== -1) {
         this.linkCpHref = this.linkCpHref.replace(/&cid=\d+/, '');
       }
+      
+      this.linkCp.addEvent('click', function() {
+        if (this.hasClass('disabled')) {
+          return false;
+        }
+      });
     }
   },
   
@@ -80,6 +88,12 @@ var TocVariants = new Class({
       if (this.linkWpHref.search(/wid=/) !== -1) {
         this.linkWpHref = this.linkWpHref.replace(/&wid=\d+/, '');
       }
+      
+      this.linkWp.addEvent('click', function() {
+        if (this.hasClass('disabled')) {
+          return false;
+        }
+      });
     }
   },
   
@@ -99,31 +113,45 @@ var TocVariants = new Class({
     var productsIdString = this.getProductsIdString(),
         btnAddToCart = $$(this.options.btnAddCls);
     
-    //if it is in the product info page and the product have any variants, add the variants into the compare products link
-    if (this.linkCp) {
-      var href = this.linkCpHref + '&cid=' + productsIdString.replace(/#/, '_');
-      
-      this.linkCp.setProperty('href', href);
-    }
-    
-    //handler the wishlist
-    if (this.linkWp) {
-      var href = this.linkWpHref + '&wid=' + productsIdString.replace(/#/, '_');
-      
-      this.linkWp.setProperty('href', href);
-    }
-    
     var product = this.options.variants[productsIdString];
     
     if (product == undefined || (product['status'] == 0)) {
-      $('productInfoAvailable').innerHTML = '<font color="red">' + this.options.lang.txtNotAvailable + '</font>';
+      if ($('productInfoAvailable')) {
+        $('productInfoAvailable').innerHTML = '<font color="red">' + this.options.lang.txtNotAvailable + '</font>';
+      }
       
       if (btnAddToCart.length > 0) {
         btnAddToCart[0].addClass('disabled');
       }
       
+      //disable the compare and wishlist link because the variant product is not available
+      if (this.linkCp) {
+        this.linkCp.addClass('disabled');
+      }
+      
+      if (this.linkWp) {
+        this.linkWp.addClass('disabled');
+      }
     } else {
       btnAddToCart[0].removeClass('disabled');
+      
+      //if it is in the product info page and the product have any variants, add the variants into the compare products link
+      if (this.linkCp) {
+        var href = this.linkCpHref + '&cid=' + productsIdString.replace(/#/, '_');
+        
+        this.linkCp.setProperty('href', href);
+        
+        this.linkCp.removeClass('disabled');
+      }
+      
+      //handler the wishlist
+      if (this.linkWp) {
+        var href = this.linkWpHref + '&wid=' + productsIdString.replace(/#/, '_');
+        
+        this.linkWp.setProperty('href', href);
+        
+        this.linkWp.removeClass('disabled');
+      }
       
       if (this.options.hasSpecial == 0) {
         // get the formatted price of the variants product by ajax requst
@@ -131,22 +159,34 @@ var TocVariants = new Class({
           var result = JSON.decode(response);
           
           if (result.success == true) {
-            $('productInfoPrice').set('html', result.formatted_price);
+            if ($('productInfoPrice')) {
+              $('productInfoPrice').set('html', result.formatted_price);
+            }
           }else {
             alert(result.feedback);
           }
         }.bind(this));
       }
       
-      $('productInfoSku').set('text', product['sku']);
+      //product sku maybe missing
+      if ($('productInfoSku')) {
+        $('productInfoSku').set('text', product['sku']);
+      }
+     
       if (this.options.displayQty == true) {
-        $('productInfoQty').set('text', product['quantity'] + ' ' + this.options.unitClass);
+        if ($('productInfoQty')) {
+          $('productInfoQty').set('text', product['quantity'] + ' ' + this.options.unitClass);
+        }
       }
       
       if (product['quantity'] > 0) {
-        $('productInfoAvailable').set('text', this.options.lang.txtInStock);
+        if ($('productInfoAvailable')) {
+          $('productInfoAvailable').set('text', this.options.lang.txtInStock);
+        }
       }else {
-        $('productInfoAvailable').set('text', this.options.lang.txtOutOfStock);
+        if ($('productInfoAvailable')) {
+          $('productInfoAvailable').set('text', this.options.lang.txtOutOfStock);
+        }
       }
       
       $('shoppingCart').fade('in');

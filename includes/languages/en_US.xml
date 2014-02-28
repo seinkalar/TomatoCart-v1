@@ -746,6 +746,11 @@
       <group>account</group>
     </definition>
     <definition>
+      <key>failed_wishlist_entry_updated</key>
+      <value><![CDATA[Error: Failed to update your wishlist.]]></value>
+      <group>account</group>
+    </definition>
+    <definition>
       <key>success_share_wishlist_email_sent</key>
       <value><![CDATA[Your wishlist has been successfully sent to your friends.]]></value>
       <group>account</group>
@@ -753,6 +758,11 @@
     <definition>
       <key>wishlist_empty</key>
       <value><![CDATA[There is no product in your wishlist.]]></value>
+      <group>account</group>
+    </definition>
+    <definition>
+      <key>error_wishlist_product_existed</key>
+      <value><![CDATA[Error: this product has already been added into your wishlist!]]></value>
       <group>account</group>
     </definition>
     <definition>
