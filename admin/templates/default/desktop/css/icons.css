@@ -158,6 +158,10 @@
 	background-image: url(../../images/icons/16x16/countries.png) !important;
 }
 
+.icon-store-win {
+  background-image: url(../../images/icons/16x16/logo_upload.png) !important;
+}
+
 .icon-zone_groups-win {
 	background-image: url(../../images/icons/16x16/zone_groups.png) !important;
 }

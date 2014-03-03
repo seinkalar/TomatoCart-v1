@@ -145,6 +145,11 @@
   filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='templates/default/images/icons/48x48/relationshipzone_groups.png', sizingMethod='scale');
 }
 
+.icon-store-shortcut img {
+  background-image: url(../../images/icons/48x48/logo_upload.png);
+  filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='templates/default/images/icons/48x48/logo_upload.png', sizingMethod='scale');
+}
+
 .icon-tax_classes-shortcut img {
   background-image: url(../../images/icons/48x48/tax_classes.png);
   filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='templates/default/images/icons/48x48/tax_classes.png', sizingMethod='scale');
