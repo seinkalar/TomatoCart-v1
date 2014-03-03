@@ -52,7 +52,7 @@ Toc.store.StoreGrid = function(config) {
   config.cm = new Ext.grid.ColumnModel([
     config.sm, 
     { id: 'store_name', header: '<?php echo $osC_Language->get('table_heading_store_name'); ?>', dataIndex: 'store_name', sortable: true},
-    { header: '<?php echo $osC_Language->get('table_heading_store_url_address'); ?>', align: 'center', dataIndex: 'url_address'},
+    { header: '<?php echo $osC_Language->get('table_heading_store_url_address'); ?>', align: 'center', dataIndex: 'url_address', width: 300},
     config.rowActions
   ]);
   config.autoExpandColumn = 'store_name';
@@ -98,6 +98,34 @@ Ext.extend(Toc.store.StoreGrid, Ext.grid.GridPanel, {
   },
   
   onDelete: function(record){
+  	var storeId = record.get('store_id');
+    
+    Ext.MessageBox.confirm(
+			TocLanguage.msgWarningTitle, 
+			TocLanguage.msgDeleteConfirm,
+			function(btn) {
+				if (btn == 'yes') {
+					Ext.Ajax.request({
+						url: Toc.CONF.CONN_URL,
+						params: {
+							module: 'store',
+							action: 'delete_store',
+							store_id: storeId
+						},
+						callback: function(options, success, response) {
+							var result = Ext.decode(response.responseText);
+							if (result.success == true) {
+								this.fireEvent('deleteSuccess', result.feedback);
+							}else{
+								Ext.MessageBox.alert(TocLanguage.msgErrTitle, result.feedback);
+							}
+						},
+						scope: this
+					});   
+				}
+			}, 
+			this
+		);
   },
   
   onRowAction: function(grid, record, action, row, col) {

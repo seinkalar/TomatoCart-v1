@@ -11,28 +11,51 @@
   as published by the Free Software Foundation.
 */
 
+include_once('includes/classes/store.php');
+
 class toC_Json_Store {
+	/**
+	 * List stores
+	 *
+	 * @access public
+	 * @return string
+	 */
 	function listStores() {
-		global $toC_Json, $osC_Database;
+		global $toC_Json;
 	
-		$Qstores = $osC_Database->query('select * from :table_store order by store_id');
-		$Qstores->bindTable(':table_store', TABLE_STORE);
-		$Qstores->execute();
-	
-		$records = array();
-		while ($Qstores->next()) {
-			$records[] = array(
-				'store_id' => $Qstores->ValueInt('store_id'),
-				'store_name' => $Qstores->Value('store_name'),
-				'url_address' => $Qstores->Value('url_address'),
-				'ssl_url_address' => $Qstores->Value('ssl_url_address'),
-			);
-		}
+		$records = toC_Store_Admin::listStores();
 		
-		$Qstores->freeResult();
-	
 		$response = array(EXT_JSON_READER_TOTAL => sizeof($records), EXT_JSON_READER_ROOT => $records);
 	
+		echo $toC_Json->encode($response);
+	}
+	
+	/**
+	 * Delete store
+	 * 
+	 * @access public
+	 * @return string
+	 */
+	function deleteStore() {
+		global $toC_Json, $osC_Language;
+		
+		$store_id = $_POST['store_id'];
+		$error = false;
+		
+		if ((int)$store_id > 0) {
+			if (!toC_Store_Admin::deleteStore($store_id)) {
+				$error = true;
+			}
+		}else {
+		  $error = true;
+		}
+		
+		if ($error === false) {
+			$response = array('success' => true, 'feedback' => $osC_Language->get('ms_success_action_performed'));
+		}else {
+			$response = array('success' => false, 'feedback' => $osC_Language->get('ms_error_action_not_performed'));
+		}
+		
 		echo $toC_Json->encode($response);
 	}
 }

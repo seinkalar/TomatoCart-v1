@@ -24,6 +24,8 @@ Ext.override(TocDesktop.StoreWindow, {
      
     if (!win) {
       grd = new Toc.store.StoreGrid({owner: this});
+      
+      grd.on('deleteSuccess', function(feedback) {this.onDeleteSuccess(grd, feedback);}, this);
 
       win = desktop.createWindow({
         id: 'store-win',
@@ -37,5 +39,10 @@ Ext.override(TocDesktop.StoreWindow, {
     }
            
     win.show();
+  },
+  
+  onDeleteSuccess: function(grd, feedback) {
+  	this.app.showNotification({title: TocLanguage.msgSuccessTitle, html: feedback});
+  	grd.onRefresh();
   }
 });
