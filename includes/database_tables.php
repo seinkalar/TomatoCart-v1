@@ -126,6 +126,7 @@
   define('TABLE_SESSIONS', DB_TABLE_PREFIX . 'sessions');
   define('TABLE_SLIDE_IMAGES', DB_TABLE_PREFIX . 'slide_images');
   define('TABLE_SPECIALS', DB_TABLE_PREFIX . 'specials');
+  define('TABLE_STORE', DB_TABLE_PREFIX . 'store');
   define('TABLE_TAX_CLASS', DB_TABLE_PREFIX . 'tax_class');
   define('TABLE_TAX_RATES', DB_TABLE_PREFIX . 'tax_rates');
   define('TABLE_TEMPLATES', DB_TABLE_PREFIX . 'templates');
