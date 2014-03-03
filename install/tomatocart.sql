@@ -183,6 +183,7 @@ CREATE TABLE toc_categories_ratings (
 DROP TABLE IF EXISTS toc_configuration;
 CREATE TABLE toc_configuration (
   configuration_id int(11) NOT NULL auto_increment,
+  store_id int(11) NOT NULL DEFAULT 0,
   configuration_title varchar(64) NOT NULL,
   configuration_key varchar(64) NOT NULL,
   configuration_value varchar(1024) NOT NULL,
@@ -1434,6 +1435,15 @@ CREATE TABLE toc_specials (
   date_status_change datetime default NULL,
   status int(1) NOT NULL default '1',
   PRIMARY KEY  (specials_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS toc_store;
+CREATE TABLE toc_store (
+  store_id int(11) NOT NULL auto_increment,
+  store_name varchar(64) NOT NULL,
+  url_address varchar(255) NOT NULL,
+  ssl_url_address varchar(255) NOT NULL,
+  PRIMARY KEY  (store_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
