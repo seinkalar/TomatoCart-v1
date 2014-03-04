@@ -25,10 +25,10 @@ class toC_Store_Admin {
 		$Qstores->bindTable(':table_store', TABLE_STORE);
 		$Qstores->execute();
 		
-		$records = array();
+		$stores = array();
 		if ($Qstores->numberOfRows() > 0) {
 			while ($Qstores->next()) {
-				$records[] = array(
+				$stores[] = array(
 						'store_id' => $Qstores->ValueInt('store_id'),
 						'store_name' => $Qstores->Value('store_name'),
 						'url_address' => $Qstores->Value('url_address'),
@@ -37,7 +37,7 @@ class toC_Store_Admin {
 			}
 		}
 		
-		return $records;
+		return $stores;
 	}
 	
 	/**
@@ -67,5 +67,80 @@ class toC_Store_Admin {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Get installed templates
+	 *
+	 * @access public static
+	 * @return array
+	 */
+	function getTemplates() {
+		global $osC_Database;
+		
+		$Qtemplates = $osC_Database->query('select code, title from :table_templates');
+		$Qtemplates->bindTable(':table_templates', TABLE_TEMPLATES);
+		$Qtemplates->execute();
+		
+		$templates = array();
+		if ($Qtemplates->numberOfRows() > 0) {
+		  while ($Qtemplates->next()) {
+		  	$templates[] = array('code' => $Qtemplates->value('code'), 'title' => $Qtemplates->value('title'));
+		  }
+		}
+		
+		$Qtemplates->freeResult();
+		
+		return $templates;
+	}
+	
+	/**
+	 * Get installed languages
+	 *
+	 * @access public static
+	 * @return array
+	 */
+	function getLanguages() {
+		global $osC_Database;
+		
+		$Qlanguages = $osC_Database->query('select code, name from :table_languages');
+		$Qlanguages->bindTable(':table_languages', TABLE_LANGUAGES);
+		$Qlanguages->execute();
+		
+		$languages = array();
+		if ($Qlanguages->numberOfRows() > 0) {
+			while ($Qlanguages->next()) {
+				$languages[] = array('code' => $Qlanguages->value('code'), 'name' => $Qlanguages->value('name'));
+			}
+		}
+		
+		$Qlanguages->freeResult();
+		
+		return $languages;
+	}
+	
+	/**
+	 * Get installed currencies
+	 *
+	 * @access public static
+	 * @return array
+	 */
+	function getCurrencies() {
+		global $osC_Database;
+	
+		$Qcurrencies = $osC_Database->query('select code, title from :table_currencies');
+		$Qcurrencies->bindTable(':table_currencies', TABLE_CURRENCIES);
+		$Qcurrencies->execute();
+	
+		$currencies = array();
+		if ($Qcurrencies->numberOfRows() > 0) {
+			while ($Qcurrencies->next()) {
+				$currencies[] = array('code' => $Qcurrencies->value('code'), 'title' => $Qcurrencies->value('title'));
+			}
+		}
+	
+		$Qcurrencies->freeResult();
+	
+		return $currencies;
 	}
 }

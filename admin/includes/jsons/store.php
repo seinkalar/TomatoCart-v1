@@ -58,4 +58,60 @@ class toC_Json_Store {
 		
 		echo $toC_Json->encode($response);
 	}
+	
+	/**
+	 * List installed templates
+	 * 
+	 * @access public
+	 * @return string
+	 */
+	function listTemplates() {
+		global $toC_Json;
+		
+		$templates = toC_Store_Admin::getTemplates();
+		
+		$records = array();
+		if (count($templates) > 0) {
+		  foreach($templates as $template) {
+		    $records[] = array('template_code' => $template['code'], 'template_name' => $template['title']);
+		  }
+		}
+		
+		$response = array(EXT_JSON_READER_TOTAL => sizeof($records), EXT_JSON_READER_ROOT => $records);
+		
+		echo $toC_Json->encode($response);
+	}
+	
+	/**
+	 * List installed languages
+	 *
+	 * @access public
+	 * @return string
+	 */
+	function listLanguages() {
+		global $toC_Json;
+	
+		$records = toC_Store_Admin::getLanguages();
+	
+		$response = array(EXT_JSON_READER_TOTAL => sizeof($records), EXT_JSON_READER_ROOT => $records);
+	
+		echo $toC_Json->encode($response);
+	}
+	
+	/**
+	 * List installed currencies
+	 *
+	 * @access public
+	 * @return string
+	 */
+	function listCurrencies() {
+		global $toC_Json;
+	
+		$records = toC_Store_Admin::getCurrencies();
+	
+		$response = array(EXT_JSON_READER_TOTAL => sizeof($records), EXT_JSON_READER_ROOT => $records);
+	
+		echo $toC_Json->encode($response);
+	}
+	
 }

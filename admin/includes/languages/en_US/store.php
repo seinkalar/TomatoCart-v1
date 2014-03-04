@@ -12,3 +12,10 @@ heading_itle = Store
 
 table_heading_store_name = Store Name
 table_heading_store_url_address = Store URL
+
+action_heading_new_store = New Store
+
+field_country = Country
+field_zone = Zone
+field_language = Language
+field_currency = Currency
