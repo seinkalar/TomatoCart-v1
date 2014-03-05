@@ -10,12 +10,62 @@
 
 heading_itle = Store
 
+table_heading_store_url = Store URL
 table_heading_store_name = Store Name
-table_heading_store_url_address = Store URL
 
 action_heading_new_store = New Store
 
+field_store_url = Store URL
+field_store_ssl_url = SSL URL
+field_store_name = Store Name
+field_store_owner = Store Owner
+field_email_address = E-Mail Address
+field_email_from = E-Mail From
+field_address_phone = Store Address & Phone
+field_store_title = Store Title
+field_meta_keywords = Meta Keywords
+field_meta_description = Meta Description
+field_homepage_text = Homepage Text
 field_country = Country
 field_zone = Zone
 field_language = Language
 field_currency = Currency
+field_timezone = Store Timezone
+field_display_prices_with_tax = Display Prices With Tax
+field_maintenance_mode = Maintenance Mode
+field_display_products_recursively = Display Products In The Sub-Catalogs Recursively
+field_synchronize_cart_with_database = Synchronize Cart With The Database
+field_show_confirmation_dialog = Show Confirmation Dialog For Adding To Cart Action
+
+field_check_stock_level = Check Stock Level
+field_subtract_stock = Subtract Stock
+field_allow_checkout = Allow Checkout
+field_mark_out_of_stock = Mark Product Out Of Stock
+field_stock_reorder_level = Stock Re-order Level
+field_stock_email_alerts = Out Of Stock Email Alerts
+field_check_stock_cart_synchronization = Check Stock For Cart Synchronization
+
+field_search_results = Search Results
+field_list_per_row = Categories To List Per Row
+field_new_products_listing = New Products Listing
+field_search_results_auto_completer = Search Results In Auto-Completer
+field_maximum_product_name_length = Maximum Charaters For Product Name In Auto-Completer
+field_width_auto_completer = Width Of Auto-Completer List
+
+field_logo_image = Logo Image
+
+field_yes = Yes
+field_no = No
+
+section_meta_info = Meta Info
+section_localization = Localization
+section_configurations = Configurations
+section_images = Images
+section_general_config = General
+section_stock_config = Stock
+section_maximum_config = Maximum Values
+section_logo_upload = Logo Upload
+
+button_upload = Upload
+
+introduction_set_store_url = Don\'t use directories for store url and ssl url to create a new store. You should always point another domain or sub domain to your hosting.<br />Example: http://sub.yourdomain.com/

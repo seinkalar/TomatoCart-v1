@@ -58,6 +58,9 @@
 <![endif]-->
 
 <style type="text/css">
+.ext-gecko .x-window-body .x-form-item {
+    overflow: hidden;
+}
 <?php 
   foreach ($osC_Language->getAll() as $l) {
     echo ".icon-" . $l['country_iso'] . "-win {background-image: url(../images/worldflags/" . $l['country_iso'] . ".png) !important;}";

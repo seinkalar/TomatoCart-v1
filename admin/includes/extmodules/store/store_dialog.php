@@ -78,6 +78,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
     this.frmStore = new Ext.form.FormPanel({
       layout: 'fit',
       url: Toc.CONF.CONN_URL,
+      fileUpload: true,
       baseParams: {  
         module: 'store',
         action : 'save_store'
@@ -97,7 +98,8 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
   			this.buildGeneralPanel(),
   			this.buildMetaInfoPanel(),
   			this.buildLocalPanel(),
-  			this.buildConfigurationPanel()
+  			this.buildConfigurationPanel(),
+  			this.buildImagesPanel()
   		]
   	});
   	
@@ -144,14 +146,14 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
   			anchor: '96%'
   		},
   		items: [
-  		  {xtype: 'panel', html: '<em style="color:red;">Don\'t use directories for store url and ssl url to create a new store. You should always point another domain or sub domain to your hosting.<br />Example: http://sub.yourdomain.com/</em>', border: false, style: 'margin:10px;'},
-  			{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em>Store URL', name: 'store_url', allowBlank: false},
-	    	{xtype: 'textfield', fieldLabel: 'SSL URL', name: 'ssl_url'},
-	    	{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em>Store Name', name: 'store_name', allowBlank: false},
-	    	{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em>Store Owner', name: 'store_owner', allowBlank: false},
-	    	{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em>E-Mail Address', name: 'store_email_address', allowBlank: false},
-	    	{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em>E-Mail From', name: 'store_email_from', allowBlank: false},
-	    	{xtype: 'textarea', fieldLabel: '<em style="color:red;"> * </em>Store Address & Phone', name: 'store_address_phone', height: 150, allowBlank: false},
+  		  {xtype: 'panel', html: '<em style="color:red;"><?php echo $osC_Language->get('introduction_set_store_url'); ?></em>', border: false, style: 'margin:10px;'},
+  			{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em><?php echo $osC_Language->get('field_store_url'); ?>', name: 'store_url', allowBlank: false},
+	    	{xtype: 'textfield', fieldLabel: '<?php echo $osC_Language->get('field_store_ssl_url'); ?>', name: 'ssl_url'},
+	    	{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em><?php echo $osC_Language->get('field_store_name'); ?>', name: 'store_name', allowBlank: false},
+	    	{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em><?php echo $osC_Language->get('field_store_owner'); ?>', name: 'store_owner', allowBlank: false},
+	    	{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em><?php echo $osC_Language->get('field_email_address'); ?>', name: 'store_email_address', allowBlank: false},
+	    	{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em><?php echo $osC_Language->get('field_email_from'); ?>', name: 'store_email_from', allowBlank: false},
+	    	{xtype: 'textarea', fieldLabel: '<em style="color:red;"> * </em><?php echo $osC_Language->get('field_address_phone'); ?>', name: 'store_address_phone', height: 150, allowBlank: false},
 	    	this.cboTemplates
   		]
   	});
@@ -161,7 +163,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
   
   buildMetaInfoPanel: function() {
   	var pnlMetaInfo= new Ext.Panel({
-  		title: 'Meta Info',
+  		title: '<?php echo $osC_Language->get('section_meta_info'); ?>',
   		layout: 'form',
   		labelSeparator: ' ',
 			labelWidth: 150,
@@ -170,10 +172,10 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
   			anchor: '96%'
   		},
   		items: [
-  			{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em>Store Title', name: 'store_title'},
-				{xtype: 'textfield', fieldLabel: 'Meta Keywords', name: 'meta_keywords'},
-				{xtype: 'textarea', height: 150, fieldLabel: 'Meta Description', name: 'meta_description'},
-				{xtype: 'textarea', height: 150, fieldLabel: 'Homepage Text', name: 'home_text'}
+  			{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em><?php echo $osC_Language->get('field_store_title'); ?>', name: 'store_title'},
+				{xtype: 'textfield', fieldLabel: '<?php echo $osC_Language->get('field_meta_keywords'); ?>', name: 'meta_keywords'},
+				{xtype: 'textarea', height: 150, fieldLabel: '<?php echo $osC_Language->get('field_meta_description'); ?>', name: 'meta_description'},
+				{xtype: 'textarea', height: 150, fieldLabel: '<?php echo $osC_Language->get('field_homepage_text'); ?>', name: 'home_text'}
   		]
   	});
   	
@@ -310,7 +312,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
     });    
     
   	var pnlLocal = new Ext.Panel({
-  		title: 'Localization',
+  		title: '<?php echo $osC_Language->get('section_localization'); ?>',
   		layout: 'form',
   		labelWidth: 150,
   		style: 'padding: 8px',
@@ -322,7 +324,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
   			this.cboZones,
   			this.cboLanguages,
   			this.cboCurrencies,
-  			{xtype: 'textfield', fieldLabel: 'TimeZone', name: 'time_zone'}
+  			{xtype: 'textfield', fieldLabel: '<?php echo $osC_Language->get('field_timezone'); ?>', name: 'time_zone'}
   		]
   	});
   	
@@ -331,31 +333,340 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
   
   buildConfigurationPanel: function() {
   	var pnlConfiguration = new Ext.TabPanel({
-  		title: 'Configuration',
+  		title: '<?php echo $osC_Language->get('section_configurations'); ?>',
   		activeTab: 0,
   		deferredRender: false,
   		items: [
-  			this.buildGeneralConfiguration()
+  			this.buildGeneralConfigPanel(),
+  			this.buildStockConfigPanel(),
+  			this.buildMaximumConfigPanel()
   		]
   	});
   	
   	return pnlConfiguration;
   },
   
-  buildGeneralConfiguration: function() {
+	buildImagesPanel: function() {
+  	var pnlImages = new Ext.TabPanel({
+  		title: '<?php echo $osC_Language->get('section_images'); ?>',
+  		activeTab: 0,
+  		deferredRender: false,
+  		items: [
+  			this.buildLogoPanel()
+  		]
+  	});
+  	
+  	return pnlImages;
+  },
+  
+  buildLogoPanel: function() {
+  	this.pnlLogoUpload = new Ext.Panel({
+  		title: '<?php echo $osC_Language->get('section_logo_upload'); ?>',
+      layout: 'form',
+      labelSeparator: ' ',
+      style: 'padding: 8px',
+  		defaults: {
+  			anchor: '96%'
+			},
+      items: [
+       	{xtype: 'fileuploadfield', fieldLabel: '<?php echo $osC_Language->get('field_logo_image'); ?>', name: 'logo_image'},
+        {
+          xtype: 'panel',
+          region: 'center',
+          border: false,
+          id: 'logo-image',
+          style: 'text-align: center'
+        }
+      ]
+    });
+    
+    return this.pnlLogoUpload;
+  },
+  
+  buildGeneralConfigPanel: function() {
   	var pnlGeneralConfig = new Ext.Panel({
-  		title: 'General',
+  		title: '<?php echo $osC_Language->get('section_general_config'); ?>',
   		layout: 'form',
-  		labelWidth: 150,
+  		labelWidth: 300,
   		style: 'padding: 8px',
   		defaults: {
   			anchor: '96%'
   		},
   		items: [
+  			{
+					layout: 'column',
+					border: false,
+					labelSeparator: ' ',
+					items:[
+						{
+							width: 400,
+							layout: 'form',
+							border: false,
+							items:[
+								{fieldLabel: '<?php echo $osC_Language->get('field_maintenance_mode'); ?>', xtype:'radio', name: 'maintenance_mode', boxLabel: '<?php echo $osC_Language->get('field_yes'); ?>', xtype:'radio', inputValue: '1'}
+							]
+						},
+						{
+							width: 80,
+							layout: 'form',
+							border: false,
+							items: [
+								{fieldLabel: '<?php echo $osC_Language->get('field_maintenance_mode'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'maintenance_mode', hideLabel: true, inputValue: '0', checked: true}
+							]
+						}
+					]
+				},
+  			{
+					layout: 'column',
+					border: false,
+					labelSeparator: ' ',
+					items:[
+						{
+							width: 400,
+							layout: 'form',
+							border: false,
+							items:[
+								{fieldLabel: '<?php echo $osC_Language->get('field_display_prices_with_tax'); ?>', xtype:'radio', name: 'display_prices_with_tax', boxLabel: '<?php echo $osC_Language->get('field_yes'); ?>', xtype:'radio', inputValue: '1', checked: true}
+							]
+						},
+						{
+							width: 80,
+							layout: 'form',
+							border: false,
+							items: [
+								{fieldLabel: '<?php echo $osC_Language->get('field_display_prices_with_tax'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'display_prices_with_tax', hideLabel: true, inputValue: '0'}
+							]
+						}
+					]
+				},
+				{
+					layout: 'column',
+					border: false,
+					labelSeparator: ' ',
+					items:[
+						{
+							width: 400,
+							layout: 'form',
+							border: false,
+							items:[
+								{fieldLabel: '<?php echo $osC_Language->get('field_display_products_recursively'); ?>', xtype:'radio', name: 'dislay_products_recursively', boxLabel: '<?php echo $osC_Language->get('field_yes'); ?>', xtype:'radio', inputValue: '1', checked: true}
+							]
+						},
+						{
+							width: 80,
+							layout: 'form',
+							border: false,
+							items: [
+								{fieldLabel: '<?php echo $osC_Language->get('field_display_products_recursively'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'dislay_products_recursively', hideLabel: true, inputValue: '0'}
+							]
+						}
+					]
+				},
+				{
+					layout: 'column',
+					border: false,
+					labelSeparator: ' ',
+					items:[
+						{
+							width: 400,
+							layout: 'form',
+							border: false,
+							items:[
+								{fieldLabel: '<?php echo $osC_Language->get('field_synchronize_cart_with_database'); ?>', xtype:'radio', name: 'synchronize_cart_with_database', boxLabel: '<?php echo $osC_Language->get('field_yes'); ?>', xtype:'radio', inputValue: '1'}
+							]
+						},
+						{
+							width: 80,
+							layout: 'form',
+							border: false,
+							items: [
+								{fieldLabel: '<?php echo $osC_Language->get('field_synchronize_cart_with_database'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'synchronize_cart_with_database', hideLabel: true, inputValue: '0', checked: true}
+							]
+						}
+					]
+				},
+				{
+					layout: 'column',
+					border: false,
+					labelSeparator: ' ',
+					items:[
+						{
+							width: 400,
+							layout: 'form',
+							border: false,
+							items:[
+								{fieldLabel: '<?php echo $osC_Language->get('field_show_confirmation_dialog'); ?>', xtype:'radio', name: 'show_confirmation_dialog', boxLabel: '<?php echo $osC_Language->get('field_yes'); ?>', xtype:'radio', inputValue: '1', checked: true}
+							]
+						},
+						{
+							width: 80,
+							layout: 'form',
+							border: false,
+							items: [
+								{fieldLabel: '<?php echo $osC_Language->get('field_show_confirmation_dialog'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'show_confirmation_dialog', hideLabel: true, inputValue: '0'}
+							]
+						}
+					]
+				}
   		]
   	});
   	
   	return pnlGeneralConfig;
+  },
+  
+  buildStockConfigPanel: function() {
+  	var pnlStoreConfig = new Ext.Panel({
+  		title: '<?php echo $osC_Language->get('section_stock_config'); ?>',
+  		layout: 'form',
+  		labelWidth: 300,
+  		style: 'padding: 8px',
+  		defaults: {
+  			anchor: '96%'
+  		},
+  		items: [
+  			{
+					layout: 'column',
+					border: false,
+					labelSeparator: ' ',
+					items:[
+						{
+							width: 400,
+							layout: 'form',
+							border: false,
+							items:[
+								{fieldLabel: '<?php echo $osC_Language->get('field_check_stock_level'); ?>', xtype:'radio', name: 'check_stock_level', boxLabel: '<?php echo $osC_Language->get('field_yes'); ?>', xtype:'radio', inputValue: '1', checked: true}
+							]
+						},
+						{
+							width: 80,
+							layout: 'form',
+							border: false,
+							items: [
+								{fieldLabel: '<?php echo $osC_Language->get('field_check_stock_level'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'check_stock_level', hideLabel: true, inputValue: '0'}
+							]
+						}
+					]
+				},
+				{
+					layout: 'column',
+					border: false,
+					labelSeparator: ' ',
+					items:[
+						{
+							width: 400,
+							layout: 'form',
+							border: false,
+							items:[
+								{fieldLabel: '<?php echo $osC_Language->get('field_subtract_stock'); ?>', xtype:'radio', name: 'subtract_stock', boxLabel: '<?php echo $osC_Language->get('field_yes'); ?>', xtype:'radio', inputValue: '1', checked: true}
+							]
+						},
+						{
+							width: 80,
+							layout: 'form',
+							border: false,
+							items: [
+								{fieldLabel: '<?php echo $osC_Language->get('field_subtract_stock'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'subtract_stock', hideLabel: true, inputValue: '0'}
+							]
+						}
+					]
+				},
+				{
+					layout: 'column',
+					border: false,
+					labelSeparator: ' ',
+					items:[
+						{
+							width: 400,
+							layout: 'form',
+							border: false,
+							items:[
+								{fieldLabel: '<?php echo $osC_Language->get('field_allow_checkout'); ?>', xtype:'radio', name: 'allow_checkout', boxLabel: '<?php echo $osC_Language->get('field_yes'); ?>', xtype:'radio', inputValue: '1', checked: true}
+							]
+						},
+						{
+							width: 80,
+							layout: 'form',
+							border: false,
+							items: [
+								{fieldLabel: '<?php echo $osC_Language->get('field_allow_checkout'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'allow_checkout', hideLabel: true, inputValue: '0'}
+							]
+						}
+					]
+				},
+				{xtype: 'textfield', fieldLabel: '<?php echo $osC_Language->get('field_mark_out_of_stock'); ?>', name: 'mark_out_of_stock', value: '***'},
+				{xtype: 'numberfield', fieldLabel: '<?php echo $osC_Language->get('field_stock_reorder_level'); ?>', name: 'stock_reorder_level', value: 5},
+				{
+					layout: 'column',
+					border: false,
+					labelSeparator: ' ',
+					items:[
+						{
+							width: 400,
+							layout: 'form',
+							border: false,
+							items:[
+								{fieldLabel: '<?php echo $osC_Language->get('field_stock_email_alerts'); ?>', xtype:'radio', name: 'stock_email_alerts', boxLabel: '<?php echo $osC_Language->get('field_yes'); ?>', xtype:'radio', inputValue: '1', checked: true}
+							]
+						},
+						{
+							width: 80,
+							layout: 'form',
+							border: false,
+							items: [
+								{fieldLabel: '<?php echo $osC_Language->get('field_stock_email_alerts'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'stock_email_alerts', hideLabel: true, inputValue: '0'}
+							]
+						}
+					]
+				},
+				{
+					layout: 'column',
+					border: false,
+					labelSeparator: ' ',
+					items:[
+						{
+							width: 400,
+							layout: 'form',
+							border: false,
+							items:[
+								{fieldLabel: '<?php echo $osC_Language->get('field_check_stock_cart_synchronization'); ?>', xtype:'radio', name: 'check_stock_cart_synchronization', boxLabel: '<?php echo $osC_Language->get('field_yes'); ?>', xtype:'radio', inputValue: '1', checked: true}
+							]
+						},
+						{
+							width: 80,
+							layout: 'form',
+							border: false,
+							items: [
+								{fieldLabel: '<?php echo $osC_Language->get('field_check_stock_cart_synchronization'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'check_stock_cart_synchronization', hideLabel: true, inputValue: '0'}
+							]
+						}
+					]
+				}
+  		]
+		});
+		
+		return pnlStoreConfig;		
+  },
+  
+  buildMaximumConfigPanel: function() {
+  	var panelMaximumConfig = new Ext.Panel({
+			title: '<?php echo $osC_Language->get('section_maximum_config'); ?>',
+			layout: 'form',
+  		labelWidth: 300,
+  		style: 'padding: 8px',
+  		defaults: {
+  			anchor: '96%'
+  		},
+  		items: [
+  			{xtype: 'numberfield', fieldLabel: '<?php echo $osC_Language->get('field_search_results'); ?>', name: 'search_results', value: 20},
+  			{xtype: 'numberfield', fieldLabel: '<?php echo $osC_Language->get('field_list_per_row'); ?>', name: 'list_per_row', value: 3},
+  			{xtype: 'numberfield', fieldLabel: '<?php echo $osC_Language->get('field_new_products_listing'); ?>', name: 'new_products_listing', value: 10},
+  			{xtype: 'numberfield', fieldLabel: '<?php echo $osC_Language->get('field_search_results_auto_completer'); ?>', name: 'search_results_auto_completer', value: 10},
+  			{xtype: 'numberfield', fieldLabel: '<?php echo $osC_Language->get('field_maximum_product_name_length'); ?>', name: 'product_name_auto_completer', value: 40},
+  			{xtype: 'numberfield', fieldLabel: '<?php echo $osC_Language->get('field_width_auto_completer'); ?>', name: 'width_auto_completer', value: 400}
+			]
+  	});
+  	
+  	return panelMaximumConfig;
   },
   
   submitForm : function() {

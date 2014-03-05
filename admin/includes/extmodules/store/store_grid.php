@@ -10,7 +10,6 @@
   it under the terms of the GNU General Public License v2 (1991)
   as published by the Free Software Foundation.
 */
-
 ?>
 
 Toc.store.StoreGrid = function(config) {
@@ -52,7 +51,7 @@ Toc.store.StoreGrid = function(config) {
   config.cm = new Ext.grid.ColumnModel([
     config.sm, 
     { id: 'store_name', header: '<?php echo $osC_Language->get('table_heading_store_name'); ?>', dataIndex: 'store_name', sortable: true},
-    { header: '<?php echo $osC_Language->get('table_heading_store_url_address'); ?>', align: 'center', dataIndex: 'url_address', width: 300},
+    { header: '<?php echo $osC_Language->get('table_heading_store_url'); ?>', align: 'center', dataIndex: 'url_address', width: 300},
     config.rowActions
   ]);
   config.autoExpandColumn = 'store_name';
