@@ -68,4 +68,12 @@ section_logo_upload = Logo Upload
 
 button_upload = Upload
 
-introduction_set_store_url = Don\'t use directories for store url and ssl url to create a new store. You should always point another domain or sub domain to your hosting.<br />Example: http://sub.yourdomain.com/
+introduction_set_store_url = Don\'t use directories for store url and ssl url to create a new store. You should always point another domain or sub domain to your hosting.<br />Example: http://sub.yourdomain.com
+
+ms_error_wrong_store_url_format = Error: you enterred an invalid store url. Please check it and try it again.
+ms_error_wrong_store_name = Error: store name is required. Please enter it.
+ms_error_wrong_store_owner = Error: store owner is required. Please enter it.
+ms_error_wrong_email_address_format = Error: you enterred an invalid email address. Please check it and try it again.
+ms_error_wrong_email_from_format = Error: you enterred an invalid email from address. Please check it and try it again.
+ms_error_wrong_store_address_phone = Error: store address and phone information are required. Please enter it.
+ms_error_wrong_store_title = Error: store title is required. Please enter it.

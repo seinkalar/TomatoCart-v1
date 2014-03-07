@@ -143,4 +143,140 @@ class toC_Store_Admin {
 	
 		return $currencies;
 	}
+	
+	/**
+	 * Save store
+	 *
+	 * @access public static
+	 * @param array configurations of store
+	 * @return boolean
+	 */
+	function save($configurations = array()) {
+		global $osC_Database;
+		
+		$error = false;
+		$store_id = 0;
+		
+		$osC_Database->startTransaction();
+		
+		//begin: save store
+	  if (count($configurations)  > 0) {
+	  	$form_to_database = array(
+	  		'store_name'  => 'STORE_NAME',
+  			'store_owner' => 'STORE_OWNER',
+  			'store_email_address' => 'STORE_OWNER_EMAIL_ADDRESS',
+  			'store_email_from' => 'EMAIL_FROM',
+  			'store_address_phone' => 'STORE_NAME_ADDRESS',
+  			'store_template_code' => 'DEFAULT_TEMPLATE',
+  			'countries_id' => 'STORE_COUNTRY',
+  			'zone_id' => 'STORE_ZONE',
+  			'time_zone' => 'STORE_TIME_ZONE',
+  			'language_code' => 'DEFAULT_LANGUAGE',
+  			'currency_code' => 'DEFAULT_CURRENCY',
+  			'maintenance_mode' => 'MAINTENANCE_MOD',
+  			'display_prices_with_tax' => 'DISPLAY_PRICE_WITH_TAX',
+  			'dislay_products_recursively' => 'DISPLAY_SUBCATALOGS_PRODUCTS',
+  			'synchronize_cart_with_database' => 'SYNCHRONIZE_CART_WITH_DATABASE',
+  			'show_confirmation_dialog' => 'ENABLE_CONFIRMATION_DIALOG',
+  			'check_stock_level' => 'STOCK_CHECK',
+  			'subtract_stock' => 'STOCK_LIMITED',
+  			'allow_checkout' => 'STOCK_ALLOW_CHECKOUT',
+  			'mark_out_of_stock' => 'STOCK_MARK_PRODUCT_OUT_OF_STOCK',
+  			'stock_reorder_level' => 'STOCK_REORDER_LEVEL',
+  			'stock_email_alerts' => 'STOCK_EMAIL_ALERT',
+  			'check_stock_cart_synchronization' => 'CHECK_STOCKS_SYNCHRONIZE_CART_WITH_DATABASE',
+  			'search_results' => 'MAX_DISPLAY_SEARCH_RESULTS',
+  			'list_per_row' => 'MAX_DISPLAY_CATEGORIES_PER_ROW',
+  			'new_products_listing' => 'MAX_DISPLAY_PRODUCTS_NEW',
+  			'search_results_auto_completer' => 'MAX_DISPLAY_AUTO_COMPLETER_RESULTS',
+  			'product_name_auto_completer' => 'MAX_CHARACTERS_AUTO_COMPLETER',
+  			'width_auto_completer' => 'WIDTH_AUTO_COMPLETER'
+	  	);
+	  	
+	  	//insert the new store
+	  	if (!isset($configurations['store_id'])) {
+	  	  $Qstore = $osC_Database->query('insert into :table_store (store_name, url_address, ssl_url_address) values (:store_name, :url_address, :ssl_url_address)');
+	  	  $Qstore->bindTable(':table_store', TABLE_STORE);
+	  	  $Qstore->bindValue(':store_name', $configurations['store_name']);
+	  	  $Qstore->bindValue(':url_address', $configurations['store_url']);
+	  	  
+	  	  if (isset($configurations['ssl_url'])) {
+	  	  	$Qstore->bindValue(':ssl_url_address', $configurations['ssl_url']);
+	  	  }else {
+	  	  	$Qstore->bindValue(':ssl_url_address', $configurations['store_url']);
+	  	  }
+	  	  
+	  	  $Qstore->execute();
+	  	  
+	  	  $store_id = $osC_Database->nextID();
+	  	  
+	  	  if ($osC_Database->isError()) {
+	  	    $error = true;
+	  	  }
+	  	}
+	  	
+	  	//Begin: insert store configurations
+	  	if ($error === false) {
+	  		foreach ($configurations as $config_key => $config_value) {
+	  			//store url is already saved in the store table
+	  			if ($config_key == 'store_url' || $config_key == 'ssl_url') {
+	  			  continue;
+	  			}
+	  			
+					if (isset($form_to_database[$config_key])) {
+						//get configuration info
+						$Qinfo = $osC_Database->query('select configuration_title, configuration_description, configuration_group_id from :table_configuration where configuration_key = :configuration_key');
+						$Qinfo->bindTable(':table_configuration', TABLE_CONFIGURATION);
+						$Qinfo->bindValue(':configuration_key', $form_to_database[$config_key]);
+						$Qinfo->execute();
+						
+						$information = $Qinfo->toArray();
+						
+						$Qinfo->freeResult();
+						
+						//editing store > update configurations
+  			 		if (isset($configurations['store_id'])) {
+  			 			
+  			 		//new store > add configurations		
+  			 		}else if ($store_id > 0) {
+  			 			$Qconfiguration = $osC_Database->query('insert into :table_configuration (store_id, configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id) values (:store_id, :configuration_title, :configuration_key, :configuration_value, :configuration_description, :configuration_group_id)');
+  			 			$Qconfiguration->bindTable(':table_configuration', TABLE_CONFIGURATION);
+  			 			$Qconfiguration->bindInt(':store_id', $store_id);
+  			 			$Qconfiguration->bindValue(':configuration_title', $information['configuration_title']);
+  			 			$Qconfiguration->bindValue(':configuration_key', $form_to_database[$config_key]);
+  			 			$Qconfiguration->bindValue(':configuration_value', $config_value);
+  			 			$Qconfiguration->bindValue(':configuration_description', $information['configuration_description']);
+  			 			$Qconfiguration->bindValue(':configuration_group_id', $information['configuration_group_id']);
+  			 			$Qconfiguration->execute();
+  			 			
+  			 			if ($osC_Database->isError()) {
+  			 				$error = true;
+  			 				break;
+  			 			}
+  			 			
+  			 			if ($Qconfiguration->affectedRows() < 1) {
+  			 				$error = true;
+  			 				break;
+  			 			}
+  			 		}
+					}
+				//end: foreach	
+	  		}
+  		//end: insert store configurations
+	  	}
+  	//end: save store
+	  }
+
+	  if ($error === false) {
+	  	$osC_Database->commitTransaction();
+	  	
+	  	osC_Cache::clear('configuration');
+	  	
+	    return true;
+	  }
+	  
+	  $osC_Database->rollbackTransaction();
+	  
+	  return false;
+	}
 }

@@ -78,7 +78,6 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
     this.frmStore = new Ext.form.FormPanel({
       layout: 'fit',
       url: Toc.CONF.CONN_URL,
-      fileUpload: true,
       baseParams: {  
         module: 'store',
         action : 'save_store'
@@ -96,10 +95,8 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
   		deferredRender: false,
   		items: [
   			this.buildGeneralPanel(),
-  			this.buildMetaInfoPanel(),
   			this.buildLocalPanel(),
-  			this.buildConfigurationPanel(),
-  			this.buildImagesPanel()
+  			this.buildConfigurationPanel()
   		]
   	});
   	
@@ -161,27 +158,6 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
   	return pnlGeneral;
   },
   
-  buildMetaInfoPanel: function() {
-  	var pnlMetaInfo= new Ext.Panel({
-  		title: '<?php echo $osC_Language->get('section_meta_info'); ?>',
-  		layout: 'form',
-  		labelSeparator: ' ',
-			labelWidth: 150,
-  		style: 'padding: 8px',
-  		defaults: {
-  			anchor: '96%'
-  		},
-  		items: [
-  			{xtype: 'textfield', fieldLabel: '<em style="color:red;"> * </em><?php echo $osC_Language->get('field_store_title'); ?>', name: 'store_title'},
-				{xtype: 'textfield', fieldLabel: '<?php echo $osC_Language->get('field_meta_keywords'); ?>', name: 'meta_keywords'},
-				{xtype: 'textarea', height: 150, fieldLabel: '<?php echo $osC_Language->get('field_meta_description'); ?>', name: 'meta_description'},
-				{xtype: 'textarea', height: 150, fieldLabel: '<?php echo $osC_Language->get('field_homepage_text'); ?>', name: 'home_text'}
-  		]
-  	});
-  	
-  	return pnlMetaInfo;
-  },
-  
   buildLocalPanel: function() {
   	var dsCountries = new Ext.data.Store({
       url: Toc.CONF.CONN_URL,
@@ -209,7 +185,6 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
       hiddenName: 'countries_id',
       triggerAction: 'all',
       readOnly: true,
-      allowBlank: false,
       listeners: {
         select: this.onCboCountriesSelect,
         scope: this
@@ -241,7 +216,6 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
       hiddenName: 'zone_id',  
       triggerAction: 'all',  
       disabled: true,
-      allowBlank: false,
       readOnly: true
     });
     
@@ -344,43 +318,6 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
   	});
   	
   	return pnlConfiguration;
-  },
-  
-	buildImagesPanel: function() {
-  	var pnlImages = new Ext.TabPanel({
-  		title: '<?php echo $osC_Language->get('section_images'); ?>',
-  		activeTab: 0,
-  		deferredRender: false,
-  		items: [
-  			this.buildLogoPanel()
-  		]
-  	});
-  	
-  	return pnlImages;
-  },
-  
-  buildLogoPanel: function() {
-  	this.pnlLogoUpload = new Ext.Panel({
-  		title: '<?php echo $osC_Language->get('section_logo_upload'); ?>',
-      layout: 'form',
-      labelSeparator: ' ',
-      style: 'padding: 8px',
-  		defaults: {
-  			anchor: '96%'
-			},
-      items: [
-       	{xtype: 'fileuploadfield', fieldLabel: '<?php echo $osC_Language->get('field_logo_image'); ?>', name: 'logo_image'},
-        {
-          xtype: 'panel',
-          region: 'center',
-          border: false,
-          id: 'logo-image',
-          style: 'text-align: center'
-        }
-      ]
-    });
-    
-    return this.pnlLogoUpload;
   },
   
   buildGeneralConfigPanel: function() {
