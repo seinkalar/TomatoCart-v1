@@ -75,9 +75,33 @@
   $osC_Database = osC_Database::connect(DB_SERVER, DB_SERVER_USERNAME, DB_SERVER_PASSWORD);
   $osC_Database->selectDatabase(DB_DATABASE);
   
+// Store
+	if ($request_type  === 'SSL') {
+		$Qstore = $osC_Database->query('select * from :table_store where ssl_url_address = :ssl_url_address');
+		$Qstore->bindValue(':ssl_url_address', 'https://' . str_replace('www.', '', $_SERVER['HTTP_HOST']) . rtrim(dirname($_SERVER['PHP_SELF']), '/.\\'));
+	} else {
+		$Qstore = $osC_Database->query('select * from :table_store where url_address = :url_address');
+		$Qstore->bindValue(':url_address', 'http://' . str_replace('www.', '', $_SERVER['HTTP_HOST']) . rtrim(dirname($_SERVER['PHP_SELF']), '/.\\'));
+	}
+	
+	$Qstore->bindTable(':table_store', TABLE_STORE);
+	$Qstore->execute();
+	
+	if ($Qstore->numberOfRows() > 0) {
+	  define('STORE_ID', $Qstore->valueInt('store_id'));
+	}else {
+		define('STORE_ID', 0);
+	}
+	
+  
 // set the application parameters
-
-  $Qcfg = $osC_Database->query('select configuration_key as cfgKey, configuration_value as cfgValue from :table_configuration');
+	if (STORE_ID > 0) {
+		$Qcfg = $osC_Database->query('select configuration_key as cfgKey, configuration_value as cfgValue from :table_configuration where store_id = 0 or store_id = :store_id');
+		$Qcfg->bindInt(':store_id', STORE_ID);
+	}else {
+		$Qcfg = $osC_Database->query('select configuration_key as cfgKey, configuration_value as cfgValue from :table_configuration where store_id = 0');
+	}
+	
   $Qcfg->bindTable(':table_configuration', TABLE_CONFIGURATION);
   $Qcfg->setCache('configuration');
   $Qcfg->execute();
