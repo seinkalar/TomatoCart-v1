@@ -28,6 +28,7 @@ Ext.override(TocDesktop.StoreWindow, {
       
       grd.on('deleteSuccess', function(feedback) {this.onDeleteSuccess(grd, feedback);}, this);
       grd.on('onAdd', function() {this.onAdd(grd);}, this);
+      grd.on('onEdit', function(record) {this.onEdit(grd, record);}, this);
 
       win = desktop.createWindow({
         id: 'store-win',
@@ -51,6 +52,16 @@ Ext.override(TocDesktop.StoreWindow, {
     }, this);
     
     dlg.show();  
+  },
+  
+  onEdit: function(grd, record) {
+  	var dlg = this.createStoreDialog();
+  	
+		dlg.on('saveSuccess', function(){
+      grd.onRefresh();
+    }, this);
+    
+    dlg.show(record.get('store_id')); 
   },
   
   onDeleteSuccess: function(grd, feedback) {

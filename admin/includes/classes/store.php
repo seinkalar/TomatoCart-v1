@@ -145,6 +145,44 @@ class toC_Store_Admin {
 	}
 	
 	/**
+	 * Load Store
+	 *
+	 * @access public static
+	 * @param int the store id
+	 * @return mixed
+	 */
+	function loadStore($store_id) {
+	  global $osC_Database;
+	  
+	  $Qstore = $osC_Database->query('select store_name, url_address, ssl_url_address from :table_store where s.store_id = :store_id');
+	  $Qstore->bindTable(':table_store', TABLE_STORE);
+	  $Qstore->bindInt(':store_id', $store_id);
+	  $Qstore->execute();
+	  
+	  if ($Qstore->numberOfRows() > 0) {
+	  	$result = array('store_name' => $Qstore->value('store_name'), 'store_url' => $Qstore->value('url_address'), 'ssl_url' => $Qstore->value('ssl_url_address'));
+	  	
+	  	//store configurations
+	  	$Qconfigurations = $osC_Database->query('select * from :table_configuration where store_id = :store_id');
+	  	$Qconfigurations->bindTable(':table_configuration', TABLE_CONFIGURATION);
+	  	$Qconfigurations->bindInt(':store_id', $store_id);
+	  	$Qconfigurations->execute();
+	  	
+	  	if ($Qconfigurations->numberOfRows() > 0) {
+	  	  while ($Qconfigurations->next()) {
+	  	  	$result[$Qconfigurations->value('configuration_key')] = $Qconfigurations->value('configuration_value');
+	  	  }
+	  	}
+	  	
+	  	$Qconfigurations->freeResult();
+	  }
+	  
+	  $Qstore->freeResult();
+	  
+	  return null;
+	}
+	
+	/**
 	 * Save store
 	 *
 	 * @access public static

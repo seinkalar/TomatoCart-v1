@@ -37,6 +37,24 @@ class toC_Json_Store {
 	}
 	
 	/**
+	 * Load store
+	 *
+	 * @access public
+	 * @return string
+	 */
+	function loadStore() {
+		global $toC_Json, $osC_Language;
+		
+		$store_id = $_POST['store_id'];
+		
+		$data = toC_Store_Admin::loadStore($store_id);
+		
+		$response = array('success' => TRUE, 'data' => $data); 
+      
+		echo $toC_Json->encode($response);
+	}
+	
+	/**
 	 * Delete store
 	 * 
 	 * @access public
