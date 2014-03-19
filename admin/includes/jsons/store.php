@@ -43,11 +43,11 @@ class toC_Json_Store {
 	 * @return string
 	 */
 	function loadStore() {
-		global $toC_Json, $osC_Language;
+		global $toC_Json;
 		
 		$store_id = $_POST['store_id'];
 		
-		$data = toC_Store_Admin::loadStore($store_id);
+		$data = toC_Store_Admin::load($store_id);
 		
 		$response = array('success' => TRUE, 'data' => $data); 
       

@@ -151,16 +151,21 @@ class toC_Store_Admin {
 	 * @param int the store id
 	 * @return mixed
 	 */
-	function loadStore($store_id) {
+	function load($store_id) {
 	  global $osC_Database;
 	  
-	  $Qstore = $osC_Database->query('select store_name, url_address, ssl_url_address from :table_store where s.store_id = :store_id');
+	  $Qstore = $osC_Database->query('select store_name, url_address, ssl_url_address from :table_store where store_id = :store_id');
 	  $Qstore->bindTable(':table_store', TABLE_STORE);
 	  $Qstore->bindInt(':store_id', $store_id);
 	  $Qstore->execute();
 	  
+	  
 	  if ($Qstore->numberOfRows() > 0) {
-	  	$result = array('store_name' => $Qstore->value('store_name'), 'store_url' => $Qstore->value('url_address'), 'ssl_url' => $Qstore->value('ssl_url_address'));
+	  	$result = array('store_url' => $Qstore->value('url_address'), 'ssl_url' => $Qstore->value('ssl_url_address'));
+	  	
+	  	//get keys database to form
+	  	$form_to_database = self::getKeys();
+	  	$database_to_form = array_flip($form_to_database);
 	  	
 	  	//store configurations
 	  	$Qconfigurations = $osC_Database->query('select * from :table_configuration where store_id = :store_id');
@@ -170,11 +175,13 @@ class toC_Store_Admin {
 	  	
 	  	if ($Qconfigurations->numberOfRows() > 0) {
 	  	  while ($Qconfigurations->next()) {
-	  	  	$result[$Qconfigurations->value('configuration_key')] = $Qconfigurations->value('configuration_value');
+	  	  	$result[$database_to_form[$Qconfigurations->value('configuration_key')]] = $Qconfigurations->value('configuration_value');
 	  	  }
 	  	}
 	  	
 	  	$Qconfigurations->freeResult();
+	  	
+	  	return $result;
 	  }
 	  
 	  $Qstore->freeResult();
@@ -199,37 +206,8 @@ class toC_Store_Admin {
 		
 		//begin: save store
 	  if (count($configurations)  > 0) {
-	  	$form_to_database = array(
-	  		'store_name'  => 'STORE_NAME',
-  			'store_owner' => 'STORE_OWNER',
-  			'store_email_address' => 'STORE_OWNER_EMAIL_ADDRESS',
-  			'store_email_from' => 'EMAIL_FROM',
-  			'store_address_phone' => 'STORE_NAME_ADDRESS',
-  			'store_template_code' => 'DEFAULT_TEMPLATE',
-  			'countries_id' => 'STORE_COUNTRY',
-  			'zone_id' => 'STORE_ZONE',
-  			'time_zone' => 'STORE_TIME_ZONE',
-  			'language_code' => 'DEFAULT_LANGUAGE',
-  			'currency_code' => 'DEFAULT_CURRENCY',
-  			'maintenance_mode' => 'MAINTENANCE_MOD',
-  			'display_prices_with_tax' => 'DISPLAY_PRICE_WITH_TAX',
-  			'dislay_products_recursively' => 'DISPLAY_SUBCATALOGS_PRODUCTS',
-  			'synchronize_cart_with_database' => 'SYNCHRONIZE_CART_WITH_DATABASE',
-  			'show_confirmation_dialog' => 'ENABLE_CONFIRMATION_DIALOG',
-  			'check_stock_level' => 'STOCK_CHECK',
-  			'subtract_stock' => 'STOCK_LIMITED',
-  			'allow_checkout' => 'STOCK_ALLOW_CHECKOUT',
-  			'mark_out_of_stock' => 'STOCK_MARK_PRODUCT_OUT_OF_STOCK',
-  			'stock_reorder_level' => 'STOCK_REORDER_LEVEL',
-  			'stock_email_alerts' => 'STOCK_EMAIL_ALERT',
-  			'check_stock_cart_synchronization' => 'CHECK_STOCKS_SYNCHRONIZE_CART_WITH_DATABASE',
-  			'search_results' => 'MAX_DISPLAY_SEARCH_RESULTS',
-  			'list_per_row' => 'MAX_DISPLAY_CATEGORIES_PER_ROW',
-  			'new_products_listing' => 'MAX_DISPLAY_PRODUCTS_NEW',
-  			'search_results_auto_completer' => 'MAX_DISPLAY_AUTO_COMPLETER_RESULTS',
-  			'product_name_auto_completer' => 'MAX_CHARACTERS_AUTO_COMPLETER',
-  			'width_auto_completer' => 'WIDTH_AUTO_COMPLETER'
-	  	);
+	  	//get keys from form to database
+	  	$form_to_database = self::getKeys();
 	  	
 	  	//insert the new store
 	  	if (!isset($configurations['store_id'])) {
@@ -316,5 +294,47 @@ class toC_Store_Admin {
 	  $osC_Database->rollbackTransaction();
 	  
 	  return false;
+	}
+	
+	/**
+	 * Return keys to values from from to database
+	 *
+	 * @access private static
+	 * @return array
+	 */
+	function getKeys() {
+		$form_to_database = array(
+				'store_name'  => 'STORE_NAME',
+				'store_owner' => 'STORE_OWNER',
+				'store_email_address' => 'STORE_OWNER_EMAIL_ADDRESS',
+				'store_email_from' => 'EMAIL_FROM',
+				'store_address_phone' => 'STORE_NAME_ADDRESS',
+				'store_template_code' => 'DEFAULT_TEMPLATE',
+				'countries_id' => 'STORE_COUNTRY',
+				'zone_id' => 'STORE_ZONE',
+				'time_zone' => 'STORE_TIME_ZONE',
+				'language_code' => 'DEFAULT_LANGUAGE',
+				'currency_code' => 'DEFAULT_CURRENCY',
+				'maintenance_mode' => 'MAINTENANCE_MOD',
+				'display_prices_with_tax' => 'DISPLAY_PRICE_WITH_TAX',
+				'dislay_products_recursively' => 'DISPLAY_SUBCATALOGS_PRODUCTS',
+				'synchronize_cart_with_database' => 'SYNCHRONIZE_CART_WITH_DATABASE',
+				'show_confirmation_dialog' => 'ENABLE_CONFIRMATION_DIALOG',
+				'check_stock_level' => 'STOCK_CHECK',
+				'subtract_stock' => 'STOCK_LIMITED',
+				'allow_checkout' => 'STOCK_ALLOW_CHECKOUT',
+				'mark_out_of_stock' => 'STOCK_MARK_PRODUCT_OUT_OF_STOCK',
+				'stock_reorder_level' => 'STOCK_REORDER_LEVEL',
+				'stock_email_alerts' => 'STOCK_EMAIL_ALERT',
+				'check_stock_cart_synchronization' => 'CHECK_STOCKS_SYNCHRONIZE_CART_WITH_DATABASE',
+				'search_results' => 'MAX_DISPLAY_SEARCH_RESULTS',
+				'list_per_row' => 'MAX_DISPLAY_CATEGORIES_PER_ROW',
+				'new_products_listing' => 'MAX_DISPLAY_PRODUCTS_NEW',
+				'search_results_auto_completer' => 'MAX_DISPLAY_AUTO_COMPLETER_RESULTS',
+				'product_name_auto_completer' => 'MAX_CHARACTERS_AUTO_COMPLETER',
+				'width_auto_completer' => 'WIDTH_AUTO_COMPLETER'
+		);
+		
+		return $form_to_database;
 	}
 }
