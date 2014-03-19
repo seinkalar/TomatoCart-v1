@@ -18,11 +18,21 @@ class toC_Store_Admin {
 	 * @access public static
 	 * @return array
 	 */
-	function listStores() {
+	function listStores($start, $limit, $search = null) {
 		global $osC_Database;
 		
-		$Qstores = $osC_Database->query('select * from :table_store order by store_id');
+		$Qstores = $osC_Database->query('select * from :table_store');
+		
+		if ($search !== null) {
+			$Qstores->appendQuery('where store_name like :store_name or url_address like :url_address or ssl_url_address like :ssl_url_address');
+			$Qstores->bindValue(':store_name', '%' . $search . '%');
+			$Qstores->bindValue(':url_address', '%' . $search . '%');
+			$Qstores->bindValue(':ssl_url_address', '%' . $search . '%');
+		}
+		
+		$Qstores->appendQuery('order by store_id');
 		$Qstores->bindTable(':table_store', TABLE_STORE);
+		$Qstores->setExtBatchLimit($start, $limit);
 		$Qstores->execute();
 		
 		$stores = array();

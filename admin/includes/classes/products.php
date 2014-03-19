@@ -203,6 +203,35 @@
           }      
         }
       }
+      
+      //stores
+      if ($error === false) {
+      	if (is_numeric($id)) {
+      		$Qdelete = $osC_Database->query('delete from :table_products_to_stores where products_id = :products_id');
+      		$Qdelete->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
+      		$Qdelete->bindInt(':products_id', $products_id);
+      		$Qdelete->execute();
+      
+      		if ( $osC_Database->isError() ) {
+      			$error = true;
+      		}
+      	}
+      
+      	if ( count($data['stores_ids']) > 0 ) {
+      		foreach ($data['stores_ids'] as $stores_id) {
+      			$Qinsert = $osC_Database->query('insert into :table_products_to_stores (products_id, stores_id) values (:products_id, :stores_id)');
+      			$Qinsert->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
+      			$Qinsert->bindInt(':products_id', $products_id);
+      			$Qinsert->bindInt(':stores_id', $stores_id);
+      			$Qinsert->execute();
+      
+      			if ( $osC_Database->isError() ) {
+      				$error = true;
+      				break;
+      			}
+      		}
+      	}
+      }
 
       //accessories
       if ($error === false) {
@@ -836,7 +865,7 @@
       }
 
       $osC_Database->rollbackTransaction();
-
+      
       return false;
     }
 

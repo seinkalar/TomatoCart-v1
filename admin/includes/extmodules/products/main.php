@@ -18,6 +18,7 @@
   include('general_panel.php');
   include('meta_panel.php');
   include('data_panel.php');
+  include('stores_grid.php');
   include('downloadables_panel.php');
   include('gift_certificates_panel.php');
   include('categories_panel.php');

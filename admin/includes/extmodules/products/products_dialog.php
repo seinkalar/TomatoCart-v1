@@ -156,6 +156,7 @@ Ext.extend(Toc.products.ProductDialog, Ext.Window, {
       xsell_ids: this.pnlXsellProducts.getXsellProductIds(),
       products_variants: this.pnlVariants.getVariants(), 
       products_id: this.productsId,
+      stores_ids: this.pnlData.grdStores.getStoreIds(),
       attachments_ids: this.pnlAttachments.getAttachmentsIDs(),
       categories_id: this.pnlCategories.getCategories(),
       customization_fields: this.pnlCustomizations.getCustomizations(),

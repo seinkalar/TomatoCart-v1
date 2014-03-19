@@ -105,6 +105,7 @@
   define('TABLE_PRODUCTS_IMAGES_GROUPS', DB_TABLE_PREFIX . 'products_images_groups');
   define('TABLE_PRODUCTS_NOTIFICATIONS', DB_TABLE_PREFIX . 'products_notifications');
   define('TABLE_PRODUCTS_TO_CATEGORIES', DB_TABLE_PREFIX . 'products_to_categories');
+  define('TABLE_PRODUCTS_TO_STORES', DB_TABLE_PREFIX . 'products_to_stores');
   define('TABLE_PRODUCTS_VARIANTS', DB_TABLE_PREFIX . 'products_variants');
   define('TABLE_PRODUCTS_VARIANTS_ENTRIES', DB_TABLE_PREFIX . 'products_variants_entries');
   define('TABLE_PRODUCTS_VARIANTS_GROUPS', DB_TABLE_PREFIX . 'products_variants_groups');

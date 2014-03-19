@@ -762,6 +762,11 @@
         }
       }
       
+      if (isset($_POST['stores_ids'])) {
+      	$stores_ids = json_decode($_POST['stores_ids']);
+      	$data['stores_ids'] = $stores_ids;
+      }
+      
       if (isset($_REQUEST['xsell_ids'])) {
         $xsell_ids = explode(';', $_REQUEST['xsell_ids']);
         $data['xsell_id_array'] = $xsell_ids;

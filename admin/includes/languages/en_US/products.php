@@ -40,6 +40,8 @@ table_heading_default = Default
 table_heading_filters_name = Filter Name
 table_heading_filters_groups_name = Group
 table_heading_filters_sort_order = Sort Order
+table_heading_stores_name = Store Name
+table_heading_stores_url = URL Address
 
 action_heading_new_product = New Product
 action_heading_delete_image = Delete Image
@@ -60,6 +62,7 @@ section_attachments = Attachments
 section_customizations = Customizations
 section_accessories = Accessories
 section_filters = Filters
+section_stores = Stores
 
 subsection_price = Price
 subsection_data = Data

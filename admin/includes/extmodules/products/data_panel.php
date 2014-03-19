@@ -408,9 +408,11 @@ Ext.extend(Toc.products.DataPanel, Ext.TabPanel, {
           ]
         }
       ]
-    });  
+    });
     
-    return pnlGeneral;      
+    this.grdStores = new Toc.products.StoresGrid();
+    
+    return [pnlGeneral, this.grdStores];      
   },
   
   getTaxRate: function() {

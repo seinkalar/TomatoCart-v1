@@ -28,8 +28,12 @@ class toC_Json_Store {
 	 */
 	function listStores() {
 		global $toC_Json;
-	
-		$records = toC_Store_Admin::listStores();
+		
+		$start = empty($_POST['start']) ? 0 : $_POST['start'];
+		$limit = empty($_POST['limit']) ? MAX_DISPLAY_SEARCH_RESULTS : $_POST['limit'];
+		$search = !empty($_POST['search']) ? $_POST['search'] : null;
+		
+		$records = toC_Store_Admin::listStores($start, $limit, $search);
 		
 		$response = array(EXT_JSON_READER_TOTAL => sizeof($records), EXT_JSON_READER_ROOT => $records);
 	
