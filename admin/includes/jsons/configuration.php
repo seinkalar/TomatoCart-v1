@@ -17,7 +17,7 @@
     function listConfigurations() {
       global $toC_Json, $osC_Database;
       
-      $Qcfg = $osC_Database->query('select configuration_id, configuration_key, configuration_title, configuration_description, configuration_value, use_function, set_function from :table_configuration where configuration_group_id = :configuration_group_id order by sort_order');
+      $Qcfg = $osC_Database->query('select configuration_id, configuration_key, configuration_title, configuration_description, configuration_value, use_function, set_function from :table_configuration where configuration_group_id = :configuration_group_id and store_id = 0 order by sort_order');
       $Qcfg->bindTable(':table_configuration', TABLE_CONFIGURATION);
       $Qcfg->bindInt(':configuration_group_id', $_REQUEST['gID']);
       $Qcfg->execute();
