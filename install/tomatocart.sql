@@ -1304,6 +1304,13 @@ CREATE TABLE toc_products_to_categories (
   PRIMARY KEY  (products_id,categories_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS toc_products_to_stores;
+CREATE TABLE toc_products_to_stores(
+  products_id int(11) NOT NULL,
+  stores_id int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (products_id,stores_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS toc_products_xsell;
 CREATE TABLE toc_products_xsell (
