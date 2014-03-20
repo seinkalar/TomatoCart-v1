@@ -410,9 +410,7 @@ Ext.extend(Toc.products.DataPanel, Ext.TabPanel, {
       ]
     });
     
-    this.grdStores = new Toc.products.StoresGrid();
-    
-    return [pnlGeneral, this.grdStores];      
+    return [pnlGeneral];      
   },
   
   getTaxRate: function() {

@@ -1050,7 +1050,7 @@
       $Qcategories->freeResult();
       
       $data['categories_id'] = implode(',', $product_categories_array);
-      
+
       $response = array('success' => true, 'data' => $data);     
        
       echo $toC_Json->encode($response);
@@ -1356,6 +1356,21 @@
       
       echo $toC_Json->encode($response);
     
+    }
+    
+    //product to stores
+    function loadStores() {
+    	global $toC_Json;
+    	
+    	$product_stores = osC_Products_Admin::getStores($_POST['products_id']);
+    	
+    	if (count($product_stores) > 0) {
+    		$response = array('success' => true, 'stores' => $product_stores);
+    	}else {
+    		$response = array('success' => false);
+    	}
+    	
+    	echo $toC_Json->encode($response);
     }
   }
 ?>

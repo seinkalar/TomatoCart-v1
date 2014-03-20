@@ -62,6 +62,7 @@ Toc.products.ProductDialog = function(config) {
 Ext.extend(Toc.products.ProductDialog, Ext.Window, {
   buildForm: function(productsId) {
     this.pnlData = new Toc.products.DataPanel();
+    this.grdStores = new Toc.products.StoresGrid();
     this.pnlVariants = new Toc.products.VariantsPanel({owner: this.owner, productsId: productsId, dlgProducts: this}); 
     this.pnlXsellProducts = new Toc.products.XsellProductsGrid({productsId: productsId});
     this.pnlAttributes = new Toc.products.AttributesPanel({productsId: productsId});
@@ -72,6 +73,35 @@ Ext.extend(Toc.products.ProductDialog, Ext.Window, {
     
     this.pnlData.on('producttypechange', this.pnlVariants.onProductTypeChange, this.pnlVariants);
     this.pnlVariants.on('variantschange', this.pnlData.onVariantsChange, this.pnlData);
+    	
+    if (productsId > 0) {
+    	this.grdStores.getStore().on('load', function() {
+    		Ext.Ajax.request({
+					url: Toc.CONF.CONN_URL,
+            params: {
+              module: 'products',
+              action: 'load_stores',
+              products_id: productsId
+            },
+            callback: function(options, success, response){
+              var result = Ext.decode(response.responseText);
+              
+              if (result.success) {
+              	var storesIds = result.stores;
+              	
+              	Ext.each(storesIds, function(storeId) {
+              		var index = this.grdStores.getStore().indexOfId(storeId);
+              		
+              		this.grdStores.getSelectionModel().selectRow(index);
+              	}, this);
+              }
+            },
+            scope: this
+				});   
+			}, this);
+    }	
+		
+          	
     
     this.pnlAccessories = new Toc.products.AccessoriesPanel({productsId: productsId});
     
@@ -85,6 +115,7 @@ Ext.extend(Toc.products.ProductDialog, Ext.Window, {
         new Toc.products.GeneralPanel(), 
         this.pnlMeta = new Toc.products.MetaPanel(),
         this.pnlData,
+        this.grdStores,
         this.pnlCategories = new Toc.products.CategoriesPanel({productsId: productsId}),
         this.pnlImages,
         this.pnlVariants, 
@@ -128,10 +159,15 @@ Ext.extend(Toc.products.ProductDialog, Ext.Window, {
         success: function(form, action) {
           this.pnlData.onPriceNetChange(); 
           this.pnlData.updateCboTaxClass(action.result.data.products_type);
-          this.pnlData.loadExtraOptionTab(action.result.data);   
+          this.pnlData.loadExtraOptionTab(action.result.data);
+          
           this.pnlCategories.setCategories(action.result.data.categories_id);
           this.pnlVariants.onProductTypeChange(action.result.data.products_type);
           this.pnlAttributes.setAttributesGroupsId(action.result.data.products_attributes_groups_id);
+          
+          if (action.result.data.stores_ids) {
+          	this.storesIds = Ext.util.JSON.decode(action.result.data.stores_ids);
+          }
           
           Toc.products.ProductDialog.superclass.show.call(this);
         },
@@ -156,7 +192,7 @@ Ext.extend(Toc.products.ProductDialog, Ext.Window, {
       xsell_ids: this.pnlXsellProducts.getXsellProductIds(),
       products_variants: this.pnlVariants.getVariants(), 
       products_id: this.productsId,
-      stores_ids: this.pnlData.grdStores.getStoreIds(),
+      stores_ids: this.grdStores.getStoreIds(),
       attachments_ids: this.pnlAttachments.getAttachmentsIDs(),
       categories_id: this.pnlCategories.getCategories(),
       customization_fields: this.pnlCustomizations.getCustomizations(),

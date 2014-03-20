@@ -1795,5 +1795,33 @@
       
       return $records;
     }
+    
+    /**
+     * Get the stores linked to currect product
+     * 
+     * @acess public
+     * @param int
+     * @return mixed
+     */
+    function getStores($products_id) {
+      global $osC_Database;
+      
+      $Qstores = $osC_Database->query('select stores_id from :table_products_to_stores where products_id = :products_id');
+      $Qstores->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
+      $Qstores->bindInt(':products_id', $products_id);
+      $Qstores->execute();
+      
+      if ($Qstores->numberOfRows() > 0) {
+        $result = array();
+        
+        while ($Qstores->next()) {
+        	$result[] = $Qstores->valueInt('stores_id');
+        }
+        
+        return $result;
+      }
+      
+      return null;
+    }
   }
 ?>
