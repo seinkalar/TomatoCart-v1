@@ -24,6 +24,7 @@
   define('TABLE_CATEGORIES', DB_TABLE_PREFIX . 'categories');
   define('TABLE_CATEGORIES_DESCRIPTION', DB_TABLE_PREFIX . 'categories_description');
   define('TABLE_CATEGORIES_RATINGS', DB_TABLE_PREFIX . 'categories_ratings');
+  define('TABLE_CATEGORIES_TO_STORES', DB_TABLE_PREFIX . 'categories_to_stores');
   define('TABLE_CONFIGURATION', DB_TABLE_PREFIX . 'configuration');
   define('TABLE_CONFIGURATION_GROUP', DB_TABLE_PREFIX . 'configuration_group');
   define('TABLE_COUNTER', DB_TABLE_PREFIX . 'counter');
