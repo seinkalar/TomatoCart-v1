@@ -179,7 +179,7 @@ CREATE TABLE toc_categories_ratings (
   PRIMARY KEY  (categories_id,ratings_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-drop table if exists toc_categories_to_stores;
+DROP TABLE IF EXISTS toc_categories_to_stores;
 create table toc_categories_to_stores (
     categories_id int(11) NOT NULL,
     stores_id int(11) NOT NULL,
@@ -717,6 +717,13 @@ CREATE TABLE toc_manufacturers_info (
   url_clicked int(5) NOT NULL default '0',
   date_last_click datetime default NULL,
   PRIMARY KEY  (manufacturers_id,languages_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS toc_manufacturers_to_stores;
+create table toc_manufacturers_to_stores (
+    manufacturers_id int(11) NOT NULL,
+    stores_id int(11) NOT NULL,
+    PRIMARY KEY (manufacturers_id,stores_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 

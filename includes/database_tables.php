@@ -71,6 +71,7 @@
   define('TABLE_LANGUAGES_DEFINITIONS', DB_TABLE_PREFIX . 'languages_definitions');
   define('TABLE_MANUFACTURERS', DB_TABLE_PREFIX . 'manufacturers');
   define('TABLE_MANUFACTURERS_INFO', DB_TABLE_PREFIX . 'manufacturers_info');
+  define('TABLE_MANUFACTURERS_TO_STORES', DB_TABLE_PREFIX . 'manufacturers_to_stores');
   define('TABLE_NEWSLETTERS', DB_TABLE_PREFIX . 'newsletters');
   define('TABLE_NEWSLETTERS_LOG', DB_TABLE_PREFIX . 'newsletters_log');
   define('TABLE_ORDERS', DB_TABLE_PREFIX . 'orders');
