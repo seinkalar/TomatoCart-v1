@@ -179,6 +179,13 @@ CREATE TABLE toc_categories_ratings (
   PRIMARY KEY  (categories_id,ratings_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+drop table if exists toc_categories_to_stores;
+create table toc_categories_to_stores (
+    categories_id int(11) NOT NULL,
+    stores_id int(11) NOT NULL,
+    PRIMARY KEY (categories_id,stores_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS toc_configuration;
 CREATE TABLE toc_configuration (
