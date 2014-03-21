@@ -24,7 +24,7 @@ Toc.manufacturers.ManufacturersDialog = function(config) {
   config.modal = true;
   config.layout = 'fit';
   config.iconCls = 'icon-manufacturers-win';
-  config.items = this.buildForm();  
+  config.items = this.buildForm(config.manufactuersId);  
   
   config.buttons = [
     {
@@ -83,9 +83,37 @@ Ext.extend(Toc.manufacturers.ManufacturersDialog, Ext.Window, {
     }
   },
       
-  buildForm: function() {
+  buildForm: function(manufactuersId) {
     this.pnlGeneral = new Toc.manufacturers.GeneralPanel();
     this.pnlMetaInfo = new Toc.manufacturers.MetaInfoPanel();
+    this.grdStores = new Toc.common.StoresGrid();
+    
+    if (manufactuersId > 0) {
+    	this.grdStores.getStore().on('load', function() {
+    		Ext.Ajax.request({
+					url: Toc.CONF.CONN_URL,
+            params: {
+              module: 'manufacturers',
+              action: 'load_stores',
+              manufactuers_id: manufactuersId
+            },
+            callback: function(options, success, response){
+              var result = Ext.decode(response.responseText);
+              
+              if (result.success) {
+              	var storesIds = result.stores;
+              	
+              	Ext.each(storesIds, function(storeId) {
+              		var index = this.grdStores.getStore().indexOfId(storeId);
+              		
+              		this.grdStores.getSelectionModel().selectRow(index);
+              	}, this);
+              }
+            },
+            scope: this
+				});   
+			}, this);
+    }	
     
     tabManufacturers = new Ext.TabPanel({
       activeTab: 0,
@@ -95,7 +123,8 @@ Ext.extend(Toc.manufacturers.ManufacturersDialog, Ext.Window, {
       deferredRender: false,
       items: [
         this.pnlGeneral,
-        this.pnlMetaInfo  
+        this.pnlMetaInfo,
+        this.grdStores  
       ]
     });
     
@@ -117,6 +146,8 @@ Ext.extend(Toc.manufacturers.ManufacturersDialog, Ext.Window, {
   },
 
   submitForm : function() {
+  	this.frmManufacturer.form.baseParams['stores_ids'] =  this.grdStores.getStoreIds();
+  	
     this.frmManufacturer.form.submit({
       waitMsg: TocLanguage.formSubmitWaitMsg,
       success: function(form, action) {

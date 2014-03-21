@@ -719,6 +719,7 @@ CREATE TABLE toc_manufacturers_info (
   PRIMARY KEY  (manufacturers_id,languages_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+
 DROP TABLE IF EXISTS toc_manufacturers_to_stores;
 create table toc_manufacturers_to_stores (
     manufacturers_id int(11) NOT NULL,

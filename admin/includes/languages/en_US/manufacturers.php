@@ -13,6 +13,8 @@ heading_title = Manufacturers
 table_heading_manufacturers = Manufacturers
 table_heading_url_clicks = URL Clicks
 table_heading_action = Action
+table_heading_stores_name = Store Name
+table_heading_stores_url = URL Address
 
 action_heading_new_manufacturer = New Manufacturer
 action_heading_batch_delete_manufacturers = Batch Delete Manufacturers
@@ -27,6 +29,7 @@ field_batch_delete_images = Delete images?
 
 section_general = General
 section_meta = Meta Info
+section_stores = Stores
 
 field_page_title = Page Title:
 field_meta_keywords = Keywords:

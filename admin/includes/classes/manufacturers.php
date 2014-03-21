@@ -120,6 +120,35 @@
           }
         }
       }
+      
+      //stores
+      if ($error === false) {
+      	if (is_numeric($id)) {
+      		$Qdelete = $osC_Database->query('delete from :table_manufacturers_to_stores where manufacturers_id = :manufacturers_id');
+      		$Qdelete->bindTable(':table_manufacturers_to_stores', TABLE_MANUFACTURERS_TO_STORES);
+      		$Qdelete->bindInt(':manufacturers_id', $manufacturers_id);
+      		$Qdelete->execute();
+      
+      		if ( $osC_Database->isError() ) {
+      			$error = true;
+      		}
+      	}
+      
+      	if ( count($data['stores_ids']) > 0 ) {
+      		foreach ($data['stores_ids'] as $stores_id) {
+      			$Qinsert = $osC_Database->query('insert into :table_manufacturers_to_stores (manufacturers_id, stores_id) values (:manufacturers_id, :stores_id)');
+      			$Qinsert->bindTable(':table_manufacturers_to_stores', TABLE_MANUFACTURERS_TO_STORES);
+      			$Qinsert->bindInt(':manufacturers_id', $manufacturers_id);
+      			$Qinsert->bindInt(':stores_id', $stores_id);
+      			$Qinsert->execute();
+      
+      			if ( $osC_Database->isError() ) {
+      				$error = true;
+      				break;
+      			}
+      		}
+      	}
+      }
 
       if ( $error === false ) {
         $osC_Database->commitTransaction();
@@ -194,6 +223,34 @@
       $Qmanufacturers->execute();
 
       return $Qmanufacturers;
+    }
+    
+    /**
+     * Get the stores linked to currect manufacturer
+     *
+     * @acess public
+     * @param int
+     * @return mixed
+     */
+    function getStores($manufactuers_id) {
+    	global $osC_Database;
+    
+    	$Qstores = $osC_Database->query('select stores_id from :table_manufacturers_to_stores where manufacturers_id = :manufacturers_id');
+    	$Qstores->bindTable(':table_manufacturers_to_stores', TABLE_MANUFACTURERS_TO_STORES);
+    	$Qstores->bindInt(':manufacturers_id', $manufactuers_id);
+    	$Qstores->execute();
+    
+    	if ($Qstores->numberOfRows() > 0) {
+    		$result = array();
+    
+    		while ($Qstores->next()) {
+    			$result[] = $Qstores->valueInt('stores_id');
+    		}
+    
+    		return $result;
+    	}
+    
+    	return null;
     }
   }
 ?>

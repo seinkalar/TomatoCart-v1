@@ -11,12 +11,13 @@
   as published by the Free Software Foundation.
 */
 
-  echo 'Ext.namespace("Toc.manufacturers");';
+  echo 'Ext.namespace("Toc.manufacturers", "Toc.common");';
   
   include('manufacturers_dialog.php');
   include('manufacturers_grid.php');
   include('manufacturers_general_panel.php');
   include('manufacturers_meta_info_panel.php');
+  include(DIR_FS_CATALOG . DIR_FS_ADMIN . 'includes/extmodules/common/stores_grid.php');
 ?>
 Ext.override(TocDesktop.ManufacturersWindow, {
 
@@ -41,12 +42,12 @@ Ext.override(TocDesktop.ManufacturersWindow, {
     win.show();
   },
   
-  createManufacturersDialog: function() {
+  createManufacturersDialog: function(manufactuersId) {
     var desktop = this.app.getDesktop();
     var dlg = desktop.getWindow('manufacturers_dialog-win');
     
     if (!dlg) {
-      dlg = desktop.createWindow({}, Toc.manufacturers.ManufacturersDialog);
+      dlg = desktop.createWindow({manufactuersId: manufactuersId}, Toc.manufacturers.ManufacturersDialog);
       
       dlg.on('saveSuccess', function(feedback) {
         this.app.showNotification({title: TocLanguage.msgSuccessTitle, html: feedback});

@@ -93,6 +93,12 @@
                     'page_title' => $_REQUEST['page_title'],
                     'meta_keywords' => $_REQUEST['meta_keywords'],
                     'meta_description' => $_REQUEST['meta_description']);
+      
+      //stores
+      if (isset($_POST['stores_ids'])) {
+      	$stores_ids = json_decode($_POST['stores_ids']);
+      	$data['stores_ids'] = $stores_ids;
+      }
      
       if ( osC_Manufacturers_Admin::save(isset($_REQUEST['manufacturers_id']) ? $_REQUEST['manufacturers_id'] : null, $data) ) {
         $response = array('success' => true ,'feedback' => $osC_Language->get('ms_success_action_performed'));
@@ -136,6 +142,21 @@
       }
       
       echo $toC_Json->encode($response);
+    }
+    
+    //manufacturer to stores
+    function loadStores() {
+    	global $toC_Json;
+    	 
+    	$manufacturer_stores = osC_Manufacturers_Admin::getStores($_POST['manufactuers_id']);
+    	 
+    	if (count($manufacturer_stores) > 0) {
+    		$response = array('success' => true, 'stores' => $manufacturer_stores);
+    	}else {
+    		$response = array('success' => false);
+    	}
+    	 
+    	echo $toC_Json->encode($response);
     }
   }
 ?>

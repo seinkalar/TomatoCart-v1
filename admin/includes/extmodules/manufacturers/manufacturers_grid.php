@@ -138,7 +138,7 @@ Ext.extend(Toc.manufacturers.ManufacturersGrid, Ext.grid.GridPanel, {
   },
   
   onEdit: function(record) {
-    var dlg = this.owner.createManufacturersDialog();
+    var dlg = this.owner.createManufacturersDialog(record.get('manufacturers_id'));
     dlg.setTitle(record.get("manufacturers_name"));
     
     dlg.on('saveSuccess', function() {
