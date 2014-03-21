@@ -10,7 +10,7 @@
 */
 ?>
 
-Toc.products.StoresGrid = function(config) {
+Toc.common.StoresGrid = function(config) {
 	config = config || {};
 	
 	config.title = '<?php echo $osC_Language->get('section_stores'); ?>';
@@ -84,10 +84,10 @@ Toc.products.StoresGrid = function(config) {
     nextStepText: TocLanguage.nextStepText
   });
   
-  Toc.products.StoresGrid.superclass.constructor.call(this, config);
+  Toc.common.StoresGrid.superclass.constructor.call(this, config);
 }
 
-Ext.extend(Toc.products.StoresGrid, Ext.grid.GridPanel, {
+Ext.extend(Toc.common.StoresGrid, Ext.grid.GridPanel, {
 	onRefresh: function() {
     this.getStore().reload();
   },

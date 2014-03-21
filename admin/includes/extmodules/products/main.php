@@ -12,13 +12,12 @@
 */
   include('templates/default/extensions/uploadpanel/all.js');  
 
-  echo 'Ext.namespace("Toc.products");';
+  echo 'Ext.namespace("Toc.products", "Toc.common");';
   
   include('products_grid.php');
   include('general_panel.php');
   include('meta_panel.php');
   include('data_panel.php');
-  include('stores_grid.php');
   include('downloadables_panel.php');
   include('gift_certificates_panel.php');
   include('categories_panel.php');
@@ -42,6 +41,7 @@
   include('variants_groups_dialog.php');
   include('categories_tree_panel.php');
   include('products_main_panel.php');
+  include(DIR_FS_CATALOG . DIR_FS_ADMIN . 'includes/extmodules/common/stores_grid.php');
 ?>
 
 Ext.override(TocDesktop.ProductsWindow, {

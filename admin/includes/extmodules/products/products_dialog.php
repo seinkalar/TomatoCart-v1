@@ -62,7 +62,7 @@ Toc.products.ProductDialog = function(config) {
 Ext.extend(Toc.products.ProductDialog, Ext.Window, {
   buildForm: function(productsId) {
     this.pnlData = new Toc.products.DataPanel();
-    this.grdStores = new Toc.products.StoresGrid();
+    this.grdStores = new Toc.common.StoresGrid();
     this.pnlVariants = new Toc.products.VariantsPanel({owner: this.owner, productsId: productsId, dlgProducts: this}); 
     this.pnlXsellProducts = new Toc.products.XsellProductsGrid({productsId: productsId});
     this.pnlAttributes = new Toc.products.AttributesPanel({productsId: productsId});
@@ -101,8 +101,6 @@ Ext.extend(Toc.products.ProductDialog, Ext.Window, {
 			}, this);
     }	
 		
-          	
-    
     this.pnlAccessories = new Toc.products.AccessoriesPanel({productsId: productsId});
     
     tabProduct = new Ext.TabPanel({
@@ -164,10 +162,6 @@ Ext.extend(Toc.products.ProductDialog, Ext.Window, {
           this.pnlCategories.setCategories(action.result.data.categories_id);
           this.pnlVariants.onProductTypeChange(action.result.data.products_type);
           this.pnlAttributes.setAttributesGroupsId(action.result.data.products_attributes_groups_id);
-          
-          if (action.result.data.stores_ids) {
-          	this.storesIds = Ext.util.JSON.decode(action.result.data.stores_ids);
-          }
           
           Toc.products.ProductDialog.superclass.show.call(this);
         },

@@ -19,6 +19,7 @@ section_general = General
 section_meta = Meta Info
 section_ratings = Ratings
 section_filters = Filters
+section_stores = Stores
 
 table_heading_categories = Categories
 table_heading_status = Status
@@ -26,6 +27,8 @@ table_heading_action = Action
 table_heading_ratings = Rating Name
 table_heading_filters_name = Filter Name
 table_heading_filters_groups_name = Group
+table_heading_stores_name = Store Name
+table_heading_stores_url = URL Address
 
 action_heading_new_category = New Category
 action_heading_batch_delete_categories = Batch Delete Categories

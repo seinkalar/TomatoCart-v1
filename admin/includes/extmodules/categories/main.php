@@ -11,7 +11,7 @@
   as published by the Free Software Foundation.
 */
 
-  echo 'Ext.namespace("Toc.categories");';
+  echo 'Ext.namespace("Toc.categories", "Toc.common");';
   
   include('categories_tree_panel.php');
   include('categories_grid.php');
@@ -23,7 +23,7 @@
   include('categories_ratings_grid_panel.php');
   include('categories_filters_panel.php');
   include('categories_filters_dialog.php');
-  
+  include(DIR_FS_CATALOG . DIR_FS_ADMIN . 'includes/extmodules/common/stores_grid.php');
 ?>
 
 Ext.override(TocDesktop.CategoriesWindow, {

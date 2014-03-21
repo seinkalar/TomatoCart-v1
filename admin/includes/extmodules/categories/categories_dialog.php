@@ -102,6 +102,34 @@ Ext.extend(Toc.categories.CategoriesDialog, Ext.Window, {
     this.pnlMetaInfo = new Toc.categories.MetaInfoPanel();
     this.pnlRatings = new Toc.categories.RatingsGridPanel();
     this.pnlFilters = new Toc.categories.FiltersPanel({'categoriesId': categoriesId, 'owner': this.owner});
+    this.grdStores = new Toc.common.StoresGrid();
+    
+    if (categoriesId > 0) {
+    	this.grdStores.getStore().on('load', function() {
+    		Ext.Ajax.request({
+					url: Toc.CONF.CONN_URL,
+            params: {
+              module: 'categories',
+              action: 'load_stores',
+              categories_id: categoriesId
+            },
+            callback: function(options, success, response){
+              var result = Ext.decode(response.responseText);
+              
+              if (result.success) {
+              	var storesIds = result.stores;
+              	
+              	Ext.each(storesIds, function(storeId) {
+              		var index = this.grdStores.getStore().indexOfId(storeId);
+              		
+              		this.grdStores.getSelectionModel().selectRow(index);
+              	}, this);
+              }
+            },
+            scope: this
+				});   
+			}, this);
+    }	
     
     tabCategories = new Ext.TabPanel({
       activeTab: 0,
@@ -112,6 +140,7 @@ Ext.extend(Toc.categories.CategoriesDialog, Ext.Window, {
       items: [
         this.pnlGeneral,
         this.pnlMetaInfo,
+        this.grdStores,
         this.pnlFilters,
         this.pnlRatings   
       ]
@@ -137,6 +166,7 @@ Ext.extend(Toc.categories.CategoriesDialog, Ext.Window, {
   submitForm: function () {
     this.frmCategories.form.baseParams['ratings'] = this.pnlRatings.getSelectionModel().selections.keys;
     this.frmCategories.form.baseParams['filters'] = Ext.util.JSON.encode(this.pnlFilters.getFilters());
+    this.frmCategories.form.baseParams['stores_ids'] =  this.grdStores.getStoreIds();
     
     var status = this.pnlGeneral.findById('status').findByType('radio');
     status = status[0].getGroupValue();

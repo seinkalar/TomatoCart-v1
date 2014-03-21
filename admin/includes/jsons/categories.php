@@ -204,6 +204,11 @@
                     'ratings' => $_REQUEST['ratings'], 
                     'filters' => json_decode($_REQUEST['filters']));
       
+      if (isset($_POST['stores_ids'])) {
+      	$stores_ids = json_decode($_POST['stores_ids']);
+      	$data['stores_ids'] = $stores_ids;
+      }
+      
       //editing the parent category
       if (isset($_REQUEST['categories_id']) && is_numeric($_REQUEST['categories_id'])) {
         $subcategories = array();
@@ -308,6 +313,21 @@
       
       echo $toC_Json->encode($response);
     
+    }
+    
+    //category to stores
+    function loadStores() {
+    	global $toC_Json;
+    	 
+    	$category_stores = osC_Categories_Admin::getStores($_POST['categories_id']);
+    	 
+    	if (count($category_stores) > 0) {
+    		$response = array('success' => true, 'stores' => $category_stores);
+    	}else {
+    		$response = array('success' => false);
+    	}
+    	 
+    	echo $toC_Json->encode($response);
     }
   }
 ?>

@@ -179,6 +179,35 @@
           $Qdelete->execute();
         }
         
+        //stores
+        if ($error === false) {
+        	if (is_numeric($id)) {
+        		$Qdelete = $osC_Database->query('delete from :table_categories_to_stores where categories_id = :categories_id');
+        		$Qdelete->bindTable(':table_categories_to_stores', TABLE_CATEGORIES_TO_STORES);
+        		$Qdelete->bindInt(':categories_id', $category_id);
+        		$Qdelete->execute();
+        
+        		if ( $osC_Database->isError() ) {
+        			$error = true;
+        		}
+        	}
+        
+        	if ( count($data['stores_ids']) > 0 ) {
+        		foreach ($data['stores_ids'] as $stores_id) {
+        			$Qinsert = $osC_Database->query('insert into :table_categories_to_stores (categories_id, stores_id) values (:categories_id, :stores_id)');
+        			$Qinsert->bindTable(':table_categories_to_stores', TABLE_CATEGORIES_TO_STORES);
+        			$Qinsert->bindInt(':categories_id', $category_id);
+        			$Qinsert->bindInt(':stores_id', $stores_id);
+        			$Qinsert->execute();
+        
+        			if ( $osC_Database->isError() ) {
+        				$error = true;
+        				break;
+        			}
+        		}
+        	}
+        }
+        
         if ( count($data['filters']) > 0 ) {
           foreach($data['filters'] as $filter){
             $Qinsert = $osC_Database->query('insert into :table_categories_to_filters (categories_id, filters_id) values (:categories_id, :filters_id)');
@@ -524,6 +553,34 @@
       $Qfilters->freeResult();
       
       return $records;
+    }
+    
+    /**
+     * Get the stores linked to currect category
+     *
+     * @acess public
+     * @param int
+     * @return mixed
+     */
+    function getStores($categories_id) {
+    	global $osC_Database;
+    
+    	$Qstores = $osC_Database->query('select stores_id from :table_categories_to_stores where categories_id = :categories_id');
+    	$Qstores->bindTable(':table_categories_to_stores', TABLE_CATEGORIES_TO_STORES);
+    	$Qstores->bindInt(':categories_id', $categories_id);
+    	$Qstores->execute();
+    
+    	if ($Qstores->numberOfRows() > 0) {
+    		$result = array();
+    
+    		while ($Qstores->next()) {
+    			$result[] = $Qstores->valueInt('stores_id');
+    		}
+    
+    		return $result;
+    	}
+    
+    	return null;
     }
   }
 ?>
