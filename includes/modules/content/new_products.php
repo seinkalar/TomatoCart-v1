@@ -62,8 +62,20 @@
           $this->_content .= '<div style="margin-top: 10px; float:left; width: 33%; text-align: center">' .
                              '<span style="display:block; height: 32px; text-align: center">' . osc_link_object(osc_href_link(FILENAME_PRODUCTS, $Qnewproducts->value('products_id')), $Qnewproducts->value('products_name')) . '</span>' . 
                              osc_link_object(osc_href_link(FILENAME_PRODUCTS, $Qnewproducts->value('products_id')), $osC_Image->show($Qnewproducts->value('image'), $Qnewproducts->value('products_name')), 'id="img_ac_newproductsmodule_' . $Qnewproducts->value('products_id') . '"') .
-                             '<span style="display:block; padding: 3px; text-align: center">' . $product->getPriceFormated(true) . '</span>' . 
-                             osc_link_object(osc_href_link(FILENAME_PRODUCTS, $Qnewproducts->valueInt('products_id') . '&action=cart_add'), osc_draw_image_button('button_add_to_cart.png', $osC_Language->get('button_add_to_cart'), 'class="ajaxAddToCart" id="ac_newproductsmodule_' . $Qnewproducts->value('products_id') . '"')) . '</div>';
+                             '<span style="display:block; padding: 3px; text-align: center">' . $product->getPriceFormated(true) . '</span>';
+          
+          $display_buy_now = true;
+          if (defined('STOCK_HIDE_OUT_OF_STOCK') && STOCK_HIDE_OUT_OF_STOCK == 1) {
+          	if ($product->getQuantity() < 1) {
+          		$display_buy_now = false;
+          	}
+          }
+          
+          if ($display_buy_now) {
+          	$this->_content .= osc_link_object(osc_href_link(FILENAME_PRODUCTS, $Qnewproducts->valueInt('products_id') . '&action=cart_add'), osc_draw_image_button('button_add_to_cart.png', $osC_Language->get('button_add_to_cart'), 'class="ajaxAddToCart" id="ac_newproductsmodule_' . $Qnewproducts->value('products_id') . '"')) . '</div>';
+          }else {
+            $this->_content .= '<div class="markProductOutOfStock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . $osC_Language->get('out_of_stock') . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</div></div>';
+          }
 
           $i++;
         }

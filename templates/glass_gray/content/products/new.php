@@ -54,7 +54,19 @@
         
         <td align="right" valign="middle">
           <?php 
-            echo osc_link_object(osc_href_link(FILENAME_PRODUCTS, $Qproducts->value('products_id') . '&action=cart_add'), osc_draw_image_button('button_in_cart.gif', $osC_Language->get('button_add_to_cart'), 'class="ajaxAddToCart" id="ac_productsnew_' . $Qproducts->value('products_id') . '"'));
+	          $display_buy_now = true;
+	          if (defined('STOCK_HIDE_OUT_OF_STOCK') && STOCK_HIDE_OUT_OF_STOCK == 1) {
+	          	if ($osC_Product->getQuantity() < 1) {
+	          		$display_buy_now = false;
+	          	}
+	          }
+	          
+	          if ($display_buy_now) {
+	            echo osc_link_object(osc_href_link(FILENAME_PRODUCTS, $Qproducts->value('products_id') . '&action=cart_add'), osc_draw_image_button('button_in_cart.gif', $osC_Language->get('button_add_to_cart'), 'class="ajaxAddToCart" id="ac_productsnew_' . $Qproducts->value('products_id') . '"'));
+	          }else {
+	            echo '<div class="markProductOutOfStock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . $osC_Language->get('out_of_stock') . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</div>';
+	          }
+            
           ?>
         </td>
       </tr>

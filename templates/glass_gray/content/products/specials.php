@@ -36,7 +36,20 @@
                    	echo '<div class="qtyBlock"><input type="text" id="qty_' . $Qspecials->valueInt('products_id') . '" value="1" size="1" class="qtyField" /></div>';
                    }
                    
-                   echo osc_link_object(osc_href_link(FILENAME_PRODUCTS, $Qspecials->value('products_id') . '&action=cart_add'), osc_draw_image_button('button_add_to_cart.png', $osC_Language->get('button_add_to_cart'), 'class="ajaxAddToCart" id="ac_specials_' . $Qspecials->value('products_id') . '"'));
+                   $display_buy_now = true;
+                   $osC_Product = new osC_Product($Qspecials->valueInt('products_id'));
+                   if (defined('STOCK_HIDE_OUT_OF_STOCK') && STOCK_HIDE_OUT_OF_STOCK == 1) {
+                   	if ($osC_Product->getQuantity() < 1) {
+                   		$display_buy_now = false;
+                   	}
+                   }
+                   
+                   if ($display_buy_now) {
+		                  echo osc_link_object(osc_href_link(FILENAME_PRODUCTS, $Qspecials->value('products_id') . '&action=cart_add'), osc_draw_image_button('button_add_to_cart.png', $osC_Language->get('button_add_to_cart'), 'class="ajaxAddToCart" id="ac_specials_' . $Qspecials->value('products_id') . '"'));   
+                   }else {
+                     	echo '<div class="markProductOutOfStock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . $osC_Language->get('out_of_stock') . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</div>';
+                   }
+                   
             echo '</div>';
       
           $i++;

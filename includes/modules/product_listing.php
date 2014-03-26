@@ -201,19 +201,34 @@
             }
             break;
           case 'PRODUCT_LIST_BUY_NOW':
-            $lc_align = 'center';
+            $lc_align = 'right';
             
             $lc_text = '';
             
+            $display_buy_now = true;
+            if (defined('STOCK_HIDE_OUT_OF_STOCK') && STOCK_HIDE_OUT_OF_STOCK == 1) {
+              if ($osC_Product->getQuantity() < 1) {
+                $display_buy_now = false;
+              }
+            }
+            
             if ($Qlisting->value('products_type') == PRODUCT_TYPE_SIMPLE) {
-							//enable quantity input field
-							if (defined('PRODUCT_LIST_QUANTITY_INPUT') && PRODUCT_LIST_QUANTITY_INPUT == 1) {
-								$lc_text .= '<input type="text" id="qty_' . $Qlisting->value('products_id') . '" value="1" size="1" class="qtyField" />';
+							if ($display_buy_now) {
+						  	//enable quantity input field
+								if (defined('PRODUCT_LIST_QUANTITY_INPUT') && PRODUCT_LIST_QUANTITY_INPUT == 1) {
+									$lc_text .= '<input type="text" id="qty_' . $Qlisting->value('products_id') . '" value="1" size="1" class="qtyField" />';
+								}
+									
+								$lc_text .= osc_link_object(osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), $Qlisting->value('products_id') . '&' . osc_get_all_get_params(array('action')) . '&action=cart_add'), osc_draw_image_button('button_buy_now.gif', $osC_Language->get('button_buy_now'), 'class="ajaxAddToCart" id="ac_productlisting_'. $Qlisting->value('products_id') . '"')) . '&nbsp;<br />';
+							}else {
+							  $lc_text .= '<div class="markProductOutOfStock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . $osC_Language->get('out_of_stock') . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</div>';
 							}
-							
-              $lc_text .= osc_link_object(osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), $Qlisting->value('products_id') . '&' . osc_get_all_get_params(array('action')) . '&action=cart_add'), osc_draw_image_button('button_buy_now.gif', $osC_Language->get('button_buy_now'), 'class="ajaxAddToCart" id="ac_productlisting_'. $Qlisting->value('products_id') . '"')) . '&nbsp;<br />';
             }else {
-              $lc_text .= osc_link_object(osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), $Qlisting->value('products_id') . '&' . osc_get_all_get_params(array('action')) . '&action=cart_add'), osc_draw_image_button('button_buy_now.gif', $osC_Language->get('button_buy_now'))) . '&nbsp;<br />';
+							if ($display_buy_now) {
+							  $lc_text .= osc_link_object(osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), $Qlisting->value('products_id') . '&' . osc_get_all_get_params(array('action')) . '&action=cart_add'), osc_draw_image_button('button_buy_now.gif', $osC_Language->get('button_buy_now'))) . '&nbsp;<br />';
+							}else {
+							  $lc_text .= '<div class="markProductOutOfStock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . $osC_Language->get('out_of_stock') . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</div>';
+							}
             }
             
             if ($osC_Template->isInstalled('compare_products', 'boxes')) {
