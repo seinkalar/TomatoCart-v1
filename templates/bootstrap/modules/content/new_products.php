@@ -16,6 +16,9 @@
 */
 
     global $osC_Template, $osC_Language, $osC_Image;
+    
+    $osC_Language->load('products');
+    
     require_once ('templates/' . $osC_Template->getCode() . '/models/products.php');
     
     $products = get_new_products();
@@ -32,6 +35,13 @@
         <?php 
             foreach ($products as $product) {
                 $osC_Product = new osC_Product($product['products_id']);
+                
+                $display_buy_now = true;
+                if (defined('STOCK_HIDE_OUT_OF_STOCK') && STOCK_HIDE_OUT_OF_STOCK == 1) {
+                	if ($osC_Product->getQuantity() < 1) {
+                		$display_buy_now = false;
+                	}
+                }
         ?>
             <li class="clearfix">
             	<?php 
@@ -52,11 +62,15 @@
                 </div>
                 <div class="right">
                     <span class="price"><?php echo $osC_Product->getPriceFormated(true); ?></span>
-                    <span class="buttons hidden-phone">
+                    <div class="buttons hidden-phone">
+                    	<?php if ($display_buy_now): ?>
                         <a id="ac_newproductsmodule_<?php echo $product['products_id']; ?>" class="btn btn-small btn-info ajaxAddToCart" href="<?php echo osc_href_link(FILENAME_PRODUCTS, $product['products_id'] . '&action=cart_add'); ?>">
                         	<i class="icon-shopping-cart icon-white "></i> 
                         	<?php echo $osC_Language->get('button_buy_now'); ?>
                         </a>
+                        <?php else: ?>
+                        <span class="out-of-stock"><?php echo STOCK_MARK_PRODUCT_OUT_OF_STOCK . $osC_Language->get('out_of_stock') . STOCK_MARK_PRODUCT_OUT_OF_STOCK; ?></span>
+                        <?php endif; ?>
                         <br />
                         <?php echo osc_link_object(osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), $product['products_id'] . '&action=wishlist_add'), $osC_Language->get('add_to_wishlist'), 'class="wishlist"'); ?>
                         <?php

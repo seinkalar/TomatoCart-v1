@@ -839,6 +839,8 @@ ul.grid .productImage, ul.list .productImage {
 #datefrom_days, #datefrom_months, #datefrom_years, #dateto_days, #dateto_months, #dateto_years, #page, #dob_days, #dob_months, #dob_years {width: 98px;margin-right: 5px;}
 #quantity {width: 30px}
 
+#pageWrapper .out-of-stock {padding:0;margin:0;color:red;font-weight:bold;line-height:26px;}
+
 /** Variants and Quantity filed **/
 input.qtyField {margin-bottom:0;text-align:center;width:25px;margin-right:3px;padding:2px 2px;}
 ul.options {clear:both;}

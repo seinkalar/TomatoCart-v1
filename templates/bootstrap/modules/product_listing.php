@@ -129,6 +129,14 @@ if ($Qlisting->numberOfRows() > 0) {
                 $image = show_products_listing_image($Qlisting->value('image'), $Qlisting->value('products_name'), 'class="thumb productImage"');
                 $image_link = osc_link_object($href, $image, 'id="img_ac_productlisting_'. $Qlisting->value('products_id') . '"');
                 
+                $display_buy_now = true;
+                if (defined('STOCK_HIDE_OUT_OF_STOCK') && STOCK_HIDE_OUT_OF_STOCK == 1) {
+                	if ($osC_Product->getQuantity() < 1) {
+                		$display_buy_now = false;
+                	}
+                }
+                
+                $out_of_stock = '<div class="out-of-stock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . $osC_Language->get('out_of_stock') . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</div>';
                 $buy_now_link = osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), $Qlisting->value('products_id') . '&' . osc_get_all_get_params(array('action')) . '&action=cart_add');
                 $compare_link = osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), osc_get_all_get_params(array('action')) . '&cid=' . $Qlisting->value('products_id') . '&action=compare_products_add');
                 $wishlist_link = osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), $Qlisting->value('products_id') . '&' . osc_get_all_get_params(array('action')) . '&action=wishlist_add');
@@ -148,6 +156,7 @@ if ($Qlisting->numberOfRows() > 0) {
                 <div class="right">
                     <span class="price"><?php echo $osC_Product->getPriceFormated(true); ?></span>
                     <span class="buttons hidden-phone">
+                    	<?php if ($display_buy_now): ?>
                     	<?php 
                     	    if ($Qlisting->value('products_type') == PRODUCT_TYPE_SIMPLE) {
 								//enable quantity input field
@@ -168,6 +177,9 @@ if ($Qlisting->numberOfRows() > 0) {
                         	<i class="icon-shopping-cart icon-white "></i> 
                         	<?php echo $osC_Language->get('button_buy_now'); ?>
                         </a><br />
+                        <?php else: ?>
+                        <?php echo $out_of_stock;?>
+                        <?php endif;?>
                         <?php echo osc_link_object($compare_link, $osC_Language->get('add_to_compare')); ?><br />
                         <?php echo osc_link_object($wishlist_link, $osC_Language->get('add_to_wishlist')); ?>
                     </span>
