@@ -129,19 +129,22 @@ if ($Qlisting->numberOfRows() > 0) {
                 $image = show_products_listing_image($Qlisting->value('image'), $Qlisting->value('products_name'), 'class="thumb productImage"');
                 $image_link = osc_link_object($href, $image, 'id="img_ac_productlisting_'. $Qlisting->value('products_id') . '"');
                 
-                $display_buy_now = true;
+                $sold_out = false;
                 if (defined('STOCK_HIDE_OUT_OF_STOCK') && STOCK_HIDE_OUT_OF_STOCK == 1) {
                 	if ($osC_Product->getQuantity() < 1) {
-                		$display_buy_now = false;
+                		$sold_out = true;
                 	}
                 }
                 
-                $out_of_stock = '<div class="out-of-stock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . $osC_Language->get('out_of_stock') . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</div>';
+                $button_sold_out = '<button class="btn btn-small btn-inverse btn-sold-out" disabled="disabled"><i class="icon-shopping-cart icon-white "></i> ' . $osC_Language->get('button_sold_out') . '</button>';
                 $buy_now_link = osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), $Qlisting->value('products_id') . '&' . osc_get_all_get_params(array('action')) . '&action=cart_add');
                 $compare_link = osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), osc_get_all_get_params(array('action')) . '&cid=' . $Qlisting->value('products_id') . '&action=compare_products_add');
                 $wishlist_link = osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), $Qlisting->value('products_id') . '&' . osc_get_all_get_params(array('action')) . '&action=wishlist_add');
         ?>
     		<li class="clearfix">
+    			<?php if ($sold_out): ?>
+    			<div class="soldout-banner"></div>
+    			<?php endif;?>
                 <div class="left">
                     <?php 
                         echo $image_link;
@@ -156,7 +159,7 @@ if ($Qlisting->numberOfRows() > 0) {
                 <div class="right">
                     <span class="price"><?php echo $osC_Product->getPriceFormated(true); ?></span>
                     <span class="buttons hidden-phone">
-                    	<?php if ($display_buy_now): ?>
+                    	<?php if ($sold_out === false): ?>
                     	<?php 
                     	    if ($Qlisting->value('products_type') == PRODUCT_TYPE_SIMPLE) {
 								//enable quantity input field
@@ -178,7 +181,7 @@ if ($Qlisting->numberOfRows() > 0) {
                         	<?php echo $osC_Language->get('button_buy_now'); ?>
                         </a><br />
                         <?php else: ?>
-                        <?php echo $out_of_stock;?>
+                        <?php echo $button_sold_out;?>
                         <?php endif;?>
                         <?php echo osc_link_object($compare_link, $osC_Language->get('add_to_compare')); ?><br />
                         <?php echo osc_link_object($wishlist_link, $osC_Language->get('add_to_wishlist')); ?>

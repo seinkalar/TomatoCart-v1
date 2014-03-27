@@ -28,7 +28,7 @@
     if (sizeof($products)) {
 ?>
     <!-- module new_products start //-->
-    <div class="moduleBox">
+    <div class="moduleBox module-new-products">
         <h6><?php echo $osC_Box->getTitle(); ?></h6>
         
         <ul class="products-list grid clearfix">
@@ -36,16 +36,20 @@
             foreach ($products as $product) {
                 $osC_Product = new osC_Product($product['products_id']);
                 
-                $display_buy_now = true;
+                $sold_out = false;
                 if (defined('STOCK_HIDE_OUT_OF_STOCK') && STOCK_HIDE_OUT_OF_STOCK == 1) {
                 	if ($osC_Product->getQuantity() < 1) {
-                		$display_buy_now = false;
+                		$sold_out = true;
                 	}
                 }
         ?>
             <li class="clearfix">
             	<?php 
-            	    if ($product['is_specials'] === TRUE):
+            		if ($sold_out == TRUE):
+            	?>
+            	<div class="soldout-banner"></div>
+            	<?php 
+            	    elseif ($product['is_specials'] === TRUE):
             	?>
             		<div class="specials-banner"></div>
             	<?php   
@@ -63,13 +67,13 @@
                 <div class="right">
                     <span class="price"><?php echo $osC_Product->getPriceFormated(true); ?></span>
                     <div class="buttons hidden-phone">
-                    	<?php if ($display_buy_now): ?>
+                    	<?php if ($sold_out === false): ?>
                         <a id="ac_newproductsmodule_<?php echo $product['products_id']; ?>" class="btn btn-small btn-info ajaxAddToCart" href="<?php echo osc_href_link(FILENAME_PRODUCTS, $product['products_id'] . '&action=cart_add'); ?>">
                         	<i class="icon-shopping-cart icon-white "></i> 
                         	<?php echo $osC_Language->get('button_buy_now'); ?>
                         </a>
                         <?php else: ?>
-                        <span class="out-of-stock"><?php echo STOCK_MARK_PRODUCT_OUT_OF_STOCK . $osC_Language->get('out_of_stock') . STOCK_MARK_PRODUCT_OUT_OF_STOCK; ?></span>
+                        <button class="btn btn-small btn-inverse btn-sold-out" disabled="disabled"><i class="icon-shopping-cart icon-white"></i> <?php echo $osC_Language->get('button_sold_out'); ?></button>
                         <?php endif; ?>
                         <br />
                         <?php echo osc_link_object(osc_href_link(basename($_SERVER['SCRIPT_FILENAME']), $product['products_id'] . '&action=wishlist_add'), $osC_Language->get('add_to_wishlist'), 'class="wishlist"'); ?>

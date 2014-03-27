@@ -758,7 +758,7 @@ ul.list li div.right span.price {
     font-size: 15px; 
     margin-bottom: 20px;
 }
-.specials-banner, .featured-banner {
+.specials-banner, .featured-banner, .soldout-banner {
     position: absolute;
     top: -2px;
     left: -2px;
@@ -772,6 +772,11 @@ ul.list li div.right span.price {
 .featured-banner {
     background: transparent url('../images/featured.png') no-repeat;
 }
+
+.soldout-banner {
+	background:url("../images/soldout.png") no-repeat;
+}
+
 ul.grid .productImage, ul.list .productImage {
     border: none;
     margin: 0;
@@ -839,7 +844,9 @@ ul.grid .productImage, ul.list .productImage {
 #datefrom_days, #datefrom_months, #datefrom_years, #dateto_days, #dateto_months, #dateto_years, #page, #dob_days, #dob_months, #dob_years {width: 98px;margin-right: 5px;}
 #quantity {width: 30px}
 
-#pageWrapper .out-of-stock {padding:0;margin:0;color:red;font-weight:bold;line-height:26px;}
+#pageWrapper .btn-sold-out{display:block;background-color:#222222;}
+#pageWrapper .module-new-products .btn-sold-out{display:inline-block;}
+#pageWrapper ul.list .btn-sold-out {margin-left:72px;}
 
 /** Variants and Quantity filed **/
 input.qtyField {margin-bottom:0;text-align:center;width:25px;margin-right:3px;padding:2px 2px;}
