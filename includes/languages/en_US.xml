@@ -496,6 +496,11 @@
       <group>general</group>
     </definition>
     <definition>
+      <key>button_sold_out</key>
+      <value><![CDATA[Sold Out]]></value>
+      <group>general</group>
+    </definition>
+    <definition>
       <key>button_update_cart</key>
       <value><![CDATA[Update Shopping Cart]]></value>
       <group>general</group>
