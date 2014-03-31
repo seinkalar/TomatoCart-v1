@@ -11,12 +11,14 @@
   as published by the Free Software Foundation.
 */
 
-  echo 'Ext.namespace("Toc.information");';
+  echo 'Ext.namespace("Toc.information", "Toc.common");';
   
   include('information_grid.php');
   include('information_dialog.php');
   include('information_general_panel.php');
   include('information_meta_info_panel.php');
+  
+  include(DIR_FS_CATALOG . DIR_FS_ADMIN . 'includes/extmodules/common/stores_grid.php');
 ?>
 
 Ext.override(TocDesktop.InformationWindow, {
@@ -42,12 +44,12 @@ Ext.override(TocDesktop.InformationWindow, {
     win.show();
   },
   
-  createInformationDialog: function() {
+  createInformationDialog: function(articlesId) {
     var desktop = this.app.getDesktop();
     var dlg = desktop.getWindow('information-dialog-win');
     
     if (!dlg) {
-      dlg = desktop.createWindow({}, Toc.information.InformationDialog);
+      dlg = desktop.createWindow({articlesId: articlesId}, Toc.information.InformationDialog);
       
       dlg.on('saveSuccess', function(feedback) {
         this.app.showNotification({title: TocLanguage.msgSuccessTitle, html: feedback});

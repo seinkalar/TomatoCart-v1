@@ -108,7 +108,7 @@ Ext.extend(Toc.information.InformationGrid, Ext.grid.GridPanel, {
   },
   
   onEdit: function(record) {
-    var dlg = this.owner.createInformationDialog();
+    var dlg = this.owner.createInformationDialog(record.get('articles_id'));
     dlg.setTitle(record.get('articles_name'));
     
     dlg.on('saveSuccess', function() {

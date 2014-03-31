@@ -193,5 +193,20 @@
       
       echo $toC_Json->encode($response);
     }
+    
+    //article to stores
+    function loadStores() {
+    	global $toC_Json;
+    
+    	$article_stores = toC_Articles_Admin::getStores($_POST['articles_id']);
+    
+    	if (count($article_stores) > 0) {
+    		$response = array('success' => true, 'stores' => $article_stores);
+    	}else {
+    		$response = array('success' => false);
+    	}
+    
+    	echo $toC_Json->encode($response);
+    }
   }
 ?>

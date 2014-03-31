@@ -16,6 +16,8 @@ table_heading_articles = Articles
 table_heading_articles_categories = Categories
 table_heading_publish = Publish
 table_heading_sort_order = Sort Order
+table_heading_stores_name = Store Name
+table_heading_stores_url = URL Address
 
 heading_title_data = Data
 field_publish = Publish:
@@ -31,6 +33,7 @@ field_delete = Delete
 
 section_general = General
 section_meta = Meta Info
+section_stores = Stores
 
 field_page_title = Page Title:
 field_meta_keywords = Keywords:

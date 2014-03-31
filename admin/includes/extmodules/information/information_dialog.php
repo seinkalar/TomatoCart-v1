@@ -24,7 +24,9 @@ Toc.information.InformationDialog = function(config) {
   config.height = 530;
   config.modal = true;
   config.iconCls = 'icon-information-win';
-  config.items = this.buildForm();
+  config.articlesId = config.articlesId || null;
+  
+  config.items = this.buildForm(config.articlesId);
   
   config.buttons = [
     {
@@ -75,9 +77,37 @@ Ext.extend(Toc.information.InformationDialog, Ext.Window, {
     Toc.information.InformationDialog.superclass.show.call(this);
   },
 
-  getContentPanel: function() {
+  getContentPanel: function(articlesId) {
     this.pnlGeneral = new Toc.information.GeneralPanel();
     this.pnlMetaInfo = new Toc.information.MetaInfoPanel();
+    this.grdStores = new Toc.common.StoresGrid();
+    
+    if (articlesId > 0) {
+    	this.grdStores.getStore().on('load', function() {
+    		Ext.Ajax.request({
+					url: Toc.CONF.CONN_URL,
+            params: {
+              module: 'articles',
+              action: 'load_stores',
+              articles_id: articlesId
+            },
+            callback: function(options, success, response){
+              var result = Ext.decode(response.responseText);
+              
+              if (result.success) {
+              	var storesIds = result.stores;
+              	
+              	Ext.each(storesIds, function(storeId) {
+              		var index = this.grdStores.getStore().indexOfId(storeId);
+              		
+              		this.grdStores.getSelectionModel().selectRow(index);
+              	}, this);
+              }
+            },
+            scope: this
+				});   
+			}, this);
+    }	
     
     tabInformation = new Ext.TabPanel({
       activeTab: 0,
@@ -88,7 +118,8 @@ Ext.extend(Toc.information.InformationDialog, Ext.Window, {
       deferredRender: false,
       items: [
         this.pnlGeneral,
-        this.pnlMetaInfo  
+        this.pnlMetaInfo,
+        this.grdStores  
       ]
     });
     
@@ -158,7 +189,7 @@ Ext.extend(Toc.information.InformationDialog, Ext.Window, {
     return this.pnlData;
   },
   
-  buildForm: function() {
+  buildForm: function(articlesId) {
     this.frmArticle = new Ext.form.FormPanel({
       fileUpload: true,
       layout: 'border',
@@ -169,13 +200,15 @@ Ext.extend(Toc.information.InformationDialog, Ext.Window, {
         action : 'save_article'
       },
       deferredRender: false,
-      items: [this.getContentPanel(), this.getDataPanel()]
+      items: [this.getContentPanel(articlesId), this.getDataPanel()]
     });  
     
     return this.frmArticle;
   },
   
   submitForm : function() {
+		this.frmArticle.form.baseParams['stores_ids'] =  this.grdStores.getStoreIds();
+  		
     this.frmArticle.form.submit({
       waitMsg: TocLanguage.formSubmitWaitMsg,
       success: function(form, action){
