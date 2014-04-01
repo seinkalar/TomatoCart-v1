@@ -90,6 +90,12 @@
                     'page_title' => $_REQUEST['page_title'],
                     'meta_keywords' => $_REQUEST['meta_keywords'],
                     'meta_description' => $_REQUEST['meta_description']);
+      
+      //stores
+      if (isset($_POST['stores_ids'])) {
+      	$stores_ids = json_decode($_POST['stores_ids']);
+      	$data['stores_ids'] = $stores_ids;
+      }
 
       if ( toC_Articles_Categories_Admin::save((isset($_REQUEST['articles_categories_id']) && is_numeric($_REQUEST['articles_categories_id'] ) ? $_REQUEST['articles_categories_id'] : null), $data) ) {
         $response = array('success' => true, 'feedback' => $osC_Language->get('ms_success_action_performed'));
@@ -176,6 +182,21 @@
       }
   
       echo $toC_Json->encode($response);
+    }
+    
+    //article category to stores
+    function loadStores() {
+    	global $toC_Json;
+    
+    	$stores = toC_Articles_Categories_Admin::getStores($_POST['articles_categories_id']);
+    
+    	if (count($stores) > 0) {
+    		$response = array('success' => true, 'stores' => $stores);
+    	}else {
+    		$response = array('success' => false);
+    	}
+    
+    	echo $toC_Json->encode($response);
     }
   }
 ?>

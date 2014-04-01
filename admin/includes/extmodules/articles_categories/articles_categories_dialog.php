@@ -53,6 +53,33 @@ Ext.extend(Toc.articles_categories.ArticlesCategoriesDialog, Ext.Window, {
     this.frmArticlesCategory.form.reset();  
     this.frmArticlesCategory.form.baseParams['articles_categories_id'] = categoriesId;
     
+    if (id > 0) {
+    	this.grdStores.getStore().on('load', function() {
+    		Ext.Ajax.request({
+					url: Toc.CONF.CONN_URL,
+            params: {
+              module: 'articles_categories',
+              action: 'load_stores',
+              articles_categories_id: id
+            },
+            callback: function(options, success, response){
+              var result = Ext.decode(response.responseText);
+              
+              if (result.success) {
+              	var storesIds = result.stores;
+              	
+              	Ext.each(storesIds, function(storeId) {
+              		var index = this.grdStores.getStore().indexOfId(storeId);
+              		
+              		this.grdStores.getSelectionModel().selectRow(index);
+              	}, this);
+              }
+            },
+            scope: this
+				});   
+			}, this);
+    }	
+    
     if (categoriesId > 0) {
       this.frmArticlesCategory.load({
         url: Toc.CONF.CONN_URL,
@@ -75,6 +102,7 @@ Ext.extend(Toc.articles_categories.ArticlesCategoriesDialog, Ext.Window, {
   buildForm: function() {
     this.pnlGeneral = new Toc.articles_categories.GeneralPanel();
     this.pnlMetaInfo = new Toc.articles_categories.MetaInfoPanel();
+    this.grdStores = new Toc.common.StoresGrid();
     
     tabArticlesCategories = new Ext.TabPanel({
       activeTab: 0,
@@ -84,7 +112,8 @@ Ext.extend(Toc.articles_categories.ArticlesCategoriesDialog, Ext.Window, {
       deferredRender: false,
       items: [
         this.pnlGeneral,
-        this.pnlMetaInfo  
+        this.pnlMetaInfo,
+        this.grdStores  
       ]
     });
     
@@ -106,6 +135,8 @@ Ext.extend(Toc.articles_categories.ArticlesCategoriesDialog, Ext.Window, {
   },
 
   submitForm : function() {
+  	this.frmArticlesCategory.form.baseParams['stores_ids'] =  this.grdStores.getStoreIds();
+  	
     this.frmArticlesCategory.form.submit({
       waitMsg: TocLanguage.formSubmitWaitMsg,
       success: function(form, action){

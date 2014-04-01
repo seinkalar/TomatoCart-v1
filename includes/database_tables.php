@@ -18,6 +18,7 @@
   define('TABLE_ARTICLES', DB_TABLE_PREFIX . 'articles');
   define('TABLE_ARTICLES_CATEGORIES', DB_TABLE_PREFIX . 'articles_categories');
   define('TABLE_ARTICLES_CATEGORIES_DESCRIPTION', DB_TABLE_PREFIX . 'articles_categories_description');
+  define('TABLE_ARTICLES_CATEGORIES_TO_STORES', DB_TABLE_PREFIX . 'articles_categories_to_stores');
   define('TABLE_ARTICLES_DESCRIPTION', DB_TABLE_PREFIX . 'articles_description');
   define('TABLE_ARTICLES_TO_STORES', DB_TABLE_PREFIX . 'articles_to_stores');
   define('TABLE_BANNERS', DB_TABLE_PREFIX . 'banners');

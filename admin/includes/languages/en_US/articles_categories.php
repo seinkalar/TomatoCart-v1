@@ -15,6 +15,8 @@ table_heading_publish = Publish
 table_heading_categories = Article Categories
 table_heading_action = Action
 table_heading_categories_order = Sort Order
+table_heading_stores_name = Store Name
+table_heading_stores_url = URL Address
 
 field_name = Name:
 field_url = Friendly URL:
@@ -29,6 +31,7 @@ action_heading_batch_delete_categories = Batch Delete Categories
 
 section_general = General
 section_meta = Meta Info
+section_stores = Stores
 
 field_page_title = Page Title:
 field_meta_keywords = Keywords:

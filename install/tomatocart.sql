@@ -101,6 +101,14 @@ CREATE TABLE toc_articles_categories_description (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
+DROP TABLE IF EXISTS toc_articles_categories_to_stores;
+CREATE TABLE toc_articles_categories_to_stores(
+  articles_categories_id int(11) NOT NULL,
+  stores_id int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (articles_categories_id,stores_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
 DROP TABLE IF EXISTS toc_articles_description;
 CREATE TABLE toc_articles_description (
   articles_id int(11) NOT NULL,
@@ -113,6 +121,7 @@ CREATE TABLE toc_articles_description (
   articles_meta_description varchar(255) NOT NULL,
   PRIMARY KEY  (articles_id,language_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS toc_articles_to_stores;
 CREATE TABLE toc_articles_to_stores(

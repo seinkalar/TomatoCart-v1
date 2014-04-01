@@ -115,6 +115,35 @@
           }
         }
       }
+      
+      //stores
+      if ($error === false) {
+      	if (is_numeric($id)) {
+      		$Qdelete = $osC_Database->query('delete from :table_articles_categories_to_stores where articles_categories_id = :articles_categories_id');
+      		$Qdelete->bindTable(':table_articles_categories_to_stores', TABLE_ARTICLES_CATEGORIES_TO_STORES);
+      		$Qdelete->bindInt(':articles_categories_id', $articles_category_id);
+      		$Qdelete->execute();
+      
+      		if ( $osC_Database->isError() ) {
+      			$error = true;
+      		}
+      	}
+      
+      	if ( count($data['stores_ids']) > 0 ) {
+      		foreach ($data['stores_ids'] as $stores_id) {
+      			$Qinsert = $osC_Database->query('insert into :table_articles_categories_to_stores (articles_categories_id, stores_id) values (:articles_categories_id, :stores_id)');
+      			$Qinsert->bindTable(':table_articles_categories_to_stores', TABLE_ARTICLES_CATEGORIES_TO_STORES);
+      			$Qinsert->bindInt(':articles_categories_id', $articles_category_id);
+      			$Qinsert->bindInt(':stores_id', $stores_id);
+      			$Qinsert->execute();
+      
+      			if ( $osC_Database->isError() ) {
+      				$error = true;
+      				break;
+      			}
+      		}
+      	}
+      }
 
       if ( $error === false ) {
         $osC_Database->commitTransaction();
@@ -185,6 +214,34 @@
       $Qac->freeResult();
 
       return $data;
+    }
+    
+    /**
+     * Get the stores linked to currect article category
+     *
+     * @acess public
+     * @param int
+     * @return mixed
+     */
+    function getStores($id) {
+    	global $osC_Database;
+    
+    	$Qstores = $osC_Database->query('select stores_id from :table_articles_categories_to_stores where articles_categories_id = :articles_categories_id');
+    	$Qstores->bindTable(':table_articles_categories_to_stores', TABLE_ARTICLES_CATEGORIES_TO_STORES);
+    	$Qstores->bindInt(':articles_categories_id', $id);
+    	$Qstores->execute();
+    
+    	if ($Qstores->numberOfRows() > 0) {
+    		$result = array();
+    
+    		while ($Qstores->next()) {
+    			$result[] = $Qstores->valueInt('stores_id');
+    		}
+    
+    		return $result;
+    	}
+    
+    	return null;
     }
   }
 ?>
