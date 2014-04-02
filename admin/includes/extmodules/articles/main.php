@@ -11,12 +11,14 @@
   as published by the Free Software Foundation.
 */
 
-  echo 'Ext.namespace("Toc.articles");';
+  echo 'Ext.namespace("Toc.articles", "Toc.common");';
   
   include('articles_dialog.php');
   include('articles_grid.php');
   include('articles_general_panel.php');
   include('articles_meta_info_panel.php');
+  
+  include(DIR_FS_CATALOG . DIR_FS_ADMIN . 'includes/extmodules/common/stores_grid.php');
 ?>
 
 Ext.override(TocDesktop.ArticlesWindow, {

@@ -20,7 +20,7 @@ Toc.articles.ArticlesDialog = function(config) {
   config.title = '<?php echo $osC_Language->get('heading_title_new_article'); ?>';
   config.layout = 'fit';
   config.width = 850;
-  config.height = 570;
+  config.height = 700;
   config.modal = true;
   config.iconCls = 'icon-articles-win';
   config.items = this.buildForm();
@@ -53,9 +53,36 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
     var articlesId = id || null;
     var categoriesId = cId || null;
     
+    if (articlesId > 0) {
+    	this.grdStores.getStore().on('load', function() {
+    		Ext.Ajax.request({
+					url: Toc.CONF.CONN_URL,
+            params: {
+              module: 'articles',
+              action: 'load_stores',
+              articles_id: articlesId
+            },
+            callback: function(options, success, response){
+              var result = Ext.decode(response.responseText);
+              
+              if (result.success) {
+              	var storesIds = result.stores;
+              	
+              	Ext.each(storesIds, function(storeId) {
+              		var index = this.grdStores.getStore().indexOfId(storeId);
+              		
+              		this.grdStores.getSelectionModel().selectRow(index);
+              	}, this);
+              }
+            },
+            scope: this
+				});   
+			}, this);
+    }	
+    
     this.frmArticle.form.reset();  
     this.frmArticle.form.baseParams['articles_id'] = articlesId;
-   
+    
     if (articlesId > 0) { 
       this.frmArticle.load({
         url: Toc.CONF.CONN_URL,
@@ -110,6 +137,8 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
   },
   
   getDataPanel: function() {
+  	this.grdStores = new Toc.common.StoresGrid();
+  
     dsCategories = new Ext.data.Store({
       url:Toc.CONF.CONN_URL,
       baseParams: {
@@ -136,13 +165,13 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
       forceSelection: true,
       allowBlank: false
     });
-  
+    
     this.pnlData = new Ext.Panel({
       layout: 'column',
-      region: 'north',
       border: false,
       autoHeight: true,
       style: 'padding: 6px',
+      title: '<?php echo $osC_Language->get('heading_title_data'); ?>',
       items: [
         {
           layout: 'form',
@@ -205,14 +234,27 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
       ]
     });
     
-    return this.pnlData;
+    this.tabPnlData = new Ext.TabPanel({
+      activeTab: 0,
+			region: 'north',
+			height: 250,
+      defaults:{
+        hideMode:'offsets'
+      },
+      deferredRender: false,
+      items: [
+        this.pnlData,
+        this.grdStores
+      ]
+    });
+    
+    return this.tabPnlData;
   },
   
   buildForm: function() {
     this.frmArticle = new Ext.form.FormPanel({
       fileUpload: true,
       layout: 'border',
-      title:'<?php echo $osC_Language->get('heading_title_data'); ?>',
       url: Toc.CONF.CONN_URL,
       baseParams: {  
         module: 'articles',
@@ -226,6 +268,8 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
   },
   
   submitForm : function() {
+  	this.frmArticle.form.baseParams['stores_ids'] =  this.grdStores.getStoreIds();
+  	
     this.frmArticle.form.submit({
       waitMsg: TocLanguage.formSubmitWaitMsg,
       success: function(form, action){
