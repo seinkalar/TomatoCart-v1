@@ -225,6 +225,28 @@ INSERT INTO toc_products_to_categories (products_id, categories_id) VALUES
 (18, 3),
 (19, 5);
 
+INSERT INTO toc_products_to_stores (products_id, stores_id) VALUES
+(1, 0),
+(2, 0),
+(3, 0),
+(4, 0),
+(5, 0),
+(6, 0),
+(7, 0),
+(8, 0),
+(9, 0),
+(10, 0),
+(11, 0),
+(12, 0),
+(13, 0),
+(14, 0),
+(15, 0),
+(16, 0),
+(17, 0),
+(18, 0),
+(19, 0);
+
+
 #popular search term
 INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Cache Contents', 'BOX_POPULAR_SEARCH_TERM_CACHE', '60', 'Number of minutes to keep the contents cached (0 = no cache)', '6', '0', now());
 INSERT INTO toc_search_terms (search_terms_id, text, products_count, search_count, synonym, show_in_terms, date_updated) VALUES
