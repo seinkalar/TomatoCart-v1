@@ -110,6 +110,17 @@ INSERT INTO toc_categories_description (categories_id, language_id, categories_n
 (9, 1, 'iPod & Camera', 'ipod-camera', '', '', '');
 
 
+INSERT INTO toc_categories_to_stores (categories_id, stores_id) VALUES
+(1, 0),
+(2, 0),
+(3, 0),
+(4, 0),
+(5, 0),
+(6, 0),
+(7, 0),
+(8, 0),
+(9, 0);
+
 #products
 INSERT INTO toc_products (products_id, products_quantity, products_price, products_date_added, products_last_modified, products_date_available, products_weight, products_weight_class, products_status, products_tax_class_id, manufacturers_id, products_ordered, quantity_discount_groups_id, quantity_unit_class, products_sku, products_model) VALUES
 (1, 10, 799.0000, now(), NULL, NULL, 10.00, 2, 1, 0, 2, 0, 0, 1, '', ''),

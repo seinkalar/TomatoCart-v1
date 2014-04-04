@@ -33,7 +33,14 @@ class toC_Json_Store {
 		$limit = empty($_POST['limit']) ? MAX_DISPLAY_SEARCH_RESULTS : $_POST['limit'];
 		$search = !empty($_POST['search']) ? $_POST['search'] : null;
 		
-		$records = toC_Store_Admin::listStores($start, $limit, $search);
+		$records = array();
+		if ($start == 0) {
+		  $records[] = array('store_id' => '0', 'store_name' => 'Default Store', 'url_address' => HTTP_SERVER, 'ssl_url_address' => HTTPS_SERVER);
+		}
+		
+		$result = toC_Store_Admin::listStores($start, $limit, $search);
+		
+		$records = array_merge($records, toC_Store_Admin::listStores($start, $limit, $search));
 		
 		$response = array(EXT_JSON_READER_TOTAL => sizeof($records), EXT_JSON_READER_ROOT => $records);
 	
