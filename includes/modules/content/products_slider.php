@@ -31,23 +31,25 @@
 
       if (MODULE_CONTENT_PRODUCTS_SLIDER_PRODUCTS_TYPE == 'New Products') {
         $this->_title = $osC_Language->get('products_slider_new_products_title');
-        $Qproducts = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, i.image from :table_products p, :table_products_images i, :table_products_description pd where p.products_status = 1 and p.products_id = pd.products_id and p.products_id = i.products_id and i.default_flag = :default_flag and pd.language_id = :language_id order by p.products_date_added desc limit :max_display_products');
+        $Qproducts = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, i.image from :table_products p, :table_products_images i, :table_products_description pd, :table_products_to_stores p2s where p.products_status = 1 and p.products_id = p2s.products_id and p.products_id = pd.products_id and p.products_id = i.products_id and i.default_flag = :default_flag and pd.language_id = :language_id and p2s.stores_id = :stores_id order by p.products_date_added desc limit :max_display_products');
       }else if (MODULE_CONTENT_PRODUCTS_SLIDER_PRODUCTS_TYPE == 'Special Products') {
         $this->_title = $osC_Language->get('products_slider_special_products_title');
-        $Qproducts = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, i.image, s.specials_new_products_price from :table_products p, :table_products_images i, :table_products_description pd, :table_specials s where s.status = 1 and s.products_id = p.products_id and p.products_status = 1 and p.products_id = pd.products_id and p.products_id = i.products_id and i.default_flag = :default_flag and pd.language_id = :language_id order by s.specials_date_added desc limit :max_display_products');
+        $Qproducts = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, i.image, s.specials_new_products_price from :table_products p, :table_products_images i, :table_products_description pd, :table_specials s, :table_products_to_stores p2s where s.status = 1 and s.products_id = p.products_id and p.products_status = 1 and p.products_id = p2s.products_id and p.products_id = pd.products_id and p.products_id = i.products_id and i.default_flag = :default_flag and pd.language_id = :language_id and p2s.stores_id = :stores_id order by s.specials_date_added desc limit :max_display_products');
         $Qproducts->bindTable(':table_specials', TABLE_SPECIALS);
       }else if (MODULE_CONTENT_PRODUCTS_SLIDER_PRODUCTS_TYPE == 'Best Sellers') {
         $this->_title = $osC_Language->get('products_slider_best_sellers_title');
-        $Qproducts = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, i.image from :table_products p, :table_products_images i, :table_products_description pd where p.products_status = 1 and p.products_id = pd.products_id and p.products_id = i.products_id and i.default_flag = :default_flag and pd.language_id = :language_id and p.products_ordered > 0 order by p.products_ordered desc limit :max_display_products');
+        $Qproducts = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, i.image from :table_products p, :table_products_images i, :table_products_description pd , :table_products_to_stores p2s where p.products_status = 1 and p.products_id = pd.products_id and p.products_id = p2s.products_id and p.products_id = i.products_id and i.default_flag = :default_flag and pd.language_id = :language_id and p.products_ordered > 0 and p2s.stores_id = :stores_id order by p.products_ordered desc limit :max_display_products');
       }
 
       $Qproducts->bindTable(':table_products', TABLE_PRODUCTS);
+      $Qproducts->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
       $Qproducts->bindTable(':table_products_images', TABLE_PRODUCTS_IMAGES);
       $Qproducts->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
       $Qproducts->bindInt(':default_flag', 1);
+      $Qproducts->bindInt(':stores_id', STORE_ID);
       $Qproducts->bindInt(':language_id', $osC_Language->getID());
       $Qproducts->bindInt(':max_display_products', MODULE_CONTENT_PRODUCTS_SLIDER_MAX_DISPLAY);
-
+      
       $content = '<div id="sliderLeft"><a href="javascript:void(0);">&nbsp;</a></div>';
       $content .=
         '<div id="productsSliderWrapper">' .

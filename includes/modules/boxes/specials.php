@@ -33,11 +33,13 @@
         if ((BOX_SPECIALS_CACHE > 0) && $osC_Cache->read('box-specials-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode(), BOX_SPECIALS_CACHE)) {
           $data = $osC_Cache->getCache();
         } else {
-          $Qspecials = $osC_Database->query('select p.products_id, p.products_price, p.products_tax_class_id, pd.products_name, pd.products_keyword, s.specials_new_products_price, i.image from :table_products p left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd, :table_specials s where s.status = 1 and s.products_id = p.products_id and p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id order by s.specials_date_added desc limit :max_random_select_specials');
+          $Qspecials = $osC_Database->query('select p.products_id, p.products_price, p.products_tax_class_id, pd.products_name, pd.products_keyword, s.specials_new_products_price, i.image from :table_products p inner join :table_products_to_stores p2s on (p2s.products_id = p.products_id and p2s.stores_id = :stores_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd, :table_specials s where s.status = 1 and s.products_id = p.products_id and p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id order by s.specials_date_added desc limit :max_random_select_specials');
           $Qspecials->bindTable(':table_products', TABLE_PRODUCTS);
+          $Qspecials->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
           $Qspecials->bindTable(':table_products_images', TABLE_PRODUCTS_IMAGES);
           $Qspecials->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
           $Qspecials->bindInt(':default_flag', 1);
+          $Qspecials->bindInt(':stores_id', STORE_ID);
           $Qspecials->bindTable(':table_specials', TABLE_SPECIALS);
           $Qspecials->bindInt(':language_id', $osC_Language->getID());
           $Qspecials->bindInt(':max_random_select_specials', BOX_SPECIALS_RANDOM_SELECT);

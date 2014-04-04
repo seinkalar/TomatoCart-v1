@@ -100,5 +100,26 @@
 
       return $path;
     }
+    
+    function buildExtJsonTreeArray($parent_id = 0, $tree_node_cls = 'x-tree-node-collapsed') {
+    	$result = array();
+    
+    	if (isset($this->data[$parent_id])) {
+    		foreach ($this->data[$parent_id] as $category_id => $category) {
+    			$data = array('id' => $category_id, 'text' => $category['name']);
+    
+    			if (isset($this->data[$category_id])) {
+    				$data['children'] = $this->buildExtJsonTreeArray($category_id, $tree_node_cls);
+    			} else {
+    				$data['leaf'] = true;
+    				$data['cls'] = $tree_node_cls;
+    			}
+    
+    			$result[] = $data;
+    		}
+    	}
+    
+    	return $result;
+    }
   }
 ?>

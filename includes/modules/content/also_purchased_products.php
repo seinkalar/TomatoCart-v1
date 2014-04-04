@@ -30,16 +30,18 @@
       global $osC_Database, $osC_Language, $osC_Product, $osC_Image;
 
       if (isset($osC_Product)) {
-        $Qorders = $osC_Database->query('select p.products_id, pd.products_name, pd.products_keyword, i.image from :table_orders_products opa, :table_orders_products opb, :table_orders o, :table_products p left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd where opa.products_id = :products_id and opa.orders_id = opb.orders_id and opb.products_id != :products_id and opb.products_id = p.products_id and opb.orders_id = o.orders_id and p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id group by p.products_id order by o.date_purchased desc limit :limit');
+        $Qorders = $osC_Database->query('select p.products_id, pd.products_name, pd.products_keyword, i.image from :table_orders_products opa, :table_orders_products opb, :table_orders o, :table_products p inner join :table_products_to_stores p2s on (p2s.products_id = p.products_id and p2s.stores_id = :stores_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd where opa.products_id = :products_id and opa.orders_id = opb.orders_id and opb.products_id != :products_id and opb.products_id = p.products_id and opb.orders_id = o.orders_id and p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id group by p.products_id order by o.date_purchased desc limit :limit');
         $Qorders->bindTable(':table_orders_products', TABLE_ORDERS_PRODUCTS);
         $Qorders->bindTable(':table_orders_products', TABLE_ORDERS_PRODUCTS);
         $Qorders->bindTable(':table_orders', TABLE_ORDERS);
         $Qorders->bindTable(':table_products', TABLE_PRODUCTS);
+        $Qorders->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
         $Qorders->bindTable(':table_products_images', TABLE_PRODUCTS_IMAGES);
         $Qorders->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
         $Qorders->bindInt(':default_flag', 1);
         $Qorders->bindInt(':products_id', $osC_Product->getID());
         $Qorders->bindInt(':products_id', $osC_Product->getID());
+        $Qorders->bindInt(':stores_id', STORE_ID);
         $Qorders->bindInt(':language_id', $osC_Language->getID());
         $Qorders->bindInt(':limit', MODULE_CONTENT_ALSO_PURCHASED_MAX_DISPLAY);
 

@@ -30,16 +30,18 @@
       global $osC_Database, $osC_Language, $osC_Product, $osC_Image;
 
       if (isset($osC_Product)) {
-        $Qproducts = $osC_Database->query('select p.products_id, pd.products_name, i.image from :table_products_xsell px left join :table_products_images i on (px.xsell_products_id = i.products_id and i.default_flag = :default_flag), :table_products p, :table_products_description pd where px.xsell_products_id = p.products_id and p.products_id = pd.products_id and px.products_id = :products_id and p.products_status = 1 and pd.language_id = :language_id');
+        $Qproducts = $osC_Database->query('select p.products_id, pd.products_name, i.image from :table_products_xsell px left join :table_products_images i on (px.xsell_products_id = i.products_id and i.default_flag = :default_flag), :table_products p, :table_products_to_stores p2s, :table_products_description pd where px.xsell_products_id = p.products_id and p.products_id = pd.products_id and px.products_id = :products_id and p.products_status = 1 and pd.language_id = :language_id and p2s.products_id = p.products_id and p2s.stores_id = :stores_id');
         $Qproducts->bindTable(':table_products_xsell', TABLE_PRODUCTS_XSELL);
         $Qproducts->bindTable(':table_products_images', TABLE_PRODUCTS_IMAGES);
         $Qproducts->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
         $Qproducts->bindTable(':table_products', TABLE_PRODUCTS);
+        $Qproducts->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
         $Qproducts->bindInt(':default_flag', 1);
         $Qproducts->bindInt(':products_id', $osC_Product->getID());
+        $Qproducts->bindInt(':stores_id', STORE_ID);
         $Qproducts->bindInt(':language_id', $osC_Language->getID());
         $Qproducts->execute();
-
+        
         if ($Qproducts->numberOfRows() > 0) {
           $this->_content = '<div style="overflow: auto;">';
 

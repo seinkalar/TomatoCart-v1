@@ -34,11 +34,13 @@
       } else {
         $data = array();
 
-        $Qnew = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, pd.products_keyword, i.image from :table_products p left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd where p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id order by p.products_date_added desc limit :max_random_select_new');
+        $Qnew = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, pd.products_keyword, i.image from :table_products p inner join :table_products_to_stores p2s on (p2s.products_id = p.products_id and p2s.stores_id = :stores_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd where p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id order by p.products_date_added desc limit :max_random_select_new');
         $Qnew->bindTable(':table_products', TABLE_PRODUCTS);
+        $Qnew->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
         $Qnew->bindTable(':table_products_images', TABLE_PRODUCTS_IMAGES);
         $Qnew->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
         $Qnew->bindInt(':default_flag', 1);
+        $Qnew->bindInt(':stores_id', STORE_ID);
         $Qnew->bindInt(':language_id', $osC_Language->getID());
         $Qnew->bindInt(':max_random_select_new', BOX_WHATS_NEW_RANDOM_SELECT);
         $Qnew->executeRandomMulti();

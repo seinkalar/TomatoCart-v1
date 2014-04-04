@@ -53,9 +53,11 @@
         } 
         
         if ($is_cache_loaded === false) {
-          $Qcategories = $osC_Database->query('select c.categories_id, c.parent_id, c.categories_image, cd.categories_name, cd.categories_url, cd.categories_page_title, cd.categories_meta_keywords, cd.categories_meta_description from :table_categories c, :table_categories_description cd where c.categories_id = cd.categories_id and cd.language_id = :language_id');
+          $Qcategories = $osC_Database->query('select c.categories_id, c.parent_id, c.categories_image, cd.categories_name, cd.categories_url, cd.categories_page_title, cd.categories_meta_keywords, cd.categories_meta_description from :table_categories c, :table_categories_description cd, :table_categories_to_stores c2s where c.categories_id = cd.categories_id and cd.language_id = :language_id and c.categories_id = c2s.categories_id and c2s.stores_id = :stores_id');
           $Qcategories->bindTable(':table_categories', TABLE_CATEGORIES);
+          $Qcategories->bindTable(':table_categories_to_stores', TABLE_CATEGORIES_TO_STORES);
           $Qcategories->bindTable(':table_categories_description', TABLE_CATEGORIES_DESCRIPTION);
+          $Qcategories->bindInt(':stores_id', STORE_ID);
           $Qcategories->bindInt(':language_id', $osC_Language->getID());
           
           if ($load_all_categories === false) {
@@ -65,7 +67,7 @@
           
           $Qcategories->appendQuery('order by c.parent_id, c.sort_order, cd.categories_name');
           $Qcategories->execute();
-
+          
           $this->data = array();
 
           while ($Qcategories->next()) {

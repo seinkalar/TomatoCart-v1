@@ -30,18 +30,20 @@
       global $osC_Database, $osC_Services, $osC_Language, $osC_Currencies, $osC_Image, $osC_Specials, $current_category_id;
 
       if ($current_category_id < 1) {
-        $Qnewproducts = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, pd.products_keyword, i.image from :table_products p left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd where p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id order by p.products_date_added desc limit :max_display_new_products');
+        $Qnewproducts = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, pd.products_keyword, i.image from :table_products p inner join :table_products_to_stores p2s on (p2s.products_id = p.products_id and p2s.stores_id = :stores_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd where p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id order by p.products_date_added desc limit :max_display_new_products');
       } else {
-        $Qnewproducts = $osC_Database->query('select distinct p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, pd.products_keyword, i.image from :table_products p left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd, :table_products_to_categories p2c, :table_categories c where c.parent_id = :parent_id and c.categories_id = p2c.categories_id and p2c.products_id = p.products_id and p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id order by p.products_date_added desc limit :max_display_new_products');
+        $Qnewproducts = $osC_Database->query('select distinct p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, pd.products_keyword, i.image from :table_products p inner join :table_products_to_stores p2s on (p2s.products_id = p.products_id and p2s.stores_id = :stores_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd, :table_products_to_categories p2c, :table_categories c where c.parent_id = :parent_id and c.categories_id = p2c.categories_id and p2c.products_id = p.products_id and p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id order by p.products_date_added desc limit :max_display_new_products');
         $Qnewproducts->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
         $Qnewproducts->bindTable(':table_categories', TABLE_CATEGORIES);
         $Qnewproducts->bindInt(':parent_id', $current_category_id);
       }
 
       $Qnewproducts->bindTable(':table_products', TABLE_PRODUCTS);
+      $Qnewproducts->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
       $Qnewproducts->bindTable(':table_products_images', TABLE_PRODUCTS_IMAGES);
       $Qnewproducts->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
       $Qnewproducts->bindInt(':default_flag', 1);
+      $Qnewproducts->bindInt(':stores_id', STORE_ID);
       $Qnewproducts->bindInt(':language_id', $osC_Language->getID());
       $Qnewproducts->bindInt(':max_display_new_products', MODULE_CONTENT_NEW_PRODUCTS_MAX_DISPLAY);
 

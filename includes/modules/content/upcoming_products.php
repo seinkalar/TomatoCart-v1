@@ -29,12 +29,14 @@
     function initialize() {
       global $osC_Database, $osC_Language, $osC_Currencies, $osC_Image, $osC_Template;
 
-      $Qupcoming = $osC_Database->query('select p.products_id, p.products_price, p.products_tax_class_id, p.products_date_available as date_expected, pd.products_name, pd.products_keyword, s.specials_new_products_price, i.image from :table_products p left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag) left join :table_specials s on (p.products_id = s.products_id and s.status = 1), :table_products_description pd where to_days(p.products_date_available) >= to_days(now()) and p.products_status = :products_status and p.products_id = pd.products_id and pd.language_id = :language_id order by p.products_date_available limit :max_display_upcoming_products');
+      $Qupcoming = $osC_Database->query('select p.products_id, p.products_price, p.products_tax_class_id, p.products_date_available as date_expected, pd.products_name, pd.products_keyword, s.specials_new_products_price, i.image from :table_products p inner join :table_products_to_stores p2s on (p2s.products_id = p.products_id and p2s.stores_id = :stores_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag) left join :table_specials s on (p.products_id = s.products_id and s.status = 1), :table_products_description pd where to_days(p.products_date_available) >= to_days(now()) and p.products_status = :products_status and p.products_id = pd.products_id and pd.language_id = :language_id order by p.products_date_available limit :max_display_upcoming_products');
       $Qupcoming->bindTable(':table_products', TABLE_PRODUCTS);
+      $Qupcoming->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
       $Qupcoming->bindTable(':table_products_images', TABLE_PRODUCTS_IMAGES);
       $Qupcoming->bindTable(':table_specials', TABLE_SPECIALS);
       $Qupcoming->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
       $Qupcoming->bindInt(':default_flag', 1);
+      $Qupcoming->bindInt(':stores_id', STORE_ID);
       $Qupcoming->bindInt(':products_status', 1);
       $Qupcoming->bindInt(':language_id', $osC_Language->getID());
       $Qupcoming->bindInt(':max_display_upcoming_products', MODULE_CONTENT_UPCOMING_PRODUCTS_MAX_DISPLAY);

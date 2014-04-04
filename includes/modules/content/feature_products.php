@@ -30,24 +30,26 @@
       global $osC_Database, $osC_Services, $osC_Language, $osC_Currencies, $osC_Image, $osC_Specials, $current_category_id;
 
       if ($current_category_id < 1) {
-        $Qproducts = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, pd.products_keyword, pf.sort_order, i.image from :table_products p left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd, :table_products_frontpage pf where p.products_status = 1 and p.products_id = pd.products_id and pd.products_id = pf.products_id and pd.language_id = :language_id order by pf.sort_order limit :max_display_feature_products');
+        $Qproducts = $osC_Database->query('select p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, pd.products_keyword, pf.sort_order, i.image from :table_products p inner join :table_products_to_stores p2s on (p2s.products_id = p.products_id and p2s.stores_id = :stores_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd, :table_products_frontpage pf where p.products_status = 1 and p.products_id = pd.products_id and pd.products_id = pf.products_id and pd.language_id = :language_id order by pf.sort_order limit :max_display_feature_products');
       } else {
-        $Qproducts = $osC_Database->query('select distinct p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, pf.sort_order, pd.products_keyword, i.image from :table_products p left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd, :table_products_to_categories p2c, :table_categories c, :table_products_frontpage pf where c.parent_id = :parent_id and c.categories_id = p2c.categories_id and p2c.products_id = p.products_id and p.products_id = pf.products_id and p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id order by pf.sort_order limit :max_display_feature_products');
+        $Qproducts = $osC_Database->query('select distinct p.products_id, p.products_tax_class_id, p.products_price, pd.products_name, pf.sort_order, pd.products_keyword, i.image from :table_products p inner join :table_products_to_stores p2s on (p2s.products_id = p.products_id and p2s.stores_id = :stores_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag), :table_products_description pd, :table_products_to_categories p2c, :table_categories c, :table_products_frontpage pf where c.parent_id = :parent_id and c.categories_id = p2c.categories_id and p2c.products_id = p.products_id and p.products_id = pf.products_id and p.products_status = 1 and p.products_id = pd.products_id and pd.language_id = :language_id order by pf.sort_order limit :max_display_feature_products');
         $Qproducts->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
         $Qproducts->bindTable(':table_categories', TABLE_CATEGORIES);
         $Qproducts->bindInt(':parent_id', $current_category_id);
       }
 
       $Qproducts->bindTable(':table_products', TABLE_PRODUCTS);
+      $Qproducts->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
       $Qproducts->bindTable(':table_products_images', TABLE_PRODUCTS_IMAGES);
       $Qproducts->bindTable(':table_products_frontpage', TABLE_PRODUCTS_FRONTPAGE);
       $Qproducts->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
       $Qproducts->bindInt(':default_flag', 1);
+      $Qproducts->bindInt(':stores_id', STORE_ID);
       $Qproducts->bindInt(':language_id', $osC_Language->getID());
       $Qproducts->bindInt(':max_display_feature_products', MODULE_CONTENT_FEATURE_PRODUCTS_MAX_DISPLAY);
       $Qproducts->setCache('feature-products-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode() . '-' . $current_category_id);
       $Qproducts->execute();
-
+      
       if ($Qproducts->numberOfRows()) {
         $this->_content = '<div style="overflow: auto; height: 100%;">';
 

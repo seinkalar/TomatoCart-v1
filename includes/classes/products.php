@@ -323,9 +323,10 @@ class osC_Products {
 	function &execute() {
 		global $osC_Database, $osC_Language, $osC_CategoryTree, $osC_Image;
 
-		$Qlisting = $osC_Database->query('select p.*, pd.*, m.*, if(s.status, s.specials_new_products_price, null) as specials_new_products_price, if(s.status, s.specials_new_products_price, if (pv.products_price, pv.products_price, p.products_price)) as final_price, i.image from :table_products p left join :table_products_variants pv on (p.products_id = pv.products_id and pv.is_default = 1) left join :table_manufacturers m using(manufacturers_id) left join :table_specials s on (p.products_id = s.products_id) left join :table_manufacturers_info mi on (m.manufacturers_id = mi.manufacturers_id and mi.languages_id = :languages_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag)');
+		$Qlisting = $osC_Database->query('select p.*, pd.*, m.*, if(s.status, s.specials_new_products_price, null) as specials_new_products_price, if(s.status, s.specials_new_products_price, if (pv.products_price, pv.products_price, p.products_price)) as final_price, i.image from :table_products p left join :table_products_variants pv on (p.products_id = pv.products_id and pv.is_default = 1) left join :table_manufacturers m using(manufacturers_id) left join :table_specials s on (p.products_id = s.products_id) left join :table_manufacturers_info mi on (m.manufacturers_id = mi.manufacturers_id and mi.languages_id = :languages_id) left join :table_products_images i on (p.products_id = i.products_id and i.default_flag = :default_flag) inner join :table_products_to_stores p2s on (p2s.products_id = p.products_id and p2s.stores_id = :stores_id)');
 		$Qlisting->bindTable(':table_products', TABLE_PRODUCTS);
 		$Qlisting->bindTable(':table_products_variants', TABLE_PRODUCTS_VARIANTS);
+		$Qlisting->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
 		$Qlisting->bindTable(':table_manufacturers', TABLE_MANUFACTURERS);
 		$Qlisting->bindTable(':table_manufacturers_info', TABLE_MANUFACTURERS_INFO);
 		$Qlisting->bindTable(':table_specials', TABLE_SPECIALS);
@@ -342,6 +343,7 @@ class osC_Products {
 
 		$Qlisting->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
 		$Qlisting->bindInt(':default_flag', 1);
+		$Qlisting->bindInt(':stores_id', STORE_ID);
 		$Qlisting->bindInt(':language_id', $osC_Language->getID());
 		$Qlisting->bindInt(':languages_id', $osC_Language->getID());
 
