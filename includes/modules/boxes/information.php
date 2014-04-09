@@ -27,10 +27,12 @@
     function initialize() {
       global $osC_Database,$osC_Language;
 
-      $Qarticles = $osC_Database->query('select ad.articles_id, ad.articles_name from :table_articles a, :table_articles_description ad where a.articles_id = ad.articles_id and ad.language_id = :language_id and a.articles_status = 1 and a.articles_categories_id = 1 order by a.articles_order');
+      $Qarticles = $osC_Database->query('select ad.articles_id, ad.articles_name from :table_articles a, :table_articles_description ad, :table_articles_to_stores a2s where a.articles_id = ad.articles_id and a.articles_id = a2s.articles_id and a2s.stores_id = :stores_id and ad.language_id = :language_id and a.articles_status = 1 and a.articles_categories_id = 1 order by a.articles_order');
       $Qarticles->bindTable(':table_articles', TABLE_ARTICLES);
+      $Qarticles->bindTable(':table_articles_to_stores', TABLE_ARTICLES_TO_STORES);
       $Qarticles->bindTable(':table_articles_description', TABLE_ARTICLES_DESCRIPTION);
       $Qarticles->bindInt(':language_id', $osC_Language->getID());
+      $Qarticles->bindInt(':stores_id', STORES_ID);
       $Qarticles->setCache('box-information-' . $osC_Language->getCode(), 100);
       $Qarticles->execute();
 
