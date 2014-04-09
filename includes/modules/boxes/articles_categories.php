@@ -28,10 +28,12 @@
       global $osC_Database,$osC_Language;
       $this->_title_link = osc_href_link(FILENAME_INFO,'articles_categories');
 
-      $Qac = $osC_Database->query('select cd.articles_categories_id, cd.articles_categories_name from :table_articles_categories c, :table_articles_categories_description cd where c.articles_categories_id = cd.articles_categories_id and cd.language_id = :language_id and c.articles_categories_status = 1 order by c.articles_categories_order, cd.articles_categories_name limit :max_display_articles_categories');
+      $Qac = $osC_Database->query('select cd.articles_categories_id, cd.articles_categories_name from :table_articles_categories c, :table_articles_categories_to_stores ac2s, :table_articles_categories_description cd where c.articles_categories_id = cd.articles_categories_id and c.articles_categories_id = ac2s.articles_categories_id and ac2s.stores_id = :stores_id and cd.language_id = :language_id and c.articles_categories_status = 1 order by c.articles_categories_order, cd.articles_categories_name limit :max_display_articles_categories');
       $Qac->bindTable(':table_articles_categories', TABLE_ARTICLES_CATEGORIES);
+      $Qac->bindTable(':table_articles_categories_to_stores', TABLE_ARTICLES_CATEGORIES_TO_STORES);
       $Qac->bindTable(':table_articles_categories_description', TABLE_ARTICLES_CATEGORIES_DESCRIPTION);
       $Qac->bindInt(':language_id', $osC_Language->getID());
+      $Qac->bindInt(':stores_id', STORES_ID);
       $Qac->bindInt(':max_display_articles_categories', BOX_ARTICLES_CATEGORIES_MAX_LIST);
       $Qac->setCache('box_articles_categories-' . $osC_Language->getCode(), BOX_ARTICLES_CATEGORIES_MAX_LIST);
       $Qac->execute();
