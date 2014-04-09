@@ -84,6 +84,14 @@ INSERT INTO toc_manufacturers (manufacturers_id, manufacturers_name, manufacture
 (4, 'Lenovo', 'lenovo.png', now(), now()),
 (5, 'Sony', 'sony.png', now(), now());
 
+#manufacturers to stores
+INSERT INTO toc_manufacturers_to_stores (manufacturers_id, stores_id) VALUES
+(1, 0),
+(2, 0),
+(3, 0),
+(4, 0),
+(5, 0);
+
 #manufacturers_info
 INSERT INTO toc_manufacturers_info (manufacturers_id, languages_id, manufacturers_url, manufacturers_friendly_url, url_clicked, date_last_click, manufacturers_page_title , manufacturers_meta_keywords, manufacturers_meta_description) VALUES 
 (1, 1, 'http://www.apple.com', 'apple', '0', NULL, '', '', ''),

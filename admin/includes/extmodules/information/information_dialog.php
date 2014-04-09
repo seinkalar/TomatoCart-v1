@@ -105,8 +105,8 @@ Ext.extend(Toc.information.InformationDialog, Ext.Window, {
 	              		
 	              			this.grdStores.getSelectionModel().selectRow(index);
 	              		}
-	              	}, this);
-	              }
+              	}, this);
+              }
             },
             scope: this
 				});   
