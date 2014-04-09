@@ -6938,6 +6938,9 @@ INSERT INTO toc_email_templates_description (email_templates_id, language_id, em
 INSERT INTO toc_articles_categories (articles_categories_id, articles_categories_status, articles_categories_order) VALUES (1, 1, 1);
 INSERT INTO toc_articles_categories_description (articles_categories_id, language_id, articles_categories_name, articles_categories_url, articles_categories_page_title, articles_categories_meta_keywords, articles_categories_meta_description) VALUES (1, 1, 'Information', 'information', '', '' , '');
 
+# Articles Categories To Stores
+INSERT INTO toc_articles_categories_to_stores (articles_categories_id, stores_id) values (1, 0);
+
 # Articles
 INSERT INTO toc_articles (articles_id, articles_categories_id, articles_status, articles_order, articles_date_added, articles_last_modified, articles_image) VALUES
 (1, 1, 1, 1, now(), now(), NULL),
@@ -6946,6 +6949,8 @@ INSERT INTO toc_articles (articles_id, articles_categories_id, articles_status, 
 (4, 1, 1, 4, now(), now(), NULL),
 (5, 1, 1, 5, now(), now(), NULL);
 
+
+
 INSERT INTO toc_articles_description (articles_id, language_id, articles_name, articles_url, articles_description, articles_page_title, articles_meta_keywords, articles_meta_description) VALUES
 (1, 1, 'About Us', 'about-us', 'Put here the required information.', '', '', ''),
 (2, 1, 'Shipping & Returns', 'shipping-returns', 'Put here the required information.', '', '', ''),
@@ -6953,5 +6958,12 @@ INSERT INTO toc_articles_description (articles_id, language_id, articles_name, a
 (4, 1, 'Conditions of Use', 'conditions-of-use', 'Put here the required information.', '', '', ''),
 (5, 1, 'Imprint', 'imprint', 'Put here the required information.', '', '', '');
 
+# Articles To Stores
 
+INSERT INTO toc_articles_to_stores (articles_id, stores_id) values
+(1, 0),
+(2, 0),
+(3, 0),
+(4, 0),
+(5, 0);
 

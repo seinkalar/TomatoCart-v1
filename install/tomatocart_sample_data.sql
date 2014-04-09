@@ -55,6 +55,13 @@ INSERT INTO toc_articles_categories_description (articles_categories_id, languag
 INSERT INTO toc_articles_categories (articles_categories_id, articles_categories_status, articles_categories_order) VALUES (6, 1, 0);
 INSERT INTO toc_articles_categories_description (articles_categories_id, language_id, articles_categories_name, articles_categories_url,articles_categories_page_title,articles_categories_meta_keywords,articles_categories_meta_description) VALUES (6, 1, 'Categories 4', 'categories-4', '', '', '');
 
+# Articles Categories To Stores
+INSERT INTO toc_articles_categories_to_stores (articles_categories_id, stores_id) values (2, 0);
+INSERT INTO toc_articles_categories_to_stores (articles_categories_id, stores_id) values (3, 0);
+INSERT INTO toc_articles_categories_to_stores (articles_categories_id, stores_id) values (4, 0);
+INSERT INTO toc_articles_categories_to_stores (articles_categories_id, stores_id) values (5, 0);
+INSERT INTO toc_articles_categories_to_stores (articles_categories_id, stores_id) values (6, 0);
+
 INSERT INTO toc_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, use_function, set_function) VALUES
 ('Maximum List Size', 'BOX_ARTICLES_CATEGORIES_MAX_LIST', '10', 'Maximum amount of article categories to show in the listing', 6, 0, NULL, now(), NULL, NULL);
 INSERT INTO toc_templates_boxes (id, title, code, author_name, author_www, modules_group) VALUES (101, 'Article Categories', 'articles_categories', 'TomatoCart', 'http://www.tomatocart.com', 'boxes');
