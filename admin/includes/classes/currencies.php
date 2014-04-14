@@ -117,76 +117,83 @@ class osC_Currencies_Admin extends osC_Currencies {
 
         $updated = array('0' => array(), '1' => array());
 
-        $Qcurrencies = $osC_Database->query('select currencies_id, code, title from :table_currencies');
+        $Qcurrencies = $osC_Database->query('select currencies_id, code, title from :table_currencies where code != :code');
         $Qcurrencies->bindTable(':table_currencies', TABLE_CURRENCIES);
+        $Qcurrencies->bindValue(':code', DEFAULT_CURRENCY);
         $Qcurrencies->execute();
-
-        while ( $Qcurrencies->next() ) {
-            //verify whether the currecy is the default currency
-            if ($Qcurrencies->value('code') === DEFAULT_CURRENCY) {
-                continue;
-            }
-
-            $rate = null;
-            $api_json_response = null;
-             
-            //call the google finance api to get the live rate
-            $google_fi_host = 'rate-exchange.appspot.com';
-            $request_url = 'http://rate-exchange.appspot.com/currency?from=' . DEFAULT_CURRENCY . '&to=' . $Qcurrencies->value('code');
-
-            //create and send http get request with curl as it is available
-            if (function_exists('curl_init')) {
-                $curl = curl_init($request_url);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                $api_json_response = curl_exec($curl);
-                //send the http get request with file_get_contents
-            }elseif (function_exists('stream_context_create')) {
-                $api_json_response = file_get_contents($request_url);
-                //send the http get request with socket
-            }else {
-                $socket = fsockopen($google_fi_host, 80, $errno, $errstr, 30);
-
-                if ($socket !== false) {
-                    $header = "GET / HTTP/1.1\r\n";
-                    $header .= "Host: " . $google_fi_host . "\r\n";
-                    $header .= "Connection: Close\r\n\r\n";
-
-                    fwrite($socket, $header);
-
-                    while (!feof($socket)) {
-                        $api_json_response .= fgets($socket, 1024);
-                    }
-
-                    fclose($socket);
-                }
-            }
-
-            if ($api_json_response != null) {
-                $api_json_response = json_decode($api_json_response);
-
-                //verify whether there is any error returned from the google finance api as updating the currency
-                if (empty($api_json_response->err)) {
-                    $rate = $api_json_response->rate;
-                }
-            }
-
-            //update the currency rate
-            if ($rate !== null) {
-                $Qupdate = $osC_Database->query('update :table_currencies set value = :value, last_updated = now() where currencies_id = :currencies_id');
-                $Qupdate->bindTable(':table_currencies', TABLE_CURRENCIES);
-                $Qupdate->bindValue(':value', $rate);
-                $Qupdate->bindInt(':currencies_id', $Qcurrencies->valueInt('currencies_id'));
-                $Qupdate->setLogging($_SESSION['module'], $Qcurrencies->valueInt('currencies_id'));
-                $Qupdate->execute();
-
-                $updated[1][] = array('title' => $Qcurrencies->value('title'),
-                                'code' => $Qcurrencies->value('code'));
-            } else {
-                $updated[0][] = array('title' => $Qcurrencies->value('title'),
-                                'code' => $Qcurrencies->value('code'));
-            }
+        
+        $currencies = array();
+        while ($Qcurrencies->next()) {
+        	$currencies[] = DEFAULT_CURRENCY . $Qcurrencies->value('code') . '=X';
         }
+        
+        $Qcurrencies->freeResult();
+        
+        //call the yahoo finance api to get the live rate
+				$rate = null;
+				$api_response = null;
+             
+				$fi_host = 'http://download.finance.yahoo.com';
+				$request_url = 'http://download.finance.yahoo.com/d/quotes.csv?s=' . implode(',', $currencies) . '&f=sl1&e=.csv';
 
+				//create and send http get request with curl as it is available
+				if (function_exists('curl_init')) {
+					$curl = curl_init($request_url);
+					curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+					$api_response = curl_exec($curl);
+				//send the http get request with file_get_contents
+				}elseif (function_exists('stream_context_create')) {
+					$api_response = file_get_contents($request_url);
+				//send the http get request with socket
+				}else {
+					$socket = fsockopen($fi_host, 80, $errno, $errstr, 30);
+
+					if ($socket !== false) {
+						$header = "GET /d/quotes.csv?s=" . implode(',', $currencies) . "&f=sl1&e=.csv HTTP/1.1\r\n";
+						$header .= "Host: " . $google_fi_host . "\r\n";
+						$header .= "Connection: Close\r\n\r\n";
+
+						fwrite($socket, $header);
+						while (!feof($socket)) {
+							$api_response .= fgets($socket, 1024);
+						}
+
+						fclose($socket);
+					}
+				}
+
+				if ($api_response != null) {
+					//get each line for each currency extrange
+					$csv_lines = explode(PHP_EOL, $api_response);
+					
+					if (count($csv_lines) > 0) {
+						foreach ($csv_lines as $line) {
+							$extrange_data = str_getcsv($line);
+							
+							//get the currency code and update the value of it according to the live rate
+							if (preg_match('/(\w{3})(\w{3})=x/i', $extrange_data[0], $matches)) {
+							  $currency_code = $matches[2];
+							  
+							  $Qupdate = $osC_Database->query('update :table_currencies set value = :value, last_updated = now() where code = :code');
+							  $Qupdate->bindTable(':table_currencies', TABLE_CURRENCIES);
+							  $Qupdate->bindValue(':value', $extrange_data[1]);
+							  $Qupdate->bindValue(':code', $currency_code);
+							  $Qupdate->execute();
+							  
+							  $Qcurrency = $osC_Database->query('select title from :table_currencies where code = :code');
+							  $Qcurrency->bindTable(':table_currencies', TABLE_CURRENCIES);
+							  $Qcurrency->bindValue(':code', $currency_code);
+							  $Qcurrency->execute();
+							  
+							  $updated[1][] = array(
+					  			'title' => $Qcurrency->value('title'),
+			  					'code' => $currency_code
+							  );
+							}
+						}
+					}
+				}
+					
         osC_Cache::clear('currencies');
 
         return $updated;
