@@ -771,6 +771,9 @@ CREATE TABLE toc_newsletters_log (
 DROP TABLE IF EXISTS toc_orders;
 CREATE TABLE toc_orders (
   orders_id int(11) NOT NULL auto_increment,
+  store_id int(11) NOT NULL default 0,
+  store_name varchar(64) NOT NULL,
+  store_url varchar(255) NOT NULL,
   invoice_number varchar(10) default NULL,
   customers_id int(11) NOT NULL,
   customers_name varchar(64) NOT NULL,
