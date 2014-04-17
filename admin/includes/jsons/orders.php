@@ -196,6 +196,9 @@
       
       $osC_Order = new osC_Order($_REQUEST['orders_id']);
       
+      $response['store'] = '<p style="margin-left:10px;">' . $osC_Order->getStore('store_name') . '</p>' .
+								      		 '<p style="margin-left:10px;">' . $osC_Order->getStore('store_url')  . '</p>';
+      
       $response['customer'] = '<p style="margin-left:10px;">' . osC_Address::format($osC_Order->getCustomer(), '<br />') . '</p>' . 
                               '<p style="margin-left:10px;>' . 
                                 osc_icon('telephone.png') . $osC_Order->getCustomer('telephone') . '<br />' . osc_icon('write.png') . $osC_Order->getCustomer('email_address') . 

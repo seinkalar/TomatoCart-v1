@@ -178,9 +178,28 @@
           }
         }
       }
+      
+      //multiple store
+      if (STORE_ID == 0) {
+      	$store_name = STORE_NAME;
+      	$store_url = HTTP_SERVER;
+      }else {
+        $Qstore = $osC_Database->query('select store_name, url_address from :table_store where store_id = :store_id');
+        $Qstore->bindTable(':table_store', TABLE_STORE);
+        $Qstore->bindInt(':store_id', STORE_ID);
+        $Qstore->execute();
+        
+        $store_name = $Qstore->value('store_name');
+        $store_url = $Qstore->value('url_address');
+        
+        $Qstore->freeResult();
+      }
                      
-      $Qorder = $osC_Database->query('insert into :table_orders (customers_id, customers_name, customers_company, customers_street_address, customers_suburb, customers_city, customers_postcode, customers_state, customers_comment, customers_state_code, customers_country, customers_country_iso2, customers_country_iso3, customers_telephone, customers_email_address, customers_address_format, customers_ip_address, delivery_name, delivery_company, delivery_street_address, delivery_suburb, delivery_city, delivery_postcode, delivery_state, delivery_zone_id, delivery_state_code, delivery_country_id, delivery_country, delivery_country_iso2, delivery_country_iso3, delivery_address_format, delivery_telephone, billing_name, billing_company, billing_street_address, billing_suburb, billing_city, billing_postcode, billing_state, billing_zone_id, billing_state_code, billing_country_id, billing_country, billing_country_iso2, billing_country_iso3, billing_address_format, billing_telephone, payment_method, payment_module, uses_store_credit, store_credit_amount, date_purchased, orders_status, currency, currency_value, gift_wrapping, wrapping_message) values (:customers_id, :customers_name, :customers_company, :customers_street_address, :customers_suburb, :customers_city, :customers_postcode, :customers_state, :customers_comment, :customers_state_code, :customers_country, :customers_country_iso2, :customers_country_iso3, :customers_telephone, :customers_email_address, :customers_address_format, :customers_ip_address, :delivery_name, :delivery_company, :delivery_street_address, :delivery_suburb, :delivery_city, :delivery_postcode, :delivery_state, :delivery_zone_id, :delivery_state_code, :delivery_country_id, :delivery_country, :delivery_country_iso2, :delivery_country_iso3, :delivery_address_format, :delivery_telephone, :billing_name, :billing_company, :billing_street_address, :billing_suburb, :billing_city, :billing_postcode, :billing_state, :billing_zone_id, :billing_state_code, :billing_country_id, :billing_country, :billing_country_iso2, :billing_country_iso3, :billing_address_format, :billing_telephone, :payment_method, :payment_module, :uses_store_credit, :store_credit_amount, now(), :orders_status, :currency, :currency_value, :gift_wrapping, :wrapping_message)');
+      $Qorder = $osC_Database->query('insert into :table_orders (store_id, store_name, store_url, customers_id, customers_name, customers_company, customers_street_address, customers_suburb, customers_city, customers_postcode, customers_state, customers_comment, customers_state_code, customers_country, customers_country_iso2, customers_country_iso3, customers_telephone, customers_email_address, customers_address_format, customers_ip_address, delivery_name, delivery_company, delivery_street_address, delivery_suburb, delivery_city, delivery_postcode, delivery_state, delivery_zone_id, delivery_state_code, delivery_country_id, delivery_country, delivery_country_iso2, delivery_country_iso3, delivery_address_format, delivery_telephone, billing_name, billing_company, billing_street_address, billing_suburb, billing_city, billing_postcode, billing_state, billing_zone_id, billing_state_code, billing_country_id, billing_country, billing_country_iso2, billing_country_iso3, billing_address_format, billing_telephone, payment_method, payment_module, uses_store_credit, store_credit_amount, date_purchased, orders_status, currency, currency_value, gift_wrapping, wrapping_message) values (:store_id, :store_name, :store_url, :customers_id, :customers_name, :customers_company, :customers_street_address, :customers_suburb, :customers_city, :customers_postcode, :customers_state, :customers_comment, :customers_state_code, :customers_country, :customers_country_iso2, :customers_country_iso3, :customers_telephone, :customers_email_address, :customers_address_format, :customers_ip_address, :delivery_name, :delivery_company, :delivery_street_address, :delivery_suburb, :delivery_city, :delivery_postcode, :delivery_state, :delivery_zone_id, :delivery_state_code, :delivery_country_id, :delivery_country, :delivery_country_iso2, :delivery_country_iso3, :delivery_address_format, :delivery_telephone, :billing_name, :billing_company, :billing_street_address, :billing_suburb, :billing_city, :billing_postcode, :billing_state, :billing_zone_id, :billing_state_code, :billing_country_id, :billing_country, :billing_country_iso2, :billing_country_iso3, :billing_address_format, :billing_telephone, :payment_method, :payment_module, :uses_store_credit, :store_credit_amount, now(), :orders_status, :currency, :currency_value, :gift_wrapping, :wrapping_message)');
       $Qorder->bindTable(':table_orders', TABLE_ORDERS);
+      $Qorder->bindInt(':store_id', STORE_ID);
+      $Qorder->bindValue(':store_name', $store_name);
+      $Qorder->bindValue(':store_url', $store_url);
       $Qorder->bindInt(':customers_id', $osC_Customer->getID());
       $Qorder->bindValue(':customers_name', $osC_Customer->getName());
       $Qorder->bindValue(':customers_company', '' /*$order->customer['company']*/);

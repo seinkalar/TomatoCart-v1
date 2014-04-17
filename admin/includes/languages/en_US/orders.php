@@ -71,6 +71,7 @@ section_address = Address
 
 subsection_order_information = Order Information
 subsection_customer = Customer
+subsection_store = Store
 subsection_products = Products
 subsection_shipping_address = Shipping Address
 subsection_billing_address = Billing Address

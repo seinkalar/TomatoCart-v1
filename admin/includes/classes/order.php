@@ -17,6 +17,7 @@
 // private variables
     var $_valid_order = false,
         $_contents = array(),
+        $_store = array(),
         $_sub_total = 0,
         $_total = 0,
         $_weight = 0,
@@ -81,7 +82,10 @@
             }
           }
         }
-
+        
+        //multiple store
+        $this->_store = array('store_id' => $Qorder->valueInt('store_id'), 'store_name' => $Qorder->value('store_name'), 'store_url' => $Qorder->value('store_url'));
+        
         $this->_customer = array('firstname' => $first_name,
                                  'lastname' => $last_name,
                                  'name' => $Qorder->valueProtected('customers_name'),
@@ -451,6 +455,14 @@
     }
 
 // public methods
+		function getStore($key) {
+			if (isset($this->_store[$key])) {
+			  return $this->_store[$key];
+			}
+
+			return false;
+		}
+		
     function isValid() {
       if ($this->_valid_order === true) {
         return true;
