@@ -34,9 +34,6 @@ class toC_Json_Store {
 		$search = !empty($_POST['search']) ? $_POST['search'] : null;
 		
 		$records = array();
-		if ($start == 0) {
-		  $records[] = array('store_id' => '0', 'store_name' => STORE_NAME, 'url_address' => HTTP_SERVER, 'ssl_url_address' => HTTPS_SERVER);
-		}
 		
 		$result = toC_Store_Admin::listStores($start, $limit, $search);
 		
@@ -161,6 +158,8 @@ class toC_Json_Store {
 	  $error = false;
 	  $response = array();
 	  $configurations = array();
+	  
+	  $store_id = isset($_POST['store_id']) ? $_POST['store_id'] : 0;
 	  
 	  //required fields
 	  if ( !(isset($_POST['store_url']) && filter_var($_POST['store_url'], FILTER_VALIDATE_URL)) ) {
@@ -326,7 +325,7 @@ class toC_Json_Store {
 	  
 	  //call mode to save the configurations of the store
 	  if (count($configurations) > 0) {
-	    if (!toC_Store_Admin::save($configurations)) {
+	    if (!toC_Store_Admin::save($store_id, $configurations)) {
 	      $error = true;
 	    }
 	  }

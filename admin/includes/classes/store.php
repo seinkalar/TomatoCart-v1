@@ -73,6 +73,19 @@ class toC_Store_Admin {
 		$Qdelete_store->execute();
 		
 		if ($Qdelete_store->affectedRows() > 0) {
+			osC_Cache::clear('box');
+			osC_Cache::clear('categories');
+			osC_Cache::clear('configuration');
+			osC_Cache::clear('currencies');
+			osC_Cache::clear('category_tree');
+			
+			osC_Cache::clear('product');
+			
+			osC_Cache::clear('also_purchased');
+			osC_Cache::clear('sefu-products');
+			osC_Cache::clear('new_products');
+			osC_Cache::clear('feature-products');
+			
 		  return true;
 		}
 		
@@ -206,11 +219,10 @@ class toC_Store_Admin {
 	 * @param array configurations of store
 	 * @return boolean
 	 */
-	function save($configurations = array()) {
+	function save($store_id, $configurations = array()) {
 		global $osC_Database;
 		
 		$error = false;
-		$store_id = 0;
 		
 		$osC_Database->startTransaction();
 		
@@ -220,29 +232,46 @@ class toC_Store_Admin {
 	  	$form_to_database = self::getKeys();
 	  	
 	  	//insert the new store
-	  	if (!isset($configurations['store_id'])) {
+	  	if ($store_id == 0) {
 	  	  $Qstore = $osC_Database->query('insert into :table_store (store_name, url_address, ssl_url_address) values (:store_name, :url_address, :ssl_url_address)');
-	  	  $Qstore->bindTable(':table_store', TABLE_STORE);
-	  	  $Qstore->bindValue(':store_name', $configurations['store_name']);
-	  	  $Qstore->bindValue(':url_address', $configurations['store_url']);
-	  	  
-	  	  if (isset($configurations['ssl_url'])) {
-	  	  	$Qstore->bindValue(':ssl_url_address', $configurations['ssl_url']);
-	  	  }else {
-	  	  	$Qstore->bindValue(':ssl_url_address', $configurations['store_url']);
-	  	  }
-	  	  
-	  	  $Qstore->execute();
-	  	  
-	  	  $store_id = $osC_Database->nextID();
-	  	  
-	  	  if ($osC_Database->isError()) {
-	  	    $error = true;
-	  	  }
+	  	}else {
+	  		$Qstore = $osC_Database->query('update :table_store set store_name = :store_name, url_address = :url_address, ssl_url_address = :ssl_url_address where store_id = :store_id');
+	  		$Qstore->bindInt(':store_id', $store_id);
+	  	}
+	  	
+	  	$Qstore->bindTable(':table_store', TABLE_STORE);
+	  	$Qstore->bindValue(':store_name', $configurations['store_name']);
+	  	$Qstore->bindValue(':url_address', str_replace('www.', '', $configurations['store_url']));
+	  	
+	  	if (isset($configurations['ssl_url'])) {
+	  		$Qstore->bindValue(':ssl_url_address', str_replace('www.', '', $configurations['ssl_url']));
+	  	}else {
+	  		$Qstore->bindValue(':ssl_url_address', str_replace('www.', '', $configurations['store_url']));
+	  	}
+	  	
+	  	$Qstore->execute();
+	  	
+	  	$current_store_id = ($store_id > 0 ? $store_id : $osC_Database->nextID());
+	  	
+	  	if ($osC_Database->isError()) {
+	  		$error = true;
 	  	}
 	  	
 	  	//Begin: insert store configurations
 	  	if ($error === false) {
+	  		//delete configurations to update
+	  		if ($store_id > 0) {
+	  			$Qdelete = $osC_Database->query('delete from :table_configuration where store_id = :store_id');
+	  			$Qdelete->bindTable(':table_configuration', TABLE_CONFIGURATION);
+	  			$Qdelete->bindInt(':store_id', $store_id);
+	  			$Qdelete->execute();
+	  			
+	  			if ($osC_Database->isError()) {
+	  				$error = true;
+	  			}
+	  		}
+	  		
+	  		//insert configurations
 	  		foreach ($configurations as $config_key => $config_value) {
 	  			//store url is already saved in the store table
 	  			if ($config_key == 'store_url' || $config_key == 'ssl_url') {
@@ -260,31 +289,20 @@ class toC_Store_Admin {
 						
 						$Qinfo->freeResult();
 						
-						//editing store > update configurations
-  			 		if (isset($configurations['store_id'])) {
-  			 			
-  			 		//new store > add configurations		
-  			 		}else if ($store_id > 0) {
-  			 			$Qconfiguration = $osC_Database->query('insert into :table_configuration (store_id, configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id) values (:store_id, :configuration_title, :configuration_key, :configuration_value, :configuration_description, :configuration_group_id)');
-  			 			$Qconfiguration->bindTable(':table_configuration', TABLE_CONFIGURATION);
-  			 			$Qconfiguration->bindInt(':store_id', $store_id);
-  			 			$Qconfiguration->bindValue(':configuration_title', $information['configuration_title']);
-  			 			$Qconfiguration->bindValue(':configuration_key', $form_to_database[$config_key]);
-  			 			$Qconfiguration->bindValue(':configuration_value', $config_value);
-  			 			$Qconfiguration->bindValue(':configuration_description', $information['configuration_description']);
-  			 			$Qconfiguration->bindValue(':configuration_group_id', $information['configuration_group_id']);
-  			 			$Qconfiguration->execute();
-  			 			
-  			 			if ($osC_Database->isError()) {
-  			 				$error = true;
-  			 				break;
-  			 			}
-  			 			
-  			 			if ($Qconfiguration->affectedRows() < 1) {
-  			 				$error = true;
-  			 				break;
-  			 			}
-  			 		}
+						$Qconfiguration = $osC_Database->query('insert into :table_configuration (store_id, configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id) values (:store_id, :configuration_title, :configuration_key, :configuration_value, :configuration_description, :configuration_group_id)');
+						$Qconfiguration->bindTable(':table_configuration', TABLE_CONFIGURATION);
+						$Qconfiguration->bindInt(':store_id', $current_store_id);
+						$Qconfiguration->bindValue(':configuration_title', $information['configuration_title']);
+						$Qconfiguration->bindValue(':configuration_key', $form_to_database[$config_key]);
+						$Qconfiguration->bindValue(':configuration_value', $config_value);
+						$Qconfiguration->bindValue(':configuration_description', $information['configuration_description']);
+						$Qconfiguration->bindValue(':configuration_group_id', $information['configuration_group_id']);
+						$Qconfiguration->execute();
+						
+						if ($osC_Database->isError()) {
+							$error = true;
+							break;
+						}
 					}
 				//end: foreach	
 	  		}
@@ -292,11 +310,22 @@ class toC_Store_Admin {
 	  	}
   	//end: save store
 	  }
-
+	  
 	  if ($error === false) {
 	  	$osC_Database->commitTransaction();
 	  	
-	  	osC_Cache::clear('configuration');
+	  	osC_Cache::clear('box');
+			osC_Cache::clear('categories');
+			osC_Cache::clear('configuration');
+			osC_Cache::clear('currencies');
+			osC_Cache::clear('category_tree');
+			
+			osC_Cache::clear('product');
+			
+			osC_Cache::clear('also_purchased');
+			osC_Cache::clear('sefu-products');
+			osC_Cache::clear('new_products');
+			osC_Cache::clear('feature-products');
 	  	
 	    return true;
 	  }
