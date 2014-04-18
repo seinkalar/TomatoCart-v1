@@ -241,12 +241,12 @@ class toC_Store_Admin {
 	  	
 	  	$Qstore->bindTable(':table_store', TABLE_STORE);
 	  	$Qstore->bindValue(':store_name', $configurations['store_name']);
-	  	$Qstore->bindValue(':url_address', str_replace('www.', '', $configurations['store_url']));
+	  	$Qstore->bindValue(':url_address', $configurations['store_url']);
 	  	
 	  	if (isset($configurations['ssl_url'])) {
-	  		$Qstore->bindValue(':ssl_url_address', str_replace('www.', '', $configurations['ssl_url']));
+	  		$Qstore->bindValue(':ssl_url_address', $configurations['ssl_url']);
 	  	}else {
-	  		$Qstore->bindValue(':ssl_url_address', str_replace('www.', '', $configurations['store_url']));
+	  		$Qstore->bindValue(':ssl_url_address', $configurations['store_url']);
 	  	}
 	  	
 	  	$Qstore->execute();
