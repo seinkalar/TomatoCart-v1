@@ -130,6 +130,12 @@ Ext.extend(Toc.store.StoreGrid, Ext.grid.GridPanel, {
   onRowAction: function(grid, record, action, row, col) {
     switch(action) {
       case 'icon-edit-record':
+        if (record.get('store_id') == 0) {
+					Ext.MessageBox.alert(TocLanguage.msgErrTitle, '<?php echo $osC_Language->get('ms_warning_forbidden_edit'); ?>');
+					
+					return false;
+        }
+        
       	this.fireEvent('onEdit', record);
         break;
       

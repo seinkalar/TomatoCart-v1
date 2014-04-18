@@ -27,13 +27,16 @@ class toC_Json_Store {
 	 * @return string
 	 */
 	function listStores() {
-		global $toC_Json;
+		global $toC_Json, $osC_Language;
 		
 		$start = empty($_POST['start']) ? 0 : $_POST['start'];
 		$limit = empty($_POST['limit']) ? MAX_DISPLAY_SEARCH_RESULTS : $_POST['limit'];
 		$search = !empty($_POST['search']) ? $_POST['search'] : null;
 		
 		$records = array();
+		if ($start == 0) {
+		  $records[] = array('store_id' => '0', 'store_name' => STORE_NAME . '<b> (' . $osC_Language->get('default_store') . '</b>)', 'url_address' => HTTP_SERVER, 'ssl_url_address' => HTTPS_SERVER);
+		}
 		
 		$result = toC_Store_Admin::listStores($start, $limit, $search);
 		
