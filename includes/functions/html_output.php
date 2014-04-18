@@ -24,7 +24,7 @@
  */
 
   function osc_href_link($page = null, $parameters = null, $connection = 'NONSSL', $add_session_id = true, $search_engine_safe = true, $use_full_address = false) {
-    global $request_type, $osC_Session, $osC_Services;
+    global $request_type, $osC_Session, $osC_Services, $toc_url_configs;
 
     if (!in_array($connection, array('NONSSL', 'SSL', 'AUTO'))) {
       $connection = 'NONSSL';
@@ -64,7 +64,11 @@
       if ( (SID !== '')) {
         $_sid = SID;
       } elseif ( (($request_type == 'NONSSL') && ($connection == 'SSL') && (ENABLE_SSL === true)) || (($request_type == 'SSL') && ($connection != 'SSL')) ) {
-        if (HTTP_COOKIE_DOMAIN != HTTPS_COOKIE_DOMAIN) {
+      	if (STORE_ID > 0) {
+      	  if ($toc_url_configs['http_cookie_domain'] != $toc_url_configs['https_cookie_domain']) {
+      	  	$_sid = $osC_Session->getName() . '=' . $osC_Session->getID();
+      	  }
+      	}elseif (HTTP_COOKIE_DOMAIN != HTTPS_COOKIE_DOMAIN) {
           $_sid = $osC_Session->getName() . '=' . $osC_Session->getID();
         }
       }
@@ -88,21 +92,45 @@
     //check the link prefix
     if ($connection == 'AUTO') {
       if ( ($request_type == 'SSL') && (ENABLE_SSL === true) ) {
-        $link_prefix = HTTPS_SERVER . DIR_WS_HTTPS_CATALOG;
+      	if (STORE_ID > 0) {
+      		$link_prefix = $toc_url_configs['https_server'] . DIR_WS_HTTPS_CATALOG;
+      	}else {
+      		$link_prefix = HTTPS_SERVER . DIR_WS_HTTPS_CATALOG;
+      	}
       } else {
-        $link_prefix = HTTP_SERVER . DIR_WS_HTTP_CATALOG;
+      	if (STORE_ID > 0) {
+      		$link_prefix = $toc_url_configs['http_server'] . DIR_WS_HTTP_CATALOG;
+      	}else {
+      		$link_prefix = HTTP_SERVER . DIR_WS_HTTP_CATALOG;
+      	}
       }
     } elseif ( ($connection == 'SSL') && (ENABLE_SSL === true) ) {
       if ($request_type == 'SSL') {
-        $link_prefix = ($use_full_address === false) ? '' : HTTPS_SERVER . DIR_WS_HTTPS_CATALOG;
+      	if (STORE_ID > 0) {
+      		$link_prefix = ($use_full_address === false) ? '' : $toc_url_configs['https_server'] . DIR_WS_HTTPS_CATALOG;
+      	}else {
+      		$link_prefix = ($use_full_address === false) ? '' : HTTPS_SERVER . DIR_WS_HTTPS_CATALOG;
+      	}
       } else {
-        $link_prefix = HTTPS_SERVER . DIR_WS_HTTPS_CATALOG;
+      	if (STORE_ID > 0) {
+      		$link_prefix = $toc_url_configs['https_server'] . DIR_WS_HTTPS_CATALOG;
+      	}else {
+      		$link_prefix = HTTPS_SERVER . DIR_WS_HTTPS_CATALOG;
+      	}
       }
     } else {
       if ($request_type == 'NONSSL') {
-        $link_prefix = ($use_full_address === false) ? '' : HTTP_SERVER . DIR_WS_HTTP_CATALOG;
+      	if (STORE_ID > 0) {
+      		$link_prefix = ($use_full_address === false) ? '' : $toc_url_configs['http_server'] . DIR_WS_HTTP_CATALOG;
+      	}else {
+      		$link_prefix = ($use_full_address === false) ? '' : HTTP_SERVER . DIR_WS_HTTP_CATALOG;
+      	}
       } else {
-        $link_prefix = HTTP_SERVER . DIR_WS_HTTP_CATALOG;
+      	if (STORE_ID > 0) {
+      		$link_prefix = $toc_url_configs['http_server'] . DIR_WS_HTTP_CATALOG;
+      	}else {
+      		$link_prefix = HTTP_SERVER . DIR_WS_HTTP_CATALOG;
+      	}
       }
     }
 

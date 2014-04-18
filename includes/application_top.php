@@ -10,7 +10,6 @@
   it under the terms of the GNU General Public License v2 (1991)
   as published by the Free Software Foundation.
 */
-
 // start the timer for the page parse time log
   define('PAGE_PARSE_START_TIME', microtime());
   
@@ -75,26 +74,33 @@
   $osC_Database = osC_Database::connect(DB_SERVER, DB_SERVER_USERNAME, DB_SERVER_PASSWORD);
   $osC_Database->selectDatabase(DB_DATABASE);
   
-// Store
+// multiple Store
 	if ($request_type  === 'SSL') {
 		$Qstore = $osC_Database->query('select * from :table_store where ssl_url_address = :ssl_url_address');
-		$Qstore->bindValue(':ssl_url_address', 'https://' . str_replace('www.', '', $_SERVER['HTTP_HOST']) . rtrim(dirname($_SERVER['PHP_SELF']), '/.\\'));
+		$Qstore->bindValue(':ssl_url_address', 'https://' . $_SERVER['HTTP_HOST']);
 	} else {
 		$Qstore = $osC_Database->query('select * from :table_store where url_address = :url_address');
-		$Qstore->bindValue(':url_address', 'http://' . str_replace('www.', '', $_SERVER['HTTP_HOST']) . rtrim(dirname($_SERVER['PHP_SELF']), '/.\\'));
+		$Qstore->bindValue(':url_address', 'http://' .$_SERVER['HTTP_HOST']);
 	}
 	
 	$Qstore->bindTable(':table_store', TABLE_STORE);
 	$Qstore->execute();
 	
+	//url config
+	$toc_url_configs = array();
 	if ($Qstore->numberOfRows() > 0) {
 	  define('STORE_ID', $Qstore->valueInt('store_id'));
+	  
+	  $toc_url_configs['http_server'] = $Qstore->value('url_address');
+	  $toc_url_configs['https_server'] = $Qstore->value('ssl_url_address') ? $Qstore->value('ssl_url_address') : $Qstore->value('url_address');
+	  $toc_url_configs['http_cookie_domain'] = str_replace('http:\/\/', '', $toc_url_configs['http_server']);
+	  $toc_url_configs['https_cookie_domain'] = preg_replace('/http(:?s)*:\/\//', '', $toc_url_configs['https_server']);
 	}else {
 		define('STORE_ID', 0);
 	}
 	
-  
 // set the application parameters
+	$toc_configurations = array();
 	if (STORE_ID > 0) {
 		$Qcfg = $osC_Database->query('select configuration_key as cfgKey, configuration_value as cfgValue from :table_configuration where store_id = 0 or store_id = :store_id');
 		$Qcfg->bindInt(':store_id', STORE_ID);
@@ -107,7 +113,11 @@
   $Qcfg->execute();
 
   while ($Qcfg->next()) {
-    define($Qcfg->value('cfgKey'), $Qcfg->value('cfgValue'));
+  	$toc_configurations[$Qcfg->value('cfgKey')] = $Qcfg->value('cfgValue');
+  }
+  
+  foreach ($toc_configurations as $cfg_key => $cfg_value) {
+  	define($cfg_key, $cfg_value);
   }
 
   $Qcfg->freeResult();
