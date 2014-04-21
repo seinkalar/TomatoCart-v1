@@ -102,8 +102,9 @@
 // set the application parameters
 	$toc_configurations = array();
 	if (STORE_ID > 0) {
-		$Qcfg = $osC_Database->query('select configuration_key as cfgKey, configuration_value as cfgValue from :table_configuration where store_id = 0 or store_id = :store_id');
+		$Qcfg = $osC_Database->query('select configuration_key as cfgKey, configuration_value as cfgValue from :table_configuration where store_id = 0 or store_id = :store_id order by store_id');
 		$Qcfg->bindInt(':store_id', STORE_ID);
+	
 	}else {
 		$Qcfg = $osC_Database->query('select configuration_key as cfgKey, configuration_value as cfgValue from :table_configuration where store_id = 0');
 	}
@@ -116,10 +117,22 @@
   	$toc_configurations[$Qcfg->value('cfgKey')] = $Qcfg->value('cfgValue');
   }
   
+  //store name
+  if (STORE_ID > 0) {
+  	$Qstore = $osC_Database->query('select store_name from :table_store where store_id = :store_id');
+  	$Qstore->bindTable(':table_store', TABLE_STORE);
+  	$Qstore->bindTable(':store_id', STORE_ID);
+  	$Qstore->execute();
+  	
+  	$toc_configurations['STORE_NAME'] = $Qstore->value('store_name');
+  	
+  	$Qstore->freeResult();
+  }
+  
   foreach ($toc_configurations as $cfg_key => $cfg_value) {
   	define($cfg_key, $cfg_value);
   }
-
+  
   $Qcfg->freeResult();
   
 //set the default timezone
