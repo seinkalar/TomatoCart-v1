@@ -46,7 +46,7 @@
         $is_cache_loaded = false;
         
         if ($load_from_cache === true) {
-          if ($osC_Cache->read('category_tree-' . $osC_Language->getCode(), 720)) {
+          if ($osC_Cache->read('category_tree-' . STORE_ID . '-' . $osC_Language->getCode(), 720)) {
             $this->data = $osC_Cache->getCache();
             $is_cache_loaded = true;
           } 
@@ -292,12 +292,14 @@
 
       $totals = array();
 
-      $Qtotals = $osC_Database->query('select p2c.categories_id, count(*) as total from :table_products p, :table_products_to_categories p2c where p2c.products_id = p.products_id and p.products_status = :products_status group by p2c.categories_id');
+      $Qtotals = $osC_Database->query('select p2c.categories_id, count(*) as total from :table_products p, :table_products_to_categories p2c, :table_categories_to_stores c2s where p2c.products_id = p.products_id and p.products_status = :products_status and p2c.categories_id = c2s.categories_id and c2s.stores_id = :stores_id group by p2c.categories_id');
       $Qtotals->bindTable(':table_products', TABLE_PRODUCTS);
       $Qtotals->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
+      $Qtotals->bindTable(':table_categories_to_stores', TABLE_CATEGORIES_TO_STORES);
+      $Qtotals->bindInt(':stores_id', STORE_ID);
       $Qtotals->bindInt(':products_status', 1);
       $Qtotals->execute();
-
+      
       while ($Qtotals->next()) {
         $totals[$Qtotals->valueInt('categories_id')] = $Qtotals->valueInt('total');
       }
