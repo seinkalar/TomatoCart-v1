@@ -1079,7 +1079,7 @@
     function getCategoriesTree() {
       global $toC_Json;
       
-      $osC_CategoryTree = new osC_CategoryTree();
+      $osC_CategoryTree = new osC_CategoryTree_Admin();
       $categories_array = $osC_CategoryTree->buildExtJsonTreeArray();
 
       echo $toC_Json->encode($categories_array);                          
