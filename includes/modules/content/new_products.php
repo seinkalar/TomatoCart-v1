@@ -48,7 +48,7 @@
       $Qnewproducts->bindInt(':max_display_new_products', MODULE_CONTENT_NEW_PRODUCTS_MAX_DISPLAY);
 
       if (MODULE_CONTENT_NEW_PRODUCTS_CACHE > 0) {
-        $Qnewproducts->setCache('new_products-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode() . '-' . $current_category_id, MODULE_CONTENT_NEW_PRODUCTS_CACHE);
+        $Qnewproducts->setCache('new_products-' . STORE_ID . '-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode() . '-' . $current_category_id, MODULE_CONTENT_NEW_PRODUCTS_CACHE);
       }
 
       $Qnewproducts->execute();
