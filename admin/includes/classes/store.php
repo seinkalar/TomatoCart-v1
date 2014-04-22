@@ -338,6 +338,7 @@ class toC_Store_Admin {
 			osC_Cache::clear('sefu-products');
 			osC_Cache::clear('new_products');
 			osC_Cache::clear('feature-products');
+			osC_Cache::clear('upcoming_products');
 	  	
 	    return true;
 	  }
