@@ -47,7 +47,7 @@
       $Qproducts->bindInt(':stores_id', STORE_ID);
       $Qproducts->bindInt(':language_id', $osC_Language->getID());
       $Qproducts->bindInt(':max_display_feature_products', MODULE_CONTENT_FEATURE_PRODUCTS_MAX_DISPLAY);
-      $Qproducts->setCache('feature-products-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode() . '-' . $current_category_id);
+      $Qproducts->setCache('feature-products-' . STORE_ID . '-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode() . '-' . $current_category_id);
       $Qproducts->execute();
       
       if ($Qproducts->numberOfRows()) {
