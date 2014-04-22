@@ -111,7 +111,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
         action: 'list_templates'
       },
       reader: new Ext.data.JsonReader({
-        fields: ['code', 'name'],
+        fields: ['template_code', 'template_name'],
         root: Toc.CONF.JSON_READER_ROOT
       }),
       autoLoad: true,
@@ -127,8 +127,8 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
       store: this.dsTemplates, 
       name: 'store_template', 
       hiddenName: 'store_template_code', 
-      displayField: 'name', 
-      valueField: 'code', 
+      displayField: 'template_name', 
+      valueField: 'template_code', 
       triggerAction: 'all', 
       editable: false,
       forceSelection: true      

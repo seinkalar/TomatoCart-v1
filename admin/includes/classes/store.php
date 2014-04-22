@@ -289,6 +289,18 @@ class toC_Store_Admin {
 						
 						$Qinfo->freeResult();
 						
+						//store template, update configuration description with correct template name
+						if ($config_key == 'store_template_code') {
+						  $Qtemplate = $osC_Database->query('select title from :table_templates where code = :code');
+						  $Qtemplate->bindTable(':table_templates', TABLE_TEMPLATES);
+						  $Qtemplate->bindValue(':code', $config_value);
+						  $Qtemplate->execute();
+						  
+						  $information['configuration_description'] = $Qtemplate->value('title');
+						  
+						  $Qtemplate->freeResult();
+						}
+						
 						$Qconfiguration = $osC_Database->query('insert into :table_configuration (store_id, configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id) values (:store_id, :configuration_title, :configuration_key, :configuration_value, :configuration_description, :configuration_group_id)');
 						$Qconfiguration->bindTable(':table_configuration', TABLE_CONFIGURATION);
 						$Qconfiguration->bindInt(':store_id', $current_store_id);

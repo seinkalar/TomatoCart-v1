@@ -238,7 +238,7 @@
         }
 
         foreach ( $data['configuration'] as $key => $value ) {
-          $Qupdate = $osC_Database->query('update :table_configuration set configuration_value = :configuration_value where configuration_key = :configuration_key');
+          $Qupdate = $osC_Database->query('update :table_configuration set configuration_value = :configuration_value where configuration_key = :configuration_key and store_id = 0');
           $Qupdate->bindTable(':table_configuration', TABLE_CONFIGURATION);
           $Qupdate->bindValue(':configuration_value', $value);
           $Qupdate->bindValue(':configuration_key', $key);
@@ -251,7 +251,7 @@
           }
         }
       } elseif ( $default === true ) {
-        $Qupdate = $osC_Database->query('update :table_configuration set configuration_value = :configuration_value where configuration_key = :configuration_key');
+        $Qupdate = $osC_Database->query('update :table_configuration set configuration_value = :configuration_value where configuration_key = :configuration_key and store_id = 0');
         $Qupdate->bindTable(':table_configuration', TABLE_CONFIGURATION);
         $Qupdate->bindValue(':configuration_value', $module_name);
         $Qupdate->bindValue(':configuration_key', 'DEFAULT_TEMPLATE');

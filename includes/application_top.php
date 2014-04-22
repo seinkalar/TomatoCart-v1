@@ -102,15 +102,14 @@
 // set the application parameters
 	$toc_configurations = array();
 	if (STORE_ID > 0) {
-		$Qcfg = $osC_Database->query('select configuration_key as cfgKey, configuration_value as cfgValue from :table_configuration where store_id = 0 or store_id = :store_id order by store_id');
+		$Qcfg = $osC_Database->query('select configuration_key as cfgKey, configuration_value as cfgValue from :table_configuration where store_id = 0 or store_id = :store_id');
 		$Qcfg->bindInt(':store_id', STORE_ID);
-	
 	}else {
 		$Qcfg = $osC_Database->query('select configuration_key as cfgKey, configuration_value as cfgValue from :table_configuration where store_id = 0');
 	}
 	
   $Qcfg->bindTable(':table_configuration', TABLE_CONFIGURATION);
-  $Qcfg->setCache('configuration');
+  $Qcfg->setCache('configuration-' . STORE_ID);
   $Qcfg->execute();
 
   while ($Qcfg->next()) {
