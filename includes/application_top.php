@@ -93,7 +93,7 @@
 	  
 	  $toc_url_configs['http_server'] = $Qstore->value('url_address');
 	  $toc_url_configs['https_server'] = $Qstore->value('ssl_url_address') ? $Qstore->value('ssl_url_address') : $Qstore->value('url_address');
-	  $toc_url_configs['http_cookie_domain'] = str_replace('http:\/\/', '', $toc_url_configs['http_server']);
+	  $toc_url_configs['http_cookie_domain'] = str_replace('http://', '', $toc_url_configs['http_server']);
 	  $toc_url_configs['https_cookie_domain'] = preg_replace('/http(:?s)*:\/\//', '', $toc_url_configs['https_server']);
 	}else {
 		define('STORE_ID', 0);
