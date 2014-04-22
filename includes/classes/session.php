@@ -59,7 +59,7 @@
       } elseif (session_start()) {
         $this->setStarted(true);
         $this->setID();
-
+        
         return true;
       }
 
@@ -147,17 +147,22 @@
     }
 
     function setCookieParameters($lifetime = 0, $path = false, $domain = false, $secure = false) {
-      global $request_type;
-
+      global $request_type, $toc_url_configs;
+      
       if ($path === false) {
-        $path = (($request_type == 'NONSSL') ? HTTP_COOKIE_PATH : HTTPS_COOKIE_PATH);
+				$path = (($request_type == 'NONSSL') ? HTTP_COOKIE_PATH : HTTPS_COOKIE_PATH);
       }
 
       if ($domain === false) {
-        $domain = (($request_type == 'NONSSL') ? HTTP_COOKIE_DOMAIN : HTTPS_COOKIE_DOMAIN);
-        $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $domain : false;
+      	if (STORE_ID > 0) {
+      		$domain = (($request_type == 'NONSSL') ? $toc_url_configs['http_cookie_domain'] : $toc_url_configs['https_cookie_domain']);
+      		$domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $domain : false;
+      	}else {
+      		$domain = (($request_type == 'NONSSL') ? HTTP_COOKIE_DOMAIN : HTTPS_COOKIE_DOMAIN);
+      		$domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $domain : false;
+      	}
       }
-
+      
       return session_set_cookie_params($lifetime, $path, $domain, $secure);
     }
 

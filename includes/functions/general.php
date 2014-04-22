@@ -401,14 +401,19 @@
  */
 
   function osc_setcookie($name, $value = null, $expires = 0, $path = null, $domain = null, $secure = false, $httpOnly = false) {
-    global $request_type;
+    global $request_type, $toc_url_configs;
 
     if (empty($path)) {
       $path = ($request_type == 'NONSSL') ? HTTP_COOKIE_PATH : HTTPS_COOKIE_PATH;
     }
 
     if (empty($domain)) {
-      $domain = ($request_type == 'NONSSL') ? HTTP_COOKIE_DOMAIN : HTTPS_COOKIE_DOMAIN;
+    	if (STORE_ID > 0) {
+    		$domain = ($request_type == 'NONSSL') ? $toc_url_configs['http_cookie_domain'] : $toc_url_configs['https_cookie_domain'];
+    	}else {
+    		$domain = ($request_type == 'NONSSL') ? HTTP_COOKIE_DOMAIN : HTTPS_COOKIE_DOMAIN;
+    	}
+      
       $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $domain : null;
     }
 
