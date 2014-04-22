@@ -860,7 +860,7 @@
         osC_Cache::clear('sefu-products');
         osC_Cache::clear('new_products');
         osC_Cache::clear('feature-products');
-        osC_Cache::clear('upcoming-products');
+        osC_Cache::clear('upcoming_products');
 
         return $products_id;
       }
