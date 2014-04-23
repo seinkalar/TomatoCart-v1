@@ -32,8 +32,8 @@
       $Qarticles->bindTable(':table_articles_to_stores', TABLE_ARTICLES_TO_STORES);
       $Qarticles->bindTable(':table_articles_description', TABLE_ARTICLES_DESCRIPTION);
       $Qarticles->bindInt(':language_id', $osC_Language->getID());
-      $Qarticles->bindInt(':stores_id', STORES_ID);
-      $Qarticles->setCache('box-information-' . $osC_Language->getCode(), 100);
+      $Qarticles->bindInt(':stores_id', STORE_ID);
+      $Qarticles->setCache('box-information-' . STORE_ID . '-' . $osC_Language->getCode(), 100);
       $Qarticles->execute();
 
       $this->_content = '<ul>';
