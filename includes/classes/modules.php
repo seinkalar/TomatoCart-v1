@@ -20,8 +20,7 @@
         $_author_name,
         $_author_www,
         $_keys,
-        $_group,
-    	$_cache_fold;
+        $_group;
 
     function osC_Modules($group) {
       global $osC_Database, $osC_Template, $osC_Cache;
@@ -236,9 +235,6 @@
           }
         }
       }
-      
-      //creat separated cache fold for each module
-      mkdir($this->_cache_fold, 0755, true);
 
       osC_Cache::clear('languages');
     }
