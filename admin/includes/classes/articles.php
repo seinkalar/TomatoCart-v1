@@ -188,6 +188,12 @@
 
       $osC_Database->startTransaction();
       
+      //stores
+      $Qstore = $osC_Database->query('delete from :table_articles_to_stores where articles_id = :articles_id');
+      $Qstore->bindTable(':table_articles_to_stores', TABLE_ARTICLES_TO_STORES);
+      $Qstore->bindInt(':articles_id', $id);
+      $Qstore->execute();
+      
       $osC_Image->deleteArticlesImage($id);
 
       $Qad = $osC_Database->query('delete from :table_articles_description where articles_id = :articles_id');
