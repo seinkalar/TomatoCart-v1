@@ -163,6 +163,12 @@
 
       if ( is_numeric($id) ) {
         $osC_Database->startTransaction();
+        
+        //stores
+        $Qstores = $osC_Database->query('delete from :table_articles_categories_to_stores where articles_categories_id = :articles_categories_id');
+        $Qstores->bindTable(':table_articles_categories_to_stores', TABLE_ARTICLES_CATEGORIES_TO_STORES);
+        $Qstores->bindInt(':articles_categories_id',$id);
+        $Qstores->execute();
 
         $Qcategories = $osC_Database->query('delete from :table_articles_categories where articles_categories_id = :articles_categories_id');
         $Qcategories->bindTable(':table_articles_categories', TABLE_ARTICLES_CATEGORIES);
