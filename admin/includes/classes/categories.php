@@ -358,6 +358,18 @@
               $error = true;
             }
 	        }
+	        
+	        //stores
+	        if ($error === false) {
+	        	$Qstore = $osC_Database->query('delete from :table_categories_to_stores where categories_id = :categories_id');
+	        	$Qstore->bindTable(':table_categories_to_stores', TABLE_CATEGORIES_TO_STORES);
+	        	$Qstore->bindInt(':categories_id', $id);
+	        	$Qstore->execute();
+	        
+	        	if ($osC_Database->isError()) {
+	        		$error = true;
+	        	}
+	        }
 	      
           if ($error === false) {
             $Qcd = $osC_Database->query('delete from :table_categories_description where categories_id = :categories_id');
