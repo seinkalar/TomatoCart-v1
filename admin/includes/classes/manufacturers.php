@@ -179,7 +179,13 @@
           }
         }
       }
-
+      
+      //stores
+      $Qstores = $osC_Database->query('delete from :table_manufacturers_to_stores where manufacturers_id = :manufacturers_id');
+      $Qstores->bindTable(':table_manufacturers_to_stores', TABLE_MANUFACTURERS_TO_STORES);
+      $Qstores->bindInt(':manufacturers_id', $id);
+      $Qstores->execute();
+      
       $Qm = $osC_Database->query('delete from :table_manufacturers where manufacturers_id = :manufacturers_id');
       $Qm->bindTable(':table_manufacturers', TABLE_MANUFACTURERS);
       $Qm->bindInt(':manufacturers_id', $id);
