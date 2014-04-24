@@ -1154,6 +1154,18 @@
             }
           }
         }
+        
+        //stores
+        if ($error === false) {
+          $Qstore = $osC_Database->query('delete from :table_products_to_stores where products_id = :products_id');
+          $Qstore->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
+          $Qstore->bindInt(':products_id', $id);
+          $Qstore->execute();
+          
+         	if ($osC_Database->isError()) {
+						$error = true;
+					}
+        }
       
         //products
         if ($error === false) {
