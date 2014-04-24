@@ -130,6 +130,7 @@
   define('TABLE_SEARCH_TERMS', DB_TABLE_PREFIX . 'search_terms');
   define('TABLE_SESSIONS', DB_TABLE_PREFIX . 'sessions');
   define('TABLE_SLIDE_IMAGES', DB_TABLE_PREFIX . 'slide_images');
+  define('TABLE_SLIDE_IMAGES_TO_STORES', DB_TABLE_PREFIX . 'slide_images_to_stores');
   define('TABLE_SPECIALS', DB_TABLE_PREFIX . 'specials');
   define('TABLE_STORE', DB_TABLE_PREFIX . 'store');
   define('TABLE_TAX_CLASS', DB_TABLE_PREFIX . 'tax_class');

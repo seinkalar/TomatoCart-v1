@@ -29,6 +29,13 @@ INSERT INTO toc_slide_images (image_id, language_id, description, image, image_u
 (4, 1, 'Put here the required information.', 'apple_iphone_3g_en.png', 'products.php?17', 0, 1),
 (5, 1, 'Put here the required information.', 'hp_tx2510us_en.png', 'products.php?13', 0, 1);
 
+INSERT INTO toc_slide_images_to_stores (image_id, stores_id) VALUES
+(1, 0),
+(2, 0),
+(3, 0),
+(4, 0),
+(5, 0);
+
 INSERT INTO toc_configuration ( configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, last_modified, date_added, use_function, set_function) VALUES
 ('Interval (ms)', 'MODULE_CONTENT_SLIDE_SHOW_INTERVAL', '3000', 'slide show interval', 6, 0, NULL, now(), NULL, NULL),
 ('Duration (ms)', 'MODULE_CONTENT_SLIDE_SHOW_DURATION', '1000', 'slide show duration', 6, 0, NULL, now(), NULL, NULL),

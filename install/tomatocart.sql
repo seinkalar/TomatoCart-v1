@@ -1463,6 +1463,13 @@ CREATE TABLE toc_slide_images (
   PRIMARY KEY  (image_id,language_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS toc_slide_images_to_stores;
+CREATE TABLE toc_slide_images_to_stores (
+  image_id int(11) NOT NULL,
+  stores_id int(11) NOT NULL,
+  PRIMARY KEY  (image_id,stores_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS toc_specials;
 CREATE TABLE toc_specials (
