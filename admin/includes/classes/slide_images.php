@@ -105,6 +105,35 @@ class toC_Slide_Images_Admin {
         }
       }
     }
+    
+    $image_id = is_numeric($id) ? $id : $image_id;
+    
+    //stores
+		if (is_numeric($id)) {
+			$Qdelete = $osC_Database->query('delete from :table_slide_images_to_stores where image_id = :image_id');
+			$Qdelete->bindTable(':table_slide_images_to_stores', TABLE_SLIDE_IMAGES_TO_STORES);
+			$Qdelete->bindInt(':image_id', $id);
+			$Qdelete->execute();
+    
+			if ( $osC_Database->isError() ) {
+				return false;
+			}
+		}
+    
+		if ( count($data['stores_ids']) > 0 ) {
+			foreach ($data['stores_ids'] as $stores_id) {
+				$Qinsert = $osC_Database->query('insert into :table_slide_images_to_stores (image_id, stores_id) values (:image_id, :stores_id)');
+				$Qinsert->bindTable(':table_slide_images_to_stores', TABLE_SLIDE_IMAGES_TO_STORES);
+				$Qinsert->bindInt(':image_id', $image_id);
+				$Qinsert->bindInt(':stores_id', $stores_id);
+				$Qinsert->execute();
+    
+				if ( $osC_Database->isError() ) {
+					return false;
+					break;
+				}
+			}
+		}
 
     if ( $osC_Database->isError() ) {
       return false;
@@ -126,12 +155,23 @@ class toC_Slide_Images_Admin {
     if($Qimage->numberOfRows() > 0) {
       @unlink(DIR_FS_CATALOG.'images/'. $Qimage->value('image'));
     }
+    
+    //stores
+    $Qdelete_stores = $osC_Database->query('delete from :table_slide_images_to_stores where image_id = :image_id');
+    $Qdelete_stores->bindTable(':table_slide_images_to_stores', TABLE_SLIDE_IMAGES_TO_STORES);
+    $Qdelete_stores->bindInt(':image_id', $id);
+    $Qdelete_stores->execute();
+    
+    if ( $osC_Database->isError() ) {
+      return false;
+    }
 
     $Qdelete = $osC_Database->query('delete from :table_slide_images where image_id = :image_id');
     $Qdelete->bindTable(':table_slide_images', TABLE_SLIDE_IMAGES);
     $Qdelete->bindInt(':image_id', $id);
     $Qdelete->setLogging($_SESSION['module'], $id);
     $Qdelete->execute();
+    
     if ( $osC_Database->isError() ) {
       return false;
     }else{
@@ -139,6 +179,34 @@ class toC_Slide_Images_Admin {
       
       return true;
     }
+  }
+  
+  /**
+   * Get the stores linked to currect slide image
+   *
+   * @acess public
+   * @param int
+   * @return mixed
+   */
+  function getStores($images_id) {
+  	global $osC_Database;
+  
+  	$Qstores = $osC_Database->query('select stores_id from :table_slide_images_to_stores where image_id = :image_id');
+  	$Qstores->bindTable(':table_slide_images_to_stores', TABLE_SLIDE_IMAGES_TO_STORES);
+  	$Qstores->bindInt(':image_id', $images_id);
+  	$Qstores->execute();
+  
+  	if ($Qstores->numberOfRows() > 0) {
+  		$result = array();
+  
+  		while ($Qstores->next()) {
+  			$result[] = $Qstores->valueInt('stores_id');
+  		}
+  
+  		return $result;
+  	}
+  
+  	return null;
   }
 }
 ?>

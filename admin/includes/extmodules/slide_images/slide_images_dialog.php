@@ -24,7 +24,7 @@ Toc.slideImages.SlideImagesDialog = function(config) {
   config.width = 600;
   config.height = 500;
   config.iconCls = 'icon-slide_images-win';
-  config.items = this.buildForm();
+  config.items = this.buildForm(config.imagesId);
   
   config.buttons = [
     {
@@ -168,10 +168,45 @@ Ext.extend(Toc.slideImages.SlideImagesDialog, Ext.Window, {
       }
     ?>
     
+    tabImages.add(this.grdStores);
+    
     return tabImages;
   },
 
-  buildForm: function() {
+  buildForm: function(imagesId) {
+  	this.grdStores = new Toc.common.StoresGrid();
+  	
+  	if (imagesId > 0) {
+    	this.grdStores.getStore().on('load', function() {
+    		Ext.Ajax.request({
+					url: Toc.CONF.CONN_URL,
+            params: {
+              module: 'slide_images',
+              action: 'load_stores',
+              images_id: imagesId
+            },
+            callback: function(options, success, response){
+              var result = Ext.decode(response.responseText);
+              
+              if (result.success) {
+              	var storesIds = result.stores;
+              	
+              	Ext.each(storesIds, function(storeId) {
+	              	if (storeId == 0) {
+	              			this.grdStores.getSelectionModel().selectRow(0);
+	              		}else {
+											var index = this.grdStores.getStore().indexOfId(storeId);
+	              		
+	              			this.grdStores.getSelectionModel().selectRow(index);
+	              		}
+              	}, this);
+              }
+            },
+            scope: this
+				});   
+			}, this);
+    }	
+  	
     this.pnlSlideImages = new Ext.FormPanel({
       layout: 'border',
       width: 600,
@@ -190,6 +225,8 @@ Ext.extend(Toc.slideImages.SlideImagesDialog, Ext.Window, {
   },
   
   submitForm : function() {
+  	this.pnlSlideImages.form.baseParams['stores_ids'] =  this.grdStores.getStoreIds();
+  	
     this.pnlSlideImages.form.submit({
       waitMsg: TocLanguage.formSubmitWaitMsg,
       success: function(form, action) {

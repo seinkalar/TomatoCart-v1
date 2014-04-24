@@ -14,11 +14,16 @@ heading_title_new_slide_image = New Slide Image
 heading_title_edit_slide_image = Edit Slide Image
 heading_title_data = Data
 
+
 table_heading_image = Image
 table_heading_image_url = Image URL
 table_heading_order = Order
 table_heading_action = Action
 table_heading_status = Status
+table_heading_stores_name = Store Name
+table_heading_stores_url = URL Address
+
+section_stores = Stores
 
 
 field_publish = Status:

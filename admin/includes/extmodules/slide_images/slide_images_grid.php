@@ -164,7 +164,7 @@ Ext.extend(Toc.slideImages.SlideImagesGrid, Ext.grid.GridPanel, {
   },
   
   onEdit: function(record) {
-    var dlg = this.owner.createSlideImagesDialog();
+    var dlg = this.owner.createSlideImagesDialog(record.get('image_id'));
     dlg.setTitle('<?php echo $osC_Language->get('heading_title_edit_slide_image'); ?>');
     
     dlg.on('saveSuccess', function() {

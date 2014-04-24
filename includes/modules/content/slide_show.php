@@ -29,12 +29,14 @@
     function initialize() {
       global $osC_Database, $osC_Services, $osC_Language, $osC_Image, $osC_Template;
 
-      $Qimages = $osC_Database->query('select image ,image_url, description from :table_slide_images where language_id =:language_id and status = 1 order by sort_order desc');
+      $Qimages = $osC_Database->query('select image ,image_url, description from :table_slide_images si inner join :table_slide_images_to_stores si2s on (si.image_id = si2s.image_id) where si2s.stores_id = :stores_id and language_id =:language_id and status = 1 order by sort_order desc');
       $Qimages->bindTable(':table_slide_images', TABLE_SLIDE_IMAGES);
+      $Qimages->bindTable(':table_slide_images_to_stores', TABLE_SLIDE_IMAGES_TO_STORES);
       $Qimages->bindInt(':language_id', $osC_Language->getID());
-      $Qimages->setCache('slide-images-' . $osC_Language->getCode());
+      $Qimages->bindInt(':stores_id', STORE_ID);
+      $Qimages->setCache('slide-images-' . STORE_ID . '-' . $osC_Language->getCode());
       $Qimages->execute();
-
+      
       if ($Qimages->numberOfRows() > 0) {
 
         $tmp = array();

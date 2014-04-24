@@ -11,10 +11,12 @@
   as published by the Free Software Foundation.
 */
 
-  echo 'Ext.namespace("Toc.slideImages");';
+  echo 'Ext.namespace("Toc.slideImages", "Toc.common");';
   
   include('slide_images_dialog.php');
   include('slide_images_grid.php');
+  
+  include(DIR_FS_CATALOG . DIR_FS_ADMIN . 'includes/extmodules/common/stores_grid.php');
 ?>
 
 Ext.override(TocDesktop.SlideImagesWindow, {
@@ -41,12 +43,12 @@ Ext.override(TocDesktop.SlideImagesWindow, {
     win.show();
   },
   
-  createSlideImagesDialog: function() {
+  createSlideImagesDialog: function(imagesId) {
     var desktop = this.app.getDesktop();
     var dlg = desktop.getWindow('slide_images_dialog-win');
     
     if (!dlg) {
-      dlg = desktop.createWindow({}, Toc.slideImages.SlideImagesDialog);
+      dlg = desktop.createWindow({imagesId: imagesId}, Toc.slideImages.SlideImagesDialog);
       
       dlg.on('saveSuccess', function(feedback) {
         this.app.showNotification({title: TocLanguage.msgSuccessTitle, html: feedback});

@@ -146,6 +146,12 @@
         }
       }
       
+      //stores
+      if (isset($_POST['stores_ids'])) {
+      	$stores_ids = json_decode($_POST['stores_ids']);
+      	$data['stores_ids'] = $stores_ids;
+      }
+      
       if ( $error === false ) {
         if ( toC_Slide_Images_Admin::save( ( isset($_REQUEST['image_id']) ? $_REQUEST['image_id'] : null ), $data) ) {
           $response = array('success' => true, 'feedback' => $osC_Language->get('ms_success_action_performed'));
@@ -156,6 +162,21 @@
       }
      
       echo $toC_Json->encode($response);
+    }
+    
+    //slide images to stores
+    function loadStores() {
+    	global $toC_Json;
+    
+    	$stores = toC_Slide_Images_Admin::getStores($_POST['images_id']);
+    
+    	if (count($stores) > 0) {
+    		$response = array('success' => true, 'stores' => $stores);
+    	}else {
+    		$response = array('success' => false);
+    	}
+    
+    	echo $toC_Json->encode($response);
     }
   }
 ?>
