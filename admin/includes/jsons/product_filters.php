@@ -216,5 +216,23 @@
       
       echo $toC_Json->encode($response);
     }
+    
+    // Save the configurations for filters module
+    function saveConfigurations() {
+      $data = array(
+				'get_filters_method' => $_POST['get_filters_method'], 
+				'active_price_range' => $_POST['active_price_range'], 
+				'calculate_products_counts' => $_POST['calculate_products_counts'], 
+				'hide_disabled_filters' => $_POST['hide_disabled_filters']
+      );
+      
+      if (osC_ProductFilters_Admin::saveConfigurations($data)) {
+      	$response = array('success' => TRUE ,'feedback' => $osC_Language->get('ms_success_action_performed'));
+      }else {
+      	$response = array('success' => FALSE, 'feedback' => $osC_Language->get('ms_error_action_not_performed'));
+      }
+      
+      echo $toC_Json->encode($response);
+    }
   }
   

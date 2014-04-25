@@ -58,6 +58,15 @@ Ext.extend(Toc.product_filters.MainPanel,Ext.Panel,{
         labelSeparator: ''
       },
       labelWidth: 160,
+      buttons: [
+		    {
+		      text: TocLanguage.btnSave,
+		      handler: function () {
+		        this.submitForm();
+		      }, 
+		      scope: this
+		    }
+		  ],
       items: [
        	pnlMessage,
 				{
@@ -77,6 +86,13 @@ Ext.extend(Toc.product_filters.MainPanel,Ext.Panel,{
               border: false,
               items:[
                 { hideLabel: true, boxLabel: '<?php echo $osC_Language->get('categories'); ?>' , name: 'get_filters_method', xtype:'radio', inputValue: 'c'}
+              ]
+            },
+            { 
+              layout: 'form',
+              border: false,
+              items:[
+                { hideLabel: true, boxLabel: '<?php echo $osC_Language->get('filters'); ?>' , name: 'get_filters_method', xtype:'radio', inputValue: 'f'}
               ]
             }
           ]  
@@ -123,7 +139,6 @@ Ext.extend(Toc.product_filters.MainPanel,Ext.Panel,{
             }
           ]  
         },
-        
         {
           layout: 'column',
           border: false,
@@ -183,5 +198,21 @@ Ext.extend(Toc.product_filters.MainPanel,Ext.Panel,{
   onFiltersGroupsSelectChange: function(record) {
     this.grdFilters.setTitle('<?php echo $osC_Language->get("heading_title");?>:  '+ record.get('filters_groups_name'));
     this.grdFilters.iniGrid(record);
+  },
+  
+  submitForm: function () {
+    this.frmConfiguration.form.submit({
+      waitMsg: TocLanguage.formSubmitWaitMsg,
+      success: function (form, action) {
+        this.fireEvent('saveSuccess', action.result.feedback);
+        this.close();
+      },
+      failure: function (form, action) {
+        if (action.failureType != 'client') {
+          Ext.MessageBox.alert(TocLanguage.msgErrTitle, action.result.feedback);
+        }
+      },
+      scope: this
+    });
   }
 });

@@ -1836,5 +1836,39 @@
       
       return null;
     }
+    
+    /**
+     * Get the filters linked to currect product
+     *
+     * @acess public
+     * @param int
+     * @return mixed
+     */
+    function getLinkedFilters($products_id) {
+    	global $osC_Database, $osC_Language;
+    	
+    	$Qfilters = $osC_Database->query('select fd.filters_name, fgd.filters_groups_name from :table_products p inner join :table_products_to_filters p2f on (p.products_id = p2f.products_id) inner join :table_filters f on (p2f.filters_id = f.filters_id) inner join :table_filters_description fd on (f.filters_id = fd.filters_id and fd.language_id = :language_id) inner join :table_filters_groups_descriptions fgd on (f.filters_groups_id = fgd.filters_groups_id and fgd.language_id = :language_id) where p.products_id = :products_id order by filters_groups_name, filters_name');
+    	$Qfilters->bindTable(':table_products', TABLE_PRODUCTS);
+    	$Qfilters->bindTable(':table_products_to_filters', TABLE_PRODUCTS_TO_FILTERS);
+    	$Qfilters->bindTable(':table_filters', TABLE_FILTERS);
+    	$Qfilters->bindTable(':table_filters_description', TABLE_FILTERS_DESCRIPTION);
+    	$Qfilters->bindTable(':table_filters_groups_descriptions', TABLE_FILTERS_GROUPS_DESCRIPTION);
+    	$Qfilters->bindInt(':language_id', $osC_Language->getID());
+    	$Qfilters->bindInt(':language_id', $osC_Language->getID());
+    	$Qfilters->bindInt(':products_id', $products_id);
+    	$Qfilters->execute();
+    	
+    	if ($Qfilters->numberOfRows() > 0) {
+    		$result = array();
+    	
+    		while ($Qfilters->next()) {
+    			$result[] = $Qfilters->value('filters_groups_name') . ': ' .  $Qfilters->value('filters_name');
+    		}
+    	
+    		return $result;
+    	}
+    	
+    	return null;
+    }
   }
 ?>

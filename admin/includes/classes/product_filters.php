@@ -501,5 +501,31 @@
       
       return FALSE;
     }
+    
+   /*
+    * Save the configurations of products filters module
+    *
+    * @param $data array - configuration keys and values
+    *
+    * return bool
+    */
+    function saveConfigurations($data) {
+    	global $osC_Database;
+    	
+      if (count($data) > 0) {
+        foreach ($data as $configuration_key => $configuration_value) {
+          $Qdelete = $osC_Database->query('delete from :table_configuration where configuration_key = :configuration_key');
+          $Qdelete->bindTable(':table_configuration', TABLE_CONFIGURATION);
+          $Qdelete->bindValue(':configuration_key', $configuration_key);
+          $Qdelete->execute();
+          
+          $Qinsert = $osC_Database->query('insert into :table_configuration (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, date_added) vlaues (:configuration_title, :configuration_key, :configuration_value, :configuration_description, :configuration_group_id, now())');
+          $Qinsert->bindTable(':table_configuration', TABLE_CONFIGURATION);
+          $Qinsert->bindValue(':configuration_title', TABLE_CONFIGURATION);
+        }
+      }else {
+        return FALSE;
+      }
+    }
   }
 ?>

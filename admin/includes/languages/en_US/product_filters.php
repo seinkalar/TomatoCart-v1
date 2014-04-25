@@ -34,6 +34,7 @@ field_hide_disabled_filters = Hide Disabled Filters:
 
 products = From Products
 categories = From Categories
+filters = From Filters
 yes = Yes
 no = No
 

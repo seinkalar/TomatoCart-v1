@@ -442,13 +442,21 @@
           $products_frontpage = 0;
         }
         
+        //products to filters
+        $filters = osC_Products_Admin::getLinkedFilters($Qproducts->value('products_id'));
+        
+        if ($filters !== null) {
+          $filters = implode('<br />', $filters);
+        }
+        
         $records[] = array(
           'products_id'         => $Qproducts->value('products_id'),
           'products_name'       => $Qproducts->value('products_name'),
           'products_frontpage'  => $products_frontpage,
           'products_status'     => $Qproducts->value('products_status'),
           'products_price'      => $products_price,
-          'products_quantity'   => $Qproducts->value('products_quantity')
+          'products_quantity'   => $Qproducts->value('products_quantity'),
+        	'products_to_filters' => $filters
         );
       }
   

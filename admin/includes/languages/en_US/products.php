@@ -42,6 +42,7 @@ table_heading_filters_groups_name = Group
 table_heading_filters_sort_order = Sort Order
 table_heading_stores_name = Store Name
 table_heading_stores_url = URL Address
+table_heading_filters = Filters
 
 action_heading_new_product = New Product
 action_heading_delete_image = Delete Image
