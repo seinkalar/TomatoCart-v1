@@ -9,6 +9,9 @@
 # as published by the Free Software Foundation.
 
 heading_title = Product Filters
+heading_configuration_title = Configurations
+heading_filters_title = Filters
+
 
 action_heading_new_filter_group = New Filter Group
 action_heading_batch_delete_filter_groups = Batch Delete Filter Groups
@@ -24,6 +27,17 @@ table_heading_filters = Filters
 field_group_name = Group Name:
 field_filter_name = Filter Name:
 field_filter_sort_order = Sort Order:
+field_get_filters_method = Method To Get Filters:
+field_active_price_range = Active Price Range:
+field_calculate_products_counts = Calculate Products Counts:
+field_hide_disabled_filters = Hide Disabled Filters:
+
+products = From Products
+categories = From Categories
+yes = Yes
+no = No
+
+introduction_enhance_performance = Note: you should set the <b>Calculate Products Counts</b> field to <b>No</b> in order to enhance the performance. But, the <b>Hide Disabled Filters</b> setting will be ignored when you set <b>Calculate Products Counts</b> to <b>No</b>. 
 
 introduction_new_filter_group = Please fill in the following information for the new filter group.
 
