@@ -138,21 +138,6 @@ Ext.extend(Toc.products.DataPanel, Ext.TabPanel, {
       }
     });
     
-    this.cboLengthClasses = new Ext.form.ComboBox({
-      fieldLabel: '<?php echo $osC_Language->get('field_length_classes'); ?>', 
-      xtype: 'combo', 
-      store: dsLengthClasses, 
-      id: 'combLengthClasses', 
-      name: 'products_length_class_ids', 
-      hiddenName: 'products_length_class', 
-      displayField: 'text', 
-      valueField: 'id', 
-      triggerAction: 'all', 
-      editable: false,
-      forceSelection: true     
-    });
-
-      
     this.fsStatus = new Ext.form.FieldSet({
       title: '<?php echo $osC_Language->get('subsection_data'); ?>', 
       layout: 'column', 
@@ -193,11 +178,7 @@ Ext.extend(Toc.products.DataPanel, Ext.TabPanel, {
                 }
               ]
             },
-            {fieldLabel: '<?php echo $osC_Language->get('field_date_available'); ?>', name: 'products_date_available', format: 'Y-m-d', xtype: 'datefield', readOnly: true, width: 165},
-            this.cboLengthClasses,
-            {fieldLabel: '<?php echo $osC_Language->get('field_width'); ?>', xtype:'textfield', name: 'products_width'},
-            {fieldLabel: '<?php echo $osC_Language->get('field_height'); ?>', xtype:'textfield', name: 'products_height'},
-            {fieldLabel: '<?php echo $osC_Language->get('field_length'); ?>', xtype:'textfield', name: 'products_length'},         
+            {fieldLabel: '<?php echo $osC_Language->get('field_date_available'); ?>', name: 'products_date_available', format: 'Y-m-d', xtype: 'datefield', readOnly: true, width: 165}
           ]
         },
         {
