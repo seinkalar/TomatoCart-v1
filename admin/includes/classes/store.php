@@ -367,7 +367,7 @@ class toC_Store_Admin {
 				'time_zone' => 'STORE_TIME_ZONE',
 				'language_code' => 'DEFAULT_LANGUAGE',
 				'currency_code' => 'DEFAULT_CURRENCY',
-				'maintenance_mode' => 'MAINTENANCE_MOD',
+				'maintenance_mode' => 'MAINTENANCE_MODE',
 				'display_prices_with_tax' => 'DISPLAY_PRICE_WITH_TAX',
 				'dislay_products_recursively' => 'DISPLAY_SUBCATALOGS_PRODUCTS',
 				'synchronize_cart_with_database' => 'SYNCHRONIZE_CART_WITH_DATABASE',
