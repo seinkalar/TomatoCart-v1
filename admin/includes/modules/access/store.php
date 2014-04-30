@@ -13,7 +13,7 @@
 
   class osC_Access_store extends osC_Access {
     var $_module = 'store',
-        $_group = 'definitions',
+        $_group = 'configuration',
         $_icon = 'photo_add.png',
         $_title,
         $_sort_order = 0;
