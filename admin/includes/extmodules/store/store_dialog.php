@@ -63,6 +63,8 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
         },
         success: function(form, action) {
           Toc.store.StoreDialog.superclass.show.call(this);
+          
+          this.updateCboZones(action.result.data.zone_id);
         },
         failure: function(form, action) {
           Ext.Msg.alert(TocLanguage.msgErrTitle, TocLanguage.msgErrLoadData);
