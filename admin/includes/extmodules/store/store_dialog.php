@@ -374,7 +374,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
 							layout: 'form',
 							border: false,
 							items: [
-								{fieldLabel: '<?php echo $osC_Language->get('field_display_prices_with_tax'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'display_prices_with_tax', hideLabel: true, inputValue: '0'}
+								{fieldLabel: '<?php echo $osC_Language->get('field_display_prices_with_tax'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'display_prices_with_tax', hideLabel: true, inputValue: '-1'}
 							]
 						}
 					]
@@ -397,7 +397,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
 							layout: 'form',
 							border: false,
 							items: [
-								{fieldLabel: '<?php echo $osC_Language->get('field_display_products_recursively'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'dislay_products_recursively', hideLabel: true, inputValue: '0'}
+								{fieldLabel: '<?php echo $osC_Language->get('field_display_products_recursively'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'dislay_products_recursively', hideLabel: true, inputValue: '-1'}
 							]
 						}
 					]
@@ -420,7 +420,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
 							layout: 'form',
 							border: false,
 							items: [
-								{fieldLabel: '<?php echo $osC_Language->get('field_synchronize_cart_with_database'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'synchronize_cart_with_database', hideLabel: true, inputValue: '0', checked: true}
+								{fieldLabel: '<?php echo $osC_Language->get('field_synchronize_cart_with_database'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'synchronize_cart_with_database', hideLabel: true, inputValue: '-1', checked: true}
 							]
 						}
 					]
@@ -443,7 +443,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
 							layout: 'form',
 							border: false,
 							items: [
-								{fieldLabel: '<?php echo $osC_Language->get('field_show_confirmation_dialog'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'show_confirmation_dialog', hideLabel: true, inputValue: '0'}
+								{fieldLabel: '<?php echo $osC_Language->get('field_show_confirmation_dialog'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'show_confirmation_dialog', hideLabel: true, inputValue: '-1'}
 							]
 						}
 					]
@@ -482,7 +482,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
 							layout: 'form',
 							border: false,
 							items: [
-								{fieldLabel: '<?php echo $osC_Language->get('field_check_stock_level'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'check_stock_level', hideLabel: true, inputValue: '0'}
+								{fieldLabel: '<?php echo $osC_Language->get('field_check_stock_level'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'check_stock_level', hideLabel: true, inputValue: '-1'}
 							]
 						}
 					]
@@ -505,7 +505,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
 							layout: 'form',
 							border: false,
 							items: [
-								{fieldLabel: '<?php echo $osC_Language->get('field_subtract_stock'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'subtract_stock', hideLabel: true, inputValue: '0'}
+								{fieldLabel: '<?php echo $osC_Language->get('field_subtract_stock'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'subtract_stock', hideLabel: true, inputValue: '-1'}
 							]
 						}
 					]
@@ -528,7 +528,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
 							layout: 'form',
 							border: false,
 							items: [
-								{fieldLabel: '<?php echo $osC_Language->get('field_allow_checkout'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'allow_checkout', hideLabel: true, inputValue: '0'}
+								{fieldLabel: '<?php echo $osC_Language->get('field_allow_checkout'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'allow_checkout', hideLabel: true, inputValue: '-1'}
 							]
 						}
 					]
@@ -553,7 +553,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
 							layout: 'form',
 							border: false,
 							items: [
-								{fieldLabel: '<?php echo $osC_Language->get('field_stock_email_alerts'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'stock_email_alerts', hideLabel: true, inputValue: '0'}
+								{fieldLabel: '<?php echo $osC_Language->get('field_stock_email_alerts'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'stock_email_alerts', hideLabel: true, inputValue: '-1'}
 							]
 						}
 					]
@@ -576,7 +576,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
 							layout: 'form',
 							border: false,
 							items: [
-								{fieldLabel: '<?php echo $osC_Language->get('field_check_stock_cart_synchronization'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'check_stock_cart_synchronization', hideLabel: true, inputValue: '0'}
+								{fieldLabel: '<?php echo $osC_Language->get('field_check_stock_cart_synchronization'); ?>', boxLabel: '<?php echo $osC_Language->get('field_no'); ?>', xtype:'radio', name: 'check_stock_cart_synchronization', hideLabel: true, inputValue: '-1'}
 							]
 						}
 					]

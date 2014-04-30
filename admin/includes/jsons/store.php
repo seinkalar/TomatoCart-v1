@@ -253,35 +253,35 @@ class toC_Json_Store {
 	  		$configurations['time_zone'] = $_POST['time_zone'];
 	  	}
 	  	 
-	  	if (isset($_POST['maintenance_mode']) && !empty($_POST['maintenance_mode'])) {
+	  	if (isset($_POST['maintenance_mode'])) {
 	  		$configurations['maintenance_mode'] = $_POST['maintenance_mode'];
 	  	}
 	  	 
-	  	if (isset($_POST['display_prices_with_tax']) && !empty($_POST['display_prices_with_tax'])) {
+	  	if (isset($_POST['display_prices_with_tax'])) {
 	  		$configurations['display_prices_with_tax'] = $_POST['display_prices_with_tax'];
 	  	}
 	  	 
-	  	if (isset($_POST['dislay_products_recursively']) && !empty($_POST['dislay_products_recursively'])) {
+	  	if (isset($_POST['dislay_products_recursively'])) {
 	  		$configurations['dislay_products_recursively'] = $_POST['dislay_products_recursively'];
 	  	}
 	  	 
-	  	if (isset($_POST['synchronize_cart_with_database']) && !empty($_POST['synchronize_cart_with_database'])) {
+	  	if (isset($_POST['synchronize_cart_with_database'])) {
 	  		$configurations['synchronize_cart_with_database'] = $_POST['synchronize_cart_with_database'];
 	  	}
 	  	 
-	  	if (isset($_POST['show_confirmation_dialog']) && !empty($_POST['show_confirmation_dialog'])) {
+	  	if (isset($_POST['show_confirmation_dialog'])) {
 	  		$configurations['show_confirmation_dialog'] = $_POST['show_confirmation_dialog'];
 	  	}
 	  	 
-	  	if (isset($_POST['check_stock_level']) && !empty($_POST['check_stock_level'])) {
+	  	if (isset($_POST['check_stock_level'])) {
 	  		$configurations['check_stock_level'] = $_POST['check_stock_level'];
 	  	}
 	  	 
-	  	if (isset($_POST['subtract_stock']) && !empty($_POST['subtract_stock'])) {
+	  	if (isset($_POST['subtract_stock'])) {
 	  		$configurations['subtract_stock'] = $_POST['subtract_stock'];
 	  	}
 	  	 
-	  	if (isset($_POST['allow_checkout']) && !empty($_POST['allow_checkout'])) {
+	  	if (isset($_POST['allow_checkout'])) {
 	  		$configurations['allow_checkout'] = $_POST['allow_checkout'];
 	  	}
 	  	 
@@ -293,35 +293,35 @@ class toC_Json_Store {
 	  		$configurations['stock_reorder_level'] = $_POST['stock_reorder_level'];
 	  	}
 	  	 
-	  	if (isset($_POST['stock_email_alerts']) && !empty($_POST['stock_email_alerts'])) {
+	  	if (isset($_POST['stock_email_alerts'])) {
 	  		$configurations['stock_email_alerts'] = $_POST['stock_email_alerts'];
 	  	}
 	  	 
-	  	if (isset($_POST['stock_email_alerts']) && !empty($_POST['stock_email_alerts'])) {
+	  	if (isset($_POST['stock_email_alerts'])) {
 	  		$configurations['check_stock_cart_synchronization'] = $_POST['check_stock_cart_synchronization'];
 	  	}
 	  	 
-	  	if (isset($_POST['search_results']) && !empty($_POST['search_results'])) {
+	  	if (isset($_POST['search_results']) && (int)$_POST['search_results'] > 0) {
 	  		$configurations['search_results'] = $_POST['search_results'];
 	  	}
 	  	 
-	  	if (isset($_POST['list_per_row']) && !empty($_POST['list_per_row'])) {
+	  	if (isset($_POST['list_per_row']) && (int)$_POST['list_per_row'] > 0) {
 	  		$configurations['list_per_row'] = $_POST['list_per_row'];
 	  	}
 	  	 
-	  	if (isset($_POST['new_products_listing']) && !empty($_POST['new_products_listing'])) {
+	  	if (isset($_POST['new_products_listing']) && (int)$_POST['new_products_listing'] > 0) {
 	  		$configurations['new_products_listing'] = $_POST['new_products_listing'];
 	  	}
 	  	 
-	  	if (isset($_POST['search_results_auto_completer']) && !empty($_POST['search_results_auto_completer'])) {
+	  	if (isset($_POST['search_results_auto_completer']) && (int)$_POST['search_results_auto_completer'] > 0) {
 	  		$configurations['search_results_auto_completer'] = $_POST['search_results_auto_completer'];
 	  	}
 	  	 
-	  	if (isset($_POST['product_name_auto_completer']) && !empty($_POST['product_name_auto_completer'])) {
+	  	if (isset($_POST['product_name_auto_completer']) && (int)$_POST['product_name_auto_completer'] > 0) {
 	  		$configurations['product_name_auto_completer'] = $_POST['product_name_auto_completer'];
 	  	}
 	  	 
-	  	if (isset($_POST['width_auto_completer']) && !empty($_POST['width_auto_completer'])) {
+	  	if (isset($_POST['width_auto_completer']) && (int)$_POST['width_auto_completer'] > 0) {
 	  		$configurations['width_auto_completer'] = $_POST['width_auto_completer'];
 	  	}
 	  }
