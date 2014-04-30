@@ -64,6 +64,7 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
         success: function(form, action) {
           Toc.store.StoreDialog.superclass.show.call(this);
           
+          this.cboCountries.setValue(action.result.data.countries_id);
           this.updateCboZones(action.result.data.zone_id);
         },
         failure: function(form, action) {
