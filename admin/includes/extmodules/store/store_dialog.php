@@ -274,8 +274,8 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
     });
     
     this.cboCurrencies = new Ext.form.ComboBox({  
-      name: 'language',
-      store: dsLanguages,  
+      name: 'currencies',
+      store: dsCurrencies,  
       fieldLabel: '<?php echo $osC_Language->get("field_currency"); ?>',  
       valueField: 'code',  
       displayField: 'title',  
