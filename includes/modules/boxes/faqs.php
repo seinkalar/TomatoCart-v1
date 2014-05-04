@@ -29,12 +29,14 @@
 
       $this->_title_link = osc_href_link(FILENAME_INFO,'faqs');
       
-      $Qfaqs = $osC_Database->query('select distinct f.faqs_id, fd.faqs_question from :table_faqs f, :table_faqs_description fd where f.faqs_status = 1 and f.faqs_id = fd.faqs_id and fd.language_id = :language_id order by f.faqs_order desc, fd.faqs_question limit :max_display_faqs');
+      $Qfaqs = $osC_Database->query('select distinct f.faqs_id, fd.faqs_question from :table_faqs f, :table_faqs_description fd, :table_faqs_to_stores f2s where f.faqs_status = 1 and f.faqs_id = fd.faqs_id and fd.language_id = :language_id and f.faqs_id = f2s.faqs_id and f2s.stores_id = :stores_id order by f.faqs_order desc, fd.faqs_question limit :max_display_faqs');
       $Qfaqs->bindTable(':table_faqs', TABLE_FAQS);
       $Qfaqs->bindTable(':table_faqs_description', TABLE_FAQS_DESCRIPTION);
+      $Qfaqs->bindTable(':table_faqs_to_stores', TABLE_FAQS_TO_STORES);
       $Qfaqs->bindInt(':language_id', $osC_Language->getID());
+      $Qfaqs->bindInt(':stores_id', STORE_ID);
       $Qfaqs->bindInt(':max_display_faqs', BOX_FAQ_MAX_LIST);
-      $Qfaqs->setCache('box-faqs-' . $osC_Language->getCode());
+      $Qfaqs->setCache('box-faqs-' . STORE_ID . '-' . $osC_Language->getCode());
       
       $Qfaqs->execute();
 
