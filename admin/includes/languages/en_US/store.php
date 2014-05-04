@@ -70,7 +70,7 @@ button_upload = Upload
 
 default_store = Default Store
 
-introduction_set_store_url = Don\'t use directories for store url and ssl url to create a new store. You should always point another domain or sub domain to your hosting.<br />Example: http://sub.yourdomain.com
+introduction_set_store_url = Don\'t use sub-directories for store url and ssl url to create a new store. You should always point another domain or subdomain to your hosting. Please ensure all of domains share the same TomatoCart root directory in your web server. <br />Example: http://www.newdowmain.com or http://sub.yourdomain.com
 
 ms_warning_forbidden_edit = Warning: it is forbiddened to edit default store here. Please go to Configuration module to edit it.
 ms_error_wrong_store_url_format = Error: you enterred an invalid store url. Please check it and try it again.
