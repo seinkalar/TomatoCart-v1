@@ -56,6 +56,7 @@
   define('TABLE_EMAIL_TEMPLATES_DESCRIPTION', DB_TABLE_PREFIX . 'email_templates_description');
   define('TABLE_FAQS', DB_TABLE_PREFIX . 'faqs');
   define('TABLE_FAQS_DESCRIPTION', DB_TABLE_PREFIX . 'faqs_description');
+  define('TABLE_FAQS_TO_STORES', DB_TABLE_PREFIX . 'faqs_to_stores');
   define('TABLE_FILTERS', DB_TABLE_PREFIX . 'filters');
   define('TABLE_FILTERS_DESCRIPTION', DB_TABLE_PREFIX . 'filters_description');
   define('TABLE_FILTERS_GROUPS', DB_TABLE_PREFIX . 'filters_groups');

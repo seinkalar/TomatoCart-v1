@@ -558,6 +558,13 @@ CREATE TABLE toc_faqs_description (
   PRIMARY KEY  (faqs_id,language_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS toc_faqs_to_stores;
+CREATE TABLE toc_faqs_to_stores (
+  faqs_id int(11) NOT NULL,
+  stores_id int(11) NOT NULL,
+  PRIMARY KEY  (faqs_id,stores_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS toc_filters;
 CREATE TABLE toc_filters(
   filters_id int(11) NOT NULL AUTO_INCREMENT, 
