@@ -35,7 +35,7 @@ class toC_Json_Store {
 		
 		$records = array();
 		if ($start == 0) {
-		  $records[] = array('store_id' => '0', 'store_name' => STORE_NAME . '<b> (' . $osC_Language->get('default_store') . '</b>)', 'url_address' => HTTP_SERVER, 'ssl_url_address' => HTTPS_SERVER);
+		  $records[] = array('store_id' => 0, 'store_name' => STORE_NAME . '<b> (' . $osC_Language->get('default_store') . '</b>)', 'url_address' => HTTP_SERVER, 'ssl_url_address' => HTTPS_SERVER);
 		}
 		
 		$result = toC_Store_Admin::listStores($start, $limit, $search);
