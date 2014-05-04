@@ -11,10 +11,12 @@
   as published by the Free Software Foundation.
 */
 
-  echo 'Ext.namespace("Toc.faqs");';
+  echo 'Ext.namespace("Toc.faqs", "Toc.common");';
   
   include('faqs_dialog.php');
   include('faqs_grid.php');
+  
+  include(DIR_FS_CATALOG . DIR_FS_ADMIN . 'includes/extmodules/common/stores_grid.php');
 ?>
 
 Ext.override(TocDesktop.FaqsWindow, {

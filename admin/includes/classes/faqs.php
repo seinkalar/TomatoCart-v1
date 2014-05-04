@@ -102,6 +102,35 @@ class toC_Faqs_Admin {
         }
       }
     }
+    
+    //stores
+    if ($error === false) {
+    	if (is_numeric($id)) {
+    		$Qdelete = $osC_Database->query('delete from :table_faqs_to_stores where faqs_id = :faqs_id');
+    		$Qdelete->bindTable(':table_faqs_to_stores', TABLE_FAQS_TO_STORES);
+    		$Qdelete->bindInt(':faqs_id', $faqs_id);
+    		$Qdelete->execute();
+    
+    		if ( $osC_Database->isError() ) {
+    			$error = true;
+    		}
+    	}
+    
+    	if ( count($data['stores_ids']) > 0 ) {
+    		foreach ($data['stores_ids'] as $stores_id) {
+    			$Qinsert = $osC_Database->query('insert into :table_faqs_to_stores (faqs_id, stores_id) values (:faqs_id, :stores_id)');
+    			$Qinsert->bindTable(':table_faqs_to_stores', TABLE_FAQS_TO_STORES);
+    			$Qinsert->bindInt(':faqs_id', $faqs_id);
+    			$Qinsert->bindInt(':stores_id', $stores_id);
+    			$Qinsert->execute();
+    
+    			if ( $osC_Database->isError() ) {
+    				$error = true;
+    				break;
+    			}
+    		}
+    	}
+    }
 
     if ( $error === false ) {
       $osC_Database->commitTransaction();
@@ -121,6 +150,12 @@ class toC_Faqs_Admin {
     $error = false;
 
     $osC_Database->startTransaction();
+    
+    //stores
+    $Qstore = $osC_Database->query('delete from :table_faqs_to_stores where faqs_id = :faqs_id');
+    $Qstore->bindTable(':table_faqs_to_stores', TABLE_FAQS_TO_STORES);
+    $Qstore->bindInt(':faqs_id', $id);
+    $Qstore->execute();
 
     $Qfd = $osC_Database->query('delete from :table_faqs_description where faqs_id = :faqs_id');
     $Qfd->bindTable(':table_faqs_description', TABLE_FAQS_DESCRIPTION);
@@ -153,6 +188,35 @@ class toC_Faqs_Admin {
     }
     $osC_Database->rollbackTransaction();
     return false;
+  }
+  
+  
+  /**
+   * Get the stores linked to currect faq
+   *
+   * @acess public
+   * @param int
+   * @return mixed
+   */
+  function getStores($faqs_id) {
+  	global $osC_Database;
+  
+  	$Qstores = $osC_Database->query('select stores_id from :table_faqs_to_stores where faqs_id = :faqs_id');
+  	$Qstores->bindTable(':table_faqs_to_stores', TABLE_FAQS_TO_STORES);
+  	$Qstores->bindInt(':faqs_id', $faqs_id);
+  	$Qstores->execute();
+  
+  	if ($Qstores->numberOfRows() > 0) {
+  		$result = array();
+  
+  		while ($Qstores->next()) {
+  			$result[] = $Qstores->valueInt('stores_id');
+  		}
+  
+  		return $result;
+  	}
+  
+  	return null;
   }
 }
 ?>

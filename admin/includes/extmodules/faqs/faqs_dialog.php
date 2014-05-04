@@ -53,6 +53,33 @@ Ext.extend(Toc.faqs.FaqsDialog, Ext.Window, {
     
     this.frmFaq.form.reset();
     this.frmFaq.form.baseParams['faqs_id'] = faqsId;  
+    
+    if (faqsId > 0) {
+    	this.grdStores.getStore().on('load', function() {
+    		Ext.Ajax.request({
+					url: Toc.CONF.CONN_URL,
+            params: {
+              module: 'faqs',
+              action: 'load_stores',
+              faqs_id: faqsId
+            },
+            callback: function(options, success, response){
+              var result = Ext.decode(response.responseText);
+              
+              if (result.success) {
+              	var storesIds = result.stores;
+              	
+              	Ext.each(storesIds, function(storeId) {
+									var index = this.grdStores.getStore().indexOfId(storeId);
+              		
+									this.grdStores.getSelectionModel().selectRow(index, true);
+              	}, this);
+              }
+            },
+            scope: this
+				});   
+			}, this);
+    }
    
     if (faqsId > 0) { 
       this.frmFaq.load({
@@ -74,6 +101,8 @@ Ext.extend(Toc.faqs.FaqsDialog, Ext.Window, {
   },
 
   getContentPanel: function() {
+  	this.grdStores = new Toc.common.StoresGrid();
+  	
     this.tabLanguage = new Ext.TabPanel({
       region: 'center',
       title:'<?php echo $osC_Language->get('heading_title_data'); ?>',
@@ -106,11 +135,12 @@ Ext.extend(Toc.faqs.FaqsDialog, Ext.Window, {
       }
     ?>
     
+    this.tabLanguage.add(this.grdStores);
+    
     return this.tabLanguage;
   },
   
   getDataPanel: function() {
-  
     this.pnlData = new Ext.Panel({
       region: 'north',
       layout: 'form', 
@@ -189,6 +219,8 @@ Ext.extend(Toc.faqs.FaqsDialog, Ext.Window, {
   },
   
   submitForm : function() {
+  	this.frmFaq.form.baseParams['stores_ids'] =  this.grdStores.getStoreIds();
+  	
     this.frmFaq.form.submit({
       waitMsg: TocLanguage.formSubmitWaitMsg,
       success: function(form, action){

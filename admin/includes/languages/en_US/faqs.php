@@ -17,6 +17,8 @@ table_heading_action = Action
 table_heading_faq_categories = Categories
 table_heading_publish = Publish
 table_heading_sort_order = Sort Order
+table_heading_stores_name = Store Name
+table_heading_stores_url = URL Address
 
 heading_title_data = Data
 field_publish = Publish:
@@ -27,6 +29,8 @@ field_faq_category = Category:
 field_faq_question = Question:
 field_faq_url = Friendly Url:
 filed_faq_answer = Answer:
+
+section_stores = Stores
 
 action_heading_batch_delete_faq = Batch Delete FAQs
 introduction_delete_faq = Please verify the removal of this FAQ.
