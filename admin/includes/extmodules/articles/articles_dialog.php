@@ -20,7 +20,7 @@ Toc.articles.ArticlesDialog = function(config) {
   config.title = '<?php echo $osC_Language->get('heading_title_new_article'); ?>';
   config.layout = 'fit';
   config.width = 850;
-  config.height = 700;
+  config.height = 600;
   config.modal = true;
   config.iconCls = 'icon-articles-win';
   config.items = this.buildForm();
@@ -69,13 +69,9 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
               	var storesIds = result.stores;
               	
               	Ext.each(storesIds, function(storeId) {
-              	if (storeId == 0) {
-              			this.grdStores.getSelectionModel().selectRow(0);
-              		}else {
-										var index = this.grdStores.getStore().indexOfId(storeId);
+									var index = this.grdStores.getStore().indexOfId(storeId);
               		
-              			this.grdStores.getSelectionModel().selectRow(index);
-              		}
+									this.grdStores.getSelectionModel().selectRow(index, true);
               	}, this);
               }
             },
@@ -121,6 +117,7 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
   },
 
   getContentPanel: function() {
+		this.grdStores = new Toc.common.StoresGrid();
     this.pnlGeneral = new Toc.articles.GeneralPanel();
     this.pnlMetaInfo = new Toc.articles.MetaInfoPanel();
     
@@ -133,7 +130,8 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
       deferredRender: false,
       items: [
         this.pnlGeneral,
-        this.pnlMetaInfo  
+        this.pnlMetaInfo,
+        this.grdStores 
       ]
     });
     
@@ -141,8 +139,6 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
   },
   
   getDataPanel: function() {
-  	this.grdStores = new Toc.common.StoresGrid();
-  
     dsCategories = new Ext.data.Store({
       url:Toc.CONF.CONN_URL,
       baseParams: {
@@ -174,7 +170,7 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
       layout: 'column',
       border: false,
       autoHeight: true,
-      style: 'padding: 6px',
+      region: 'north',
       title: '<?php echo $osC_Language->get('heading_title_data'); ?>',
       items: [
         {
@@ -238,21 +234,7 @@ Ext.extend(Toc.articles.ArticlesDialog, Ext.Window, {
       ]
     });
     
-    this.tabPnlData = new Ext.TabPanel({
-      activeTab: 0,
-			region: 'north',
-			height: 250,
-      defaults:{
-        hideMode:'offsets'
-      },
-      deferredRender: false,
-      items: [
-        this.pnlData,
-        this.grdStores
-      ]
-    });
-    
-    return this.tabPnlData;
+    return this.pnlData;
   },
   
   buildForm: function() {

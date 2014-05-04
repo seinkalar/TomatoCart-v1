@@ -19,7 +19,7 @@ Toc.articles_categories.ArticlesCategoriesDialog = function(config) {
   config.id = 'articles_categories-dialog-win';
   config.title = '<?php echo $osC_Language->get('action_heading_new_category'); ?>';
   config.layout = 'fit';
-  config.width = 440;
+  config.width = 600;
   config.height = 350;
   config.modal = true;
   config.iconCls = 'icon-articles_categories-win';
@@ -69,13 +69,9 @@ Ext.extend(Toc.articles_categories.ArticlesCategoriesDialog, Ext.Window, {
               	var storesIds = result.stores;
               	
               	Ext.each(storesIds, function(storeId) {
-              	if (storeId == 0) {
-              			this.grdStores.getSelectionModel().selectRow(0);
-              		}else {
-										var index = this.grdStores.getStore().indexOfId(storeId);
+									var index = this.grdStores.getStore().indexOfId(storeId);
               		
-              			this.grdStores.getSelectionModel().selectRow(index);
-              		}
+									this.grdStores.getSelectionModel().selectRow(index, true);
               	}, this);
               }
             },

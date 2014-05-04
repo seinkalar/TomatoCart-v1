@@ -98,13 +98,9 @@ Ext.extend(Toc.information.InformationDialog, Ext.Window, {
               	var storesIds = result.stores;
               	
               	Ext.each(storesIds, function(storeId) {
-	              	if (storeId == 0) {
-	              			this.grdStores.getSelectionModel().selectRow(0);
-	              		}else {
-											var index = this.grdStores.getStore().indexOfId(storeId);
-	              		
-	              			this.grdStores.getSelectionModel().selectRow(index);
-	              		}
+									var index = this.grdStores.getStore().indexOfId(storeId);
+              		
+									this.grdStores.getSelectionModel().selectRow(index, true);
               	}, this);
               }
             },
