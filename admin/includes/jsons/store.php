@@ -225,6 +225,22 @@ class toC_Json_Store {
 	  
 	  //other non-repquired configurations
 	  if ($error === false) {
+	  	if (isset($_POST['HOME_PAGE_TITLE']) && !empty($_POST['HOME_PAGE_TITLE'])) {
+	  		$configurations['page_title'] = $_POST['HOME_PAGE_TITLE'];
+	  	}
+	  	
+	  	if (isset($_POST['HOME_META_KEYWORD']) && !empty($_POST['HOME_META_KEYWORD'])) {
+	  		$configurations['keywords'] = $_POST['HOME_META_KEYWORD'];
+	  	}
+	  	
+	  	if (isset($_POST['HOME_META_DESCRIPTION']) && !empty($_POST['HOME_META_DESCRIPTION'])) {
+	  		$configurations['descriptions'] = $_POST['HOME_META_DESCRIPTION'];
+	  	}
+	  	
+	  	if (isset($_POST['index_text']) && !empty($_POST['index_text'])) {
+	  		$configurations['index_text'] = $_POST['index_text'];
+	  	}
+	  	
 	  	if (isset($_POST['ssl_url']) && !empty($_POST['ssl_url'])) {
 	  		$configurations['ssl_url'] = $_POST['ssl_url'];
 	  	}

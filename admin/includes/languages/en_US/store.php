@@ -52,12 +52,17 @@ field_search_results_auto_completer = Search Results In Auto-Completer
 field_maximum_product_name_length = Maximum Charaters For Product Name In Auto-Completer
 field_width_auto_completer = Width Of Auto-Completer List
 
+field_page_title = Page Title:
+field_meta_keywords = Meta Keywords:
+field_meta_description = Meta Description:
+
 field_logo_image = Logo Image
 
 field_yes = Yes
 field_no = No
 
 section_meta_info = Meta Info
+section_homepage_info = HomePage Text
 section_localization = Localization
 section_configurations = Configurations
 section_images = Images

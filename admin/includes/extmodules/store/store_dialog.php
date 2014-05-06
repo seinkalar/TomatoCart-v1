@@ -98,8 +98,10 @@ Ext.extend(Toc.store.StoreDialog, Ext.Window, {
   		deferredRender: false,
   		items: [
   			this.buildGeneralPanel(),
+  			new Toc.store.HomepageInfoPanel(),
+  			new Toc.store.MetaInfoPanel(),
   			this.buildLocalPanel(),
-  			this.buildConfigurationPanel()
+  			this.buildConfigurationPanel(),
   		]
   	});
   	

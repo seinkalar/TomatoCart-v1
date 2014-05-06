@@ -15,6 +15,8 @@
   
   include('store_grid.php');
   include('store_dialog.php');
+  include('meta_info_panel.php');
+  include('homepage_info_panel.php');
 ?>
 
 Ext.override(TocDesktop.StoreWindow, {
@@ -56,6 +58,8 @@ Ext.override(TocDesktop.StoreWindow, {
   
   onEdit: function(grd, record) {
   	var dlg = this.createStoreDialog();
+  	
+  	dlg.setTitle(record.get('store_name'));
   	
 		dlg.on('saveSuccess', function(){
       grd.onRefresh();
