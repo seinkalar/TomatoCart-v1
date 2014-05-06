@@ -60,34 +60,139 @@ class toC_Store_Admin {
 	function deleteStore($id) {
 		global $osC_Database;
 		
+		$error = false;
+		
+		$osC_Database->startTransaction();
+		
 		//delete store settings
 		$Qdelete_settings = $osC_Database->query('delete from :table_configuration where store_id = :store_id');
 		$Qdelete_settings->bindTable(':table_configuration', TABLE_CONFIGURATION);
 		$Qdelete_settings->bindInt(':store_id', $id);
 		$Qdelete_settings->execute();
 		
-		//delete store
-		$Qdelete_store = $osC_Database->query('delete from :table_store where store_id = :store_id');
-		$Qdelete_store->bindTable(':table_store', TABLE_STORE);
-		$Qdelete_store->bindInt(':store_id', $id);
-		$Qdelete_store->execute();
+		if ($osC_Database->isError()) {
+		  $error = true;
+		}
 		
-		if ($Qdelete_store->affectedRows() > 0) {
+		//delete articles categories to stores
+		if ($error == false) {
+		  $Qarticles_categories_stores = $osC_Database->query('delete from :table_articles_categories_to_stores where stores_id = :stores_id');
+		  $Qarticles_categories_stores->bindTable(':table_articles_categories_to_stores', TABLE_ARTICLES_CATEGORIES_TO_STORES);
+		  $Qarticles_categories_stores->bindInt(':stores_id', $id);
+		  $Qarticles_categories_stores->execute();
+		  
+		  if ($osC_Database->isError()) {
+		  	$error = true;
+		  }
+		}
+		
+		//delete articles to stores
+		if ($error == false) {
+			$Qarticles_stores = $osC_Database->query('delete from :table_articles_to_stores where stores_id = :stores_id');
+			$Qarticles_stores->bindTable(':table_articles_to_stores', TABLE_ARTICLES_TO_STORES);
+			$Qarticles_stores->bindInt(':stores_id', $id);
+			$Qarticles_stores->execute();
+		
+			if ($osC_Database->isError()) {
+				$error = true;
+			}
+		}
+		
+		//delete categories to stores
+		if ($error == false) {
+			$Qcategories_stores = $osC_Database->query('delete from :table_categories_to_stores where stores_id = :stores_id');
+			$Qcategories_stores->bindTable(':table_categories_to_stores', TABLE_CATEGORIES_TO_STORES);
+			$Qcategories_stores->bindInt(':stores_id', $id);
+			$Qcategories_stores->execute();
+		
+			if ($osC_Database->isError()) {
+				$error = true;
+			}
+		}
+		
+		//delete faqs to stores
+		if ($error == false) {
+			$Qfaqs_stores = $osC_Database->query('delete from :table_faqs_to_stores where stores_id = :stores_id');
+			$Qfaqs_stores->bindTable(':table_faqs_to_stores', TABLE_FAQS_TO_STORES);
+			$Qfaqs_stores->bindInt(':stores_id', $id);
+			$Qfaqs_stores->execute();
+		
+			if ($osC_Database->isError()) {
+				$error = true;
+			}
+		}
+		
+		//delete manufacturers to stores
+		if ($error == false) {
+			$Qmanufacturers_stores = $osC_Database->query('delete from :table_manufacturers_to_stores where stores_id = :stores_id');
+			$Qmanufacturers_stores->bindTable(':table_manufacturers_to_stores', TABLE_MANUFACTURERS_TO_STORES);
+			$Qmanufacturers_stores->bindInt(':stores_id', $id);
+			$Qmanufacturers_stores->execute();
+		
+			if ($osC_Database->isError()) {
+				$error = true;
+			}
+		}
+		
+		//delete products to stores
+		if ($error == false) {
+			$Qproducts_stores = $osC_Database->query('delete from :table_products_to_stores where stores_id = :stores_id');
+			$Qproducts_stores->bindTable(':table_products_to_stores', TABLE_PRODUCTS_TO_STORES);
+			$Qproducts_stores->bindInt(':stores_id', $id);
+			$Qproducts_stores->execute();
+		
+			if ($osC_Database->isError()) {
+				$error = true;
+			}
+		}
+		
+		//delete slide images to stores
+		if ($error == false) {
+			$Qslide_images_stores = $osC_Database->query('delete from :table_slide_images_to_stores where stores_id = :stores_id');
+			$Qslide_images_stores->bindTable(':table_slide_images_to_stores', TABLE_SLIDE_IMAGES_TO_STORES);
+			$Qslide_images_stores->bindInt(':stores_id', $id);
+			$Qslide_images_stores->execute();
+		
+			if ($osC_Database->isError()) {
+				$error = true;
+			}
+		}
+		
+		//delete store
+		if ($error == false) {
+			$Qdelete_store = $osC_Database->query('delete from :table_store where store_id = :store_id');
+			$Qdelete_store->bindTable(':table_store', TABLE_STORE);
+			$Qdelete_store->bindInt(':store_id', $id);
+			$Qdelete_store->execute();
+			
+			if ($osC_Database->isError()) {
+				$error = true;
+			}
+		}
+		
+		//clear cache
+		if ($error == false) {
+			$osC_Database->commitTransaction();
+			
 			osC_Cache::clear('box');
 			osC_Cache::clear('categories');
 			osC_Cache::clear('configuration');
 			osC_Cache::clear('currencies');
 			osC_Cache::clear('category_tree');
-			
+			osC_Cache::clear('slide-images');
+				
 			osC_Cache::clear('product');
-			
+				
 			osC_Cache::clear('also_purchased');
 			osC_Cache::clear('sefu-products');
 			osC_Cache::clear('new_products');
 			osC_Cache::clear('feature-products');
-			
-		  return true;
+			osC_Cache::clear('upcoming-products');
+				
+			return true;
 		}
+		
+		$osC_Database->rollbackTransaction();
 		
 		return false;
 	}
