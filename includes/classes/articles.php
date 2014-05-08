@@ -34,17 +34,19 @@
       global $osC_Database, $osC_Language;
 
       if (is_numeric($categories_id)) {
-        $Qarticles = $osC_Database->query('select a.articles_date_added, a.articles_last_modified, a.articles_image, a.articles_id, ad.articles_name, ad.articles_description from :table_articles a, :table_articles_description ad where a.articles_id = ad.articles_id and ad.language_id = :language_id and a.articles_status = 1 and articles_categories_id = :articles_categories_id order by a.articles_id ');
+        $Qarticles = $osC_Database->query('select a.articles_date_added, a.articles_last_modified, a.articles_image, a.articles_id, ad.articles_name, ad.articles_description from :table_articles a, :table_articles_description ad, :table_articles_to_stores a2s where a2s.articles_id = a.articles_id and a2s.stores_id = :stores_id and a.articles_id = ad.articles_id and ad.language_id = :language_id and a.articles_status = 1 and articles_categories_id = :articles_categories_id order by a.articles_id ');
         $Qarticles->bindInt(':articles_categories_id', $categories_id);
       } else {
-        $Qarticles = $osC_Database->query('select a.articles_date_added, a.articles_last_modified, a.articles_image, a.articles_id, ad.articles_name, ad.articles_description from :table_articles a, :table_articles_description ad where a.articles_id = ad.articles_id and ad.language_id = :language_id and a.articles_status = 1 order by a.articles_id ');
+        $Qarticles = $osC_Database->query('select a.articles_date_added, a.articles_last_modified, a.articles_image, a.articles_id, ad.articles_name, ad.articles_description from :table_articles a, :table_articles_description ad, :table_articles_to_stores a2s where a2s.articles_id = a.articles_id and a2s.stores_id = :stores_id and a.articles_id = ad.articles_id and ad.language_id = :language_id and a.articles_status = 1 order by a.articles_id ');
       }
       $Qarticles->bindTable(':table_articles', TABLE_ARTICLES);
+      $Qarticles->bindTable(':table_articles_to_stores', TABLE_ARTICLES_TO_STORES);
       $Qarticles->bindTable(':table_articles_description', TABLE_ARTICLES_DESCRIPTION);
+      $Qarticles->bindInt(':stores_id', STORE_ID);
       $Qarticles->bindInt(':language_id', $osC_Language->getID());
       $Qarticles->setBatchLimit((isset($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 1), MAX_DISPLAY_SEARCH_RESULTS);
       $Qarticles->execute();
-
+      
       return $Qarticles;
     }
     
