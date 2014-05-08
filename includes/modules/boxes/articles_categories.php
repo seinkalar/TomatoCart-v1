@@ -35,7 +35,7 @@
       $Qac->bindInt(':language_id', $osC_Language->getID());
       $Qac->bindInt(':stores_id', STORE_ID);
       $Qac->bindInt(':max_display_articles_categories', BOX_ARTICLES_CATEGORIES_MAX_LIST);
-      $Qac->setCache('box_articles_categories-' . STORE_ID . '-' . $osC_Language->getCode(), BOX_ARTICLES_CATEGORIES_MAX_LIST);
+      $Qac->setCache('box-articles-categories-' . STORE_ID . '-' . $osC_Language->getCode(), BOX_ARTICLES_CATEGORIES_MAX_LIST);
       $Qac->execute();
 
       $this->_content = '<ul>';

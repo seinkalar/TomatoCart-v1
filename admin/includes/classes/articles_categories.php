@@ -148,7 +148,7 @@
       if ( $error === false ) {
         $osC_Database->commitTransaction();
 
-        osC_Cache::clear('box-article-categories');
+        osC_Cache::clear('box-articles-categories');
         osC_Cache::clear('sefu-article-categories');
         return true;
       }
