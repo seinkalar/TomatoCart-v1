@@ -16,7 +16,7 @@
   include('store_grid.php');
   include('store_dialog.php');
   include('meta_info_panel.php');
-  include('homepage_info_panel.php');
+  include('configurations_panel.php');
 ?>
 
 Ext.override(TocDesktop.StoreWindow, {

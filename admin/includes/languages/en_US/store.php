@@ -56,7 +56,7 @@ field_page_title = Page Title:
 field_meta_keywords = Meta Keywords:
 field_meta_description = Meta Description:
 
-field_logo_image = Logo Image
+field_store_logo = Store Logo
 
 field_yes = Yes
 field_no = No

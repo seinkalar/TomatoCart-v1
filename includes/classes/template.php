@@ -472,7 +472,12 @@
       while (false !== ($entry = $directory->read())) {
         if (strpos($entry, 'logo_originals') !== false) {
           $filename = explode(".", $entry);
-          $logo = DIR_WS_IMAGES . 'logo_' . $this->getCode() . '.' . $filename[1];
+          
+          if (STORE_ID == 0) {
+          	$logo = DIR_WS_IMAGES . 'logo_' . $this->getCode() . '.' . $filename[1];
+          }else {
+          	$logo = DIR_WS_IMAGES . 'logo_' . $this->getCode() . '_' . STORE_ID . '.' . $filename[1];
+          }
 
           if(file_exists($logo)){
             return $logo;

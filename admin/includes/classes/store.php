@@ -158,6 +158,24 @@ class toC_Store_Admin {
 			}
 		}
 		
+		//delete store logo
+		if ($error == false) {
+			self::deleteLogo('originals_' . $id);
+			
+			$osC_DirectoryListing = new osC_DirectoryListing('../templates');
+			$osC_DirectoryListing->setIncludeDirectories(true);
+			$osC_DirectoryListing->setIncludeFiles(false);
+			$osC_DirectoryListing->setExcludeEntries('system');
+			
+			$templates = $osC_DirectoryListing->getFiles();
+			
+			foreach ($templates as $template) {
+				$code = $template['name'];
+			
+				self::deleteLogo($code . '_' . $id);
+			}
+		}
+		
 		//delete store
 		if ($error == false) {
 			$Qdelete_store = $osC_Database->query('delete from :table_store where store_id = :store_id');
@@ -287,7 +305,6 @@ class toC_Store_Admin {
 	  $Qstore->bindInt(':store_id', $store_id);
 	  $Qstore->execute();
 	  
-	  
 	  if ($Qstore->numberOfRows() > 0) {
 	  	$result = array('store_url' => $Qstore->value('url_address'), 'ssl_url' => $Qstore->value('ssl_url_address'));
 	  	
@@ -303,11 +320,26 @@ class toC_Store_Admin {
 	  	
 	  	if ($Qconfigurations->numberOfRows() > 0) {
 	  	  while ($Qconfigurations->next()) {
-	  	  	$result[$database_to_form[$Qconfigurations->value('configuration_key')]] = $Qconfigurations->value('configuration_value');
+	  	  	$configuration_key = $Qconfigurations->value('configuration_key');
+	  	  	//meta info configurations
+	  	  	if (preg_match('/^(HOME_PAGE_TITLE)_(\w+)$/', $configuration_key, $matches) || preg_match('/^(HOME_META_KEYWORD)_(\w+)$/', $configuration_key, $matches) || preg_match('/^(HOME_META_DESCRIPTION)_(\w+)$/', $configuration_key, $matches)) {
+	  	  		$meta_info_key = $matches[1] . '[' . $matches[2] . ']';
+	  	  		
+	  	  	  $result[$meta_info_key] = $Qconfigurations->value('configuration_value');
+  	  	  //other general configurations
+	  	  	}else {
+	  	  		$result[$database_to_form[$Qconfigurations->value('configuration_key')]] = $Qconfigurations->value('configuration_value');
+	  	  	}
 	  	  }
 	  	}
 	  	
 	  	$Qconfigurations->freeResult();
+	  	
+	  	//store logo
+	  	$store_logo = self::getOriginalLogo($store_id);
+	  	if ($store_logo !== false) {
+	  		$result['store_logo'] = $store_logo;
+	  	}
 	  	
 	  	return $result;
 	  }
@@ -328,6 +360,11 @@ class toC_Store_Admin {
 		global $osC_Database;
 		
 		$error = false;
+		
+		$edit_action = false;
+		if ($store_id > 0) {
+		  $edit_action = true;
+		}
 		
 		$osC_Database->startTransaction();
 		
@@ -362,25 +399,75 @@ class toC_Store_Admin {
 	  		$error = true;
 	  	}
 	  	
+	  	//store logo
+	  	if (!self::saveLogo($store_id, $current_store_id)) {
+	  		$error = true;
+	  	}
+	  	
 	  	//Begin: insert store configurations
 	  	if ($error === false) {
-	  		//delete configurations to update
-	  		if ($store_id > 0) {
-	  			$Qdelete = $osC_Database->query('delete from :table_configuration where store_id = :store_id');
-	  			$Qdelete->bindTable(':table_configuration', TABLE_CONFIGURATION);
-	  			$Qdelete->bindInt(':store_id', $store_id);
-	  			$Qdelete->execute();
-	  			
-	  			if ($osC_Database->isError()) {
-	  				$error = true;
-	  			}
-	  		}
-	  		
 	  		//insert configurations
 	  		foreach ($configurations as $config_key => $config_value) {
 	  			//store url is already saved in the store table
 	  			if ($config_key == 'store_url' || $config_key == 'ssl_url') {
 	  			  continue;
+	  			}
+	  			
+	  			//meta info
+	  			if ($config_key == 'page_title' || $config_key == 'keywords' || $config_key == 'descriptions') {
+	  				foreach($config_value as $key => $value) {
+	  					//edit
+	  					if ($edit_action) {
+	  						$Qmeta_meta_info = $osC_Database->query("update :table_configuration set configuration_value = :configuration_value where configuration_key = :configuration_key and store_id = :store_id");
+	  					//new
+	  					}else {
+	  					  $Qmeta_meta_info = $osC_Database->query('insert into :table_configuration (store_id, configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, date_added) values (:store_id, :configuration_title, :configuration_key, :configuration_value, :configuration_description, 6, now())');
+	  					}
+	  					
+	  					switch($config_key) {
+	  					  case 'page_title':
+	  					  	$configuration_key = 'HOME_PAGE_TITLE_' . $key;
+	  					  	
+	  					  	if ($edit_action == false) {
+	  					  		$configuration_title = 'Homepage Page Title';
+	  					  		$configuration_description = 'The page title for store front';
+	  					  	}
+	  					  	break;
+	  					  case 'keywords':
+	  					  	$configuration_key = 'HOME_META_KEYWORD_' . $key;
+	  					  	
+	  					  	if ($edit_action == false) {
+	  					  		$configuration_title = 'Homepage Meta Keywords';
+	  					  		$configuration_description = 'The meta keywords for store front';
+	  					  	}
+	  					  	break;
+  					  	case 'descriptions':
+  					  		$configuration_key = 'HOME_META_DESCRIPTION_' . $key;
+  					  		
+  					  		if ($edit_action == false) {
+  					  			$configuration_title = 'Homepage Meta Description';
+  					  			$configuration_description = 'The meta description for store front';
+  					  		}
+  					  		break;
+	  					}
+	  					
+	  					$Qmeta_meta_info->bindTable(":table_configuration", TABLE_CONFIGURATION);
+	  					$Qmeta_meta_info->bindValue(":configuration_key", $configuration_key);
+	  					$Qmeta_meta_info->bindValue(":configuration_value", $value);
+	  					$Qmeta_meta_info->bindInt(':store_id', $current_store_id);
+	  					
+	  					if ($edit_action == false) {
+	  						$Qmeta_meta_info->bindValue(":configuration_title", $configuration_title);
+	  						$Qmeta_meta_info->bindValue(":configuration_description", $configuration_description);
+	  					}
+	  					
+	  					$Qmeta_meta_info->execute();
+	  					
+	  					if($osC_Database->isError()) {
+	  						$error = true;
+	  						break;
+	  					}
+	  				}
 	  			}
 	  			
 					if (isset($form_to_database[$config_key])) {
@@ -406,14 +493,21 @@ class toC_Store_Admin {
 						  $Qtemplate->freeResult();
 						}
 						
-						$Qconfiguration = $osC_Database->query('insert into :table_configuration (store_id, configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id) values (:store_id, :configuration_title, :configuration_key, :configuration_value, :configuration_description, :configuration_group_id)');
+						//edit
+						if ($edit_action) {
+							$Qconfiguration = $osC_Database->query('update :table_configuration set configuration_value = :configuration_value where configuration_key = :configuration_key and store_id = :store_id');
+						}else {
+							$Qconfiguration = $osC_Database->query('insert into :table_configuration (store_id, configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id) values (:store_id, :configuration_title, :configuration_key, :configuration_value, :configuration_description, :configuration_group_id)');
+							
+							$Qconfiguration->bindValue(':configuration_title', $information['configuration_title']);
+							$Qconfiguration->bindValue(':configuration_description', $information['configuration_description']);
+							$Qconfiguration->bindValue(':configuration_group_id', $information['configuration_group_id']);
+						}
+						
 						$Qconfiguration->bindTable(':table_configuration', TABLE_CONFIGURATION);
 						$Qconfiguration->bindInt(':store_id', $current_store_id);
-						$Qconfiguration->bindValue(':configuration_title', $information['configuration_title']);
 						$Qconfiguration->bindValue(':configuration_key', $form_to_database[$config_key]);
 						$Qconfiguration->bindValue(':configuration_value', $config_value);
-						$Qconfiguration->bindValue(':configuration_description', $information['configuration_description']);
-						$Qconfiguration->bindValue(':configuration_group_id', $information['configuration_group_id']);
 						$Qconfiguration->execute();
 						
 						if ($osC_Database->isError()) {
@@ -451,6 +545,114 @@ class toC_Store_Admin {
 	  $osC_Database->rollbackTransaction();
 	  
 	  return false;
+	}
+	
+	/**
+	 * Save store logo
+	 *
+	 * @access public
+	 * @param int store id to represent edit or add action
+ 	 * @param int new store id to use for inserting
+	 * @return bool
+	 */
+	function saveLogo($store_id, $current_store_id) {
+		$store_logo = new upload('store_logo');
+		
+		if ($store_logo->exists() ) {
+			if ($store_id > 0) {
+				self::deleteLogo('originals_' . $store_id);
+			}
+		
+			$img_type = substr($_FILES['store_logo']['name'], ( strrpos($_FILES['store_logo']['name'], '.') + 1 ));
+			$original = DIR_FS_CATALOG . DIR_WS_IMAGES . 'logo_originals_' . $current_store_id . '.' . $img_type;
+		
+			$store_logo->set_destination(realpath(DIR_FS_CATALOG . 'images/'));
+		
+			if ($store_logo->parse() && $store_logo->save()) {
+				copy(DIR_FS_CATALOG . 'images/' . $store_logo->filename, $original);
+				@unlink(DIR_FS_CATALOG . 'images/' . $store_logo->filename);
+		
+				$osC_DirectoryListing = new osC_DirectoryListing('../templates');
+				$osC_DirectoryListing->setIncludeDirectories(true);
+				$osC_DirectoryListing->setIncludeFiles(false);
+				$osC_DirectoryListing->setExcludeEntries('system');
+		
+				$templates = $osC_DirectoryListing->getFiles();
+		
+				foreach ($templates as $template) {
+					$code = $template['name'];
+					if( file_exists('../templates/' . $code . '/template.php') ){
+						include('../templates/' . $code . '/template.php');
+						$class = 'osC_Template_' . $code;
+		
+						self::deleteLogo($code . '_' . $current_store_id);
+		
+						if ( class_exists($class) ) {
+							$module = new $class();
+		
+							$logo_height = $module->getLogoHeight();
+							$logo_width = $module->getLogoWidth();
+		
+							$dest_image = DIR_FS_CATALOG . DIR_WS_IMAGES . 'logo_' . $code . '_' . $current_store_id . '.' . $img_type;
+		
+							osc_gd_resize($original, $dest_image, $logo_width, $logo_height);
+						}
+					}
+				}
+				return true;
+			}
+		}else {
+		  return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Delete original logo
+	 *
+	 * @access private static
+	 * @param string logo code
+	 * @return void
+	 */
+	function deleteLogo($code) {
+		$osC_DirectoryListing = new osC_DirectoryListing('../' . DIR_WS_IMAGES);
+		$osC_DirectoryListing->setIncludeDirectories(false);
+		$files = $osC_DirectoryListing->getFiles();
+	
+		$logo = 'logo_' . $code;
+	
+		foreach ( $files as $file ) {
+			$filename = explode(".", $file['name']);
+	
+			if($filename[0] == $logo){
+				$image_dir  = DIR_FS_CATALOG . 'images/';
+				@unlink($image_dir . $file['name']);
+			}
+		}
+	}
+	
+	/**
+	 * Get original logo
+	 *
+	 * @access private static
+	 * @param int store id
+	 * @return mixed
+	 */
+	function getOriginalLogo($store_id) {
+		$osC_DirectoryListing = new osC_DirectoryListing('../' . DIR_WS_IMAGES);
+		$osC_DirectoryListing->setIncludeDirectories(false);
+		$files = $osC_DirectoryListing->getFiles();
+	
+		foreach ( $files as $file ) {
+			$filename = explode(".", $file['name']);
+	
+			if($filename[0] == 'logo_originals_' . $store_id){
+				return '../' . DIR_WS_IMAGES . 'logo_originals_' . $store_id . '.' . $filename[1];
+			}
+		}
+	
+		return false;
 	}
 	
 	/**
