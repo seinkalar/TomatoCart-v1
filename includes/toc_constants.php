@@ -79,4 +79,9 @@
   define('INFORMATION_PRIVACY_NOTICE', 3);
   define('INFORMATION_CONDITIONS_OF_USE', 4);
   define('INFORMATION_IMPRINT', 5);
+  
+/*Cache*/
+	define('CACHE_PRODUCTS_FOLD', 'products');
+	define('CACHE_MODULES_BOXES_FOLD', 'modules/boxes');
+	define('CACHE_MODULES_CONTENT_FOLD', 'modules/content');
 ?>

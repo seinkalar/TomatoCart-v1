@@ -289,6 +289,7 @@
         $affected_rows,
         $cache_key,
         $cache_expire,
+        $cache_fold,
         $cache_data,
         $cache_read = false,
         $debug = false,
@@ -449,12 +450,12 @@
       global $osC_Cache;
 
       if ($this->cache_read === false) {
-        if (eregi('^SELECT', $this->sql_query)) {
+        if (preg_match('/^SELECT/', $this->sql_query)) {
           $this->db_class->freeResult($this->query_handler);
         }
 
         if (isset($this->cache_key)) {
-          $osC_Cache->write($this->cache_key, $this->cache_data);
+          $osC_Cache->write($this->cache_key, $this->cache_data, $this->cache_fold);
         }
       }
 
@@ -493,7 +494,7 @@
       global $osC_Cache;
 
       if (isset($this->cache_key)) {
-        if ($osC_Cache->read($this->cache_key, $this->cache_expire)) {
+        if ($osC_Cache->read($this->cache_key, $this->cache_expire, $this->cache_fold)) {
           $this->cache_data = $osC_Cache->cached_data;
 
           $this->cache_read = true;
@@ -586,9 +587,10 @@
       return $this->query_handler = $this->db_class->randomQueryMulti($this->sql_query);
     }
 
-    function setCache($key, $expire = 0) {
+    function setCache($key, $expire = 0, $fold = '') {
       $this->cache_key = $key;
       $this->cache_expire = $expire;
+      $this->cache_fold = $fold;
     }
 
     function setLogging($module, $id = null) {

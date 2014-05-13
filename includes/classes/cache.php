@@ -35,8 +35,12 @@
     var $cached_data,
         $cache_key;
 
-    function write($key, &$data) {
-      $filename = DIR_FS_WORK . $key . '.cache';
+    function write($key, &$data, $fold = '') {
+    	if (!empty($fold)) {
+    		$fold = self::validateFold($fold);
+    	}
+    	
+      $filename = DIR_FS_WORK . $fold . $key . '.cache';
 
       if ($fp = @fopen($filename, 'w')) {
         flock($fp, 2); // LOCK_EX
@@ -50,10 +54,14 @@
       return false;
     }
 
-    function read($key, $expire = 0) {
+    function read($key, $expire = 0, $fold = '') {
       $this->cache_key = $key;
+      
+    	if (!empty($fold)) {
+    		$fold = self::validateFold($fold);
+    	}
 
-      $filename = DIR_FS_WORK . $key . '.cache';
+      $filename = DIR_FS_WORK . $fold . $key . '.cache';
 
       if (file_exists($filename)) {
         $difference = floor((time() - filemtime($filename)) / 60);
@@ -94,18 +102,37 @@
       $this->write($this->cache_key, $this->cached_data);
     }
 
-    function clear($key) {      
+    function clear($key, $fold = '') {      
       $key_length = strlen($key);
 
-      $d = opendir(DIR_FS_WORK);
+    	if (!empty($fold)) {
+    		$fold = self::validateFold($fold);
+    	}
+      
+      $d = opendir(DIR_FS_WORK . $fold);
 
       while (($entry = readdir($d)) !== false) {
         if ((strlen($entry) >= $key_length) && (substr($entry, 0, $key_length) == $key)) {
-          @unlink(DIR_FS_WORK . $entry);
+          @unlink(DIR_FS_WORK . $fold . $entry);
         }
       }
 
       closedir($d);     
+    }
+    
+    function validateFold($fold) {
+    	if (!empty($fold)) {
+    		$fold = preg_replace('/[^A-Z\/]/i', '', $fold);
+    		if (file_exists(DIR_FS_WORK . $fold)) {
+    			$fold = trim($fold, '/') . '/';
+    		}else {
+    			$fold = '';
+    		}
+    		
+    		return $fold;
+    	}
+    	
+    	return '';
     }
   }
 ?>
