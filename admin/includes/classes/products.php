@@ -798,7 +798,7 @@
         osC_Cache::clear('also_purchased');
         osC_Cache::clear('sefu-products');
         osC_Cache::clear('new_products', CACHE_MODULES_CONTENT_FOLD);
-        osC_Cache::clear('feature-products');
+        osC_Cache::clear('feature-products', CACHE_MODULES_CONTENT_FOLD);
         osC_Cache::clear('upcoming_products');
 
         return $products_id;
@@ -1129,7 +1129,8 @@
         osC_Cache::clear('product-' . $id, CACHE_PRODUCTS_FOLD);
         osC_Cache::clear('also_purchased');
         osC_Cache::clear('sefu-products');
-        osC_Cache::clear('new_products');
+				osC_Cache::clear('new_products', CACHE_MODULES_CONTENT_FOLD);
+        osC_Cache::clear('feature-products', CACHE_MODULES_CONTENT_FOLD);
 
         return true;
       }
@@ -1553,8 +1554,8 @@
         osC_Cache::clear('category_tree');
         osC_Cache::clear('also_purchased');
         osC_Cache::clear('sefu-products');
-        osC_Cache::clear('new_products');
-        osC_Cache::clear('feature-products');
+				osC_Cache::clear('new_products', CACHE_MODULES_CONTENT_FOLD);
+        osC_Cache::clear('feature-products', CACHE_MODULES_CONTENT_FOLD);
 
         return true;
       }
@@ -1617,8 +1618,8 @@
       $Qstatus->execute();
       
       if(!$osC_Database->isError()) {
-      	osC_Cache::clear('new_products');
-        osC_Cache::clear('feature-products');
+				osC_Cache::clear('new_products', CACHE_MODULES_CONTENT_FOLD);
+        osC_Cache::clear('feature-products', CACHE_MODULES_CONTENT_FOLD);
         
         return true;
       }
@@ -1657,8 +1658,8 @@
           osC_Cache::clear('product-' . $id, CACHE_PRODUCTS_FOLD);
           osC_Cache::clear('also_purchased');
           osC_Cache::clear('sefu-products');
-          osC_Cache::clear('new_products');
-          osC_Cache::clear('feature-products');
+					osC_Cache::clear('new_products', CACHE_MODULES_CONTENT_FOLD);
+					osC_Cache::clear('feature-products', CACHE_MODULES_CONTENT_FOLD);
           
           return true;
         }
