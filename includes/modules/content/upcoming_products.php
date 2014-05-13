@@ -40,7 +40,7 @@
       $Qupcoming->bindInt(':max_display_upcoming_products', MODULE_CONTENT_UPCOMING_PRODUCTS_MAX_DISPLAY);
 
       if (MODULE_CONTENT_UPCOMING_PRODUCTS_CACHE > 0) {
-        $Qupcoming->setCache('upcoming_products-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode(), MODULE_CONTENT_UPCOMING_PRODUCTS_CACHE);
+        $Qupcoming->setCache('upcoming_products-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode(), MODULE_CONTENT_UPCOMING_PRODUCTS_CACHE, CACHE_MODULES_CONTENT_FOLD);
       }
 
       $Qupcoming->execute();
