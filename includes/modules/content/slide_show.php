@@ -32,7 +32,7 @@
       $Qimages = $osC_Database->query('select image ,image_url, description from :table_slide_images where language_id =:language_id and status = 1 order by sort_order desc');
       $Qimages->bindTable(':table_slide_images', TABLE_SLIDE_IMAGES);
       $Qimages->bindInt(':language_id', $osC_Language->getID());
-      $Qimages->setCache('slide-images-' . $osC_Language->getCode());
+      $Qimages->setCache('slide-images-' . $osC_Language->getCode(), 0, CACHE_MODULES_CONTENT_FOLD);
       $Qimages->execute();
 
       if ($Qimages->numberOfRows() > 0) {

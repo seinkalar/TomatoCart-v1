@@ -41,7 +41,7 @@ class toC_Slide_Images_Admin {
     $Qimages->execute();
     
     if (!$osC_Database->isError()) {
-      osC_Cache::clear('slide-images');
+      osC_Cache::clear('slide-images', CACHE_MODULES_CONTENT_FOLD);
       
       return true;
     }
@@ -109,7 +109,7 @@ class toC_Slide_Images_Admin {
     if ( $osC_Database->isError() ) {
       return false;
     }else{
-      osC_Cache::clear('slide-images');
+      osC_Cache::clear('slide-images', CACHE_MODULES_CONTENT_FOLD);
       
       return true;
     }
@@ -135,7 +135,7 @@ class toC_Slide_Images_Admin {
     if ( $osC_Database->isError() ) {
       return false;
     }else{
-      osC_Cache::clear('slide-images');
+      osC_Cache::clear('slide-images', CACHE_MODULES_CONTENT_FOLD);
       
       return true;
     }
