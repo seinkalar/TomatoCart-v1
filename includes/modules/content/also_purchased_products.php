@@ -44,7 +44,7 @@
         $Qorders->bindInt(':limit', MODULE_CONTENT_ALSO_PURCHASED_MAX_DISPLAY);
 
         if (MODULE_CONTENT_ALSO_PURCHASED_PRODUCTS_CACHE > 0) {
-          $Qorders->setCache('also_purchased-' . $osC_Product->getID(), MODULE_CONTENT_ALSO_PURCHASED_PRODUCTS_CACHE);
+          $Qorders->setCache('also_purchased-' . $osC_Product->getID(), MODULE_CONTENT_ALSO_PURCHASED_PRODUCTS_CACHE, CACHE_MODULES_CONTENT_FOLD);
         }
 
         $Qorders->execute();
