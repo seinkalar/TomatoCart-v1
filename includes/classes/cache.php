@@ -122,7 +122,7 @@
     
     function validateFold($fold) {
     	if (!empty($fold)) {
-    		$fold = preg_replace('/[^A-Z\/]/i', '', $fold);
+    		$fold = preg_replace('/[^A-Z\/\d]/i', '', $fold);
     		if (file_exists(DIR_FS_WORK . $fold)) {
     			$fold = trim($fold, '/') . '/';
     		}else {
