@@ -84,4 +84,5 @@
 	define('CACHE_PRODUCTS_FOLD', 'products');
 	define('CACHE_MODULES_BOXES_FOLD', 'modules/boxes');
 	define('CACHE_MODULES_CONTENT_FOLD', 'modules/content');
+	define('CACHE_SEFU_FOLD', 'sefu');
 ?>

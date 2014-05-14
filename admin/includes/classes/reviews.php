@@ -88,7 +88,7 @@
       if ($error === false) {
         $osC_Database->commitTransaction();
 
-        osC_Cache::clear('reviews');
+        osC_Cache::clear('reviews', CACHE_MODULES_BOXES_FOLD);
 
         return true;
       }
@@ -139,7 +139,7 @@
       $Qstatus->execute();
       
       if(!$osC_Database->isError()) {
-        osC_Cache::clear('reviews');
+        osC_Cache::clear('reviews', CACHE_MODULES_BOXES_FOLD);
         return true;
       }
       return false;

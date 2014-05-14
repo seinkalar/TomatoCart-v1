@@ -29,7 +29,7 @@
 
       $this->_title_link = osc_href_link(FILENAME_PRODUCTS, 'new');
 
-      if ((BOX_WHATS_NEW_CACHE > 0) && $osC_Cache->read('box-whats_new-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode(), BOX_WHATS_NEW_CACHE)) {
+      if ((BOX_WHATS_NEW_CACHE > 0) && $osC_Cache->read('box-whats_new-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode(), BOX_WHATS_NEW_CACHE, CACHE_MODULES_BOXES_FOLD)) {
         $data = $osC_Cache->getCache();
       } else {
         $data = array();
@@ -57,7 +57,7 @@
           $data['products_price'] = $osC_Product->getPriceFormated(true);
         }
 
-        $osC_Cache->write('box-whats_new-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode(), $data);
+        $osC_Cache->write('box-whats_new-' . $osC_Language->getCode() . '-' . $osC_Currencies->getCode(), $data, CACHE_MODULES_BOXES_FOLD);
       }
 
       if (empty($data) === false) {

@@ -144,7 +144,7 @@
       if ( $error === false ) {
         $osC_Database->commitTransaction();
 
-        osC_Cache::clear('sefu-articles');
+        osC_Cache::clear('sefu-articles', CACHE_SEFU_FOLD);
         return true;
       }
       $osC_Database->rollbackTransaction();
@@ -185,7 +185,7 @@
         if ( $error === false ) {
           $osC_Database->commitTransaction();
 
-          osC_Cache::clear('sefu-articles');
+          osC_Cache::clear('sefu-articles', CACHE_SEFU_FOLD);
           return true;
         }
       }

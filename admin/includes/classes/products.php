@@ -795,11 +795,11 @@
           osC_Cache::clear('product-' . $id, CACHE_PRODUCTS_FOLD);
         }
         
-        osC_Cache::clear('also_purchased');
-        osC_Cache::clear('sefu-products');
+        osC_Cache::clear('also_purchased', CACHE_MODULES_CONTENT_FOLD);
+        osC_Cache::clear('sefu-products', CACHE_SEFU_FOLD);
         osC_Cache::clear('new_products', CACHE_MODULES_CONTENT_FOLD);
         osC_Cache::clear('feature-products', CACHE_MODULES_CONTENT_FOLD);
-        osC_Cache::clear('upcoming_products');
+        osC_Cache::clear('upcoming_products', CACHE_MODULES_CONTENT_FOLD);
 
         return $products_id;
       }
@@ -1127,8 +1127,8 @@
         osC_Cache::clear('categories');
         osC_Cache::clear('category_tree');
         osC_Cache::clear('product-' . $id, CACHE_PRODUCTS_FOLD);
-        osC_Cache::clear('also_purchased');
-        osC_Cache::clear('sefu-products');
+        osC_Cache::clear('also_purchased', CACHE_MODULES_CONTENT_FOLD);
+        osC_Cache::clear('sefu-products', CACHE_SEFU_FOLD);
 				osC_Cache::clear('new_products', CACHE_MODULES_CONTENT_FOLD);
         osC_Cache::clear('feature-products', CACHE_MODULES_CONTENT_FOLD);
 
@@ -1552,8 +1552,8 @@
 
         osC_Cache::clear('categories');
         osC_Cache::clear('category_tree');
-        osC_Cache::clear('also_purchased');
-        osC_Cache::clear('sefu-products');
+        osC_Cache::clear('also_purchased', CACHE_MODULES_CONTENT_FOLD);
+        osC_Cache::clear('sefu-products', CACHE_SEFU_FOLD);
 				osC_Cache::clear('new_products', CACHE_MODULES_CONTENT_FOLD);
         osC_Cache::clear('feature-products', CACHE_MODULES_CONTENT_FOLD);
 
@@ -1656,8 +1656,8 @@
           osC_Cache::clear('categories');
           osC_Cache::clear('category_tree');
           osC_Cache::clear('product-' . $id, CACHE_PRODUCTS_FOLD);
-          osC_Cache::clear('also_purchased');
-          osC_Cache::clear('sefu-products');
+          osC_Cache::clear('also_purchased', CACHE_MODULES_CONTENT_FOLD);
+          osC_Cache::clear('sefu-products', CACHE_SEFU_FOLD);
 					osC_Cache::clear('new_products', CACHE_MODULES_CONTENT_FOLD);
 					osC_Cache::clear('feature-products', CACHE_MODULES_CONTENT_FOLD);
           

@@ -22,7 +22,7 @@
       global $osC_Database, $osC_Services, $osC_Language, $osC_Image, $osC_Cache, $osC_Currencies;
 
       if (!empty($id)) {
-        if ( $osC_Cache->read('product-' . $id . '-' . $osC_Language->getCode()) ) {
+        if ( $osC_Cache->read('product-' . $id . '-' . $osC_Language->getCode(), 0, CACHE_PRODUCTS_FOLD) ) {
           $this->_data = $osC_Cache->getCache();
         } else {
           $Qproduct = $osC_Database->query('select p.products_id as id, p.products_type as type, p.products_max_order_quantity as max_order_quantity, p.products_moq as products_moq, p.order_increment as order_increment, p.products_price as price, p.products_tax_class_id as tax_class_id, p.products_date_added as date_added, p.products_date_available as date_available, p.manufacturers_id, p.quantity_discount_groups_id, p.quantity_unit_class, pd.products_name as name, pd.products_short_description as products_short_description, pd.products_description as description, pd.products_page_title as page_title, pd.products_meta_keywords as meta_keywords, pd.products_meta_description as meta_description, p.products_model as model, p.products_sku as sku, pd.products_keyword as keyword, pd.products_tags as tags, pd.products_url as url, p.quantity_discount_groups_id as quantity_discount_groups_id, p.products_weight as products_weight, p.products_weight_class as products_weight_class, quc.quantity_unit_class_title as unit_class, m.manufacturers_name from :table_products p left join :table_manufacturers m on (p.manufacturers_id = m.manufacturers_id), :table_products_description pd, :table_quantity_unit_classes quc where');
@@ -31,7 +31,7 @@
           $Qproduct->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
           $Qproduct->bindTable(':table_quantity_unit_classes', TABLE_QUANTITY_UNIT_CLASSES);
   
-          if (ereg('^[0-9]+(#?([0-9]+:?[0-9]+)+(;?([0-9]+:?[0-9]+)+)*)*$', $id)) {
+          if (preg_match('/^[0-9]+(#?([0-9]+:?[0-9]+)+(;?([0-9]+:?[0-9]+)+)*)*$/', $id)) {
             $this->_current_variants = osc_parse_variants_from_id_string($id);
             
             $Qproduct->appendQuery('p.products_id = :products_id');
@@ -161,7 +161,7 @@
             }
           }
           
-          $osC_Cache->write('product-' . $id . '-' . $osC_Language->getCode(), $this->_data);
+          $osC_Cache->write('product-' . $id . '-' . $osC_Language->getCode(), $this->_data, CACHE_PRODUCTS_FOLD);
         }
         
         //format the variants display price

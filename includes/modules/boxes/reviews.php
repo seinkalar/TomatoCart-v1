@@ -30,7 +30,7 @@
       $this->_title_link = osc_href_link(FILENAME_PRODUCTS, 'reviews');
 
       if ($osC_Services->isStarted('reviews')) {
-        if ((BOX_REVIEWS_CACHE > 0) && $osC_Cache->read('box-reviews' . (isset($osC_Product) && is_a($osC_Product, 'osC_Product') && $osC_Product->isValid() ? '-' . $osC_Product->getID() : '') . '-' . $osC_Language->getCode(), BOX_REVIEWS_CACHE)) {
+        if ((BOX_REVIEWS_CACHE > 0) && $osC_Cache->read('box-reviews' . (isset($osC_Product) && is_a($osC_Product, 'osC_Product') && $osC_Product->isValid() ? '-' . $osC_Product->getID() : '') . '-' . $osC_Language->getCode(), BOX_REVIEWS_CACHE, CACHE_MODULES_BOXES_FOLD)) {
           $data = $osC_Cache->getCache();
         } else {
           $data = array();
@@ -66,7 +66,7 @@
             $Qreview->freeResult();
           }
 
-          $osC_Cache->write('box-reviews' . (isset($osC_Product) && is_a($osC_Product, 'osC_Product') && $osC_Product->isValid() ? '-' . $osC_Product->getID() : '') . '-' . $osC_Language->getCode(), $data);
+          $osC_Cache->write('box-reviews' . (isset($osC_Product) && is_a($osC_Product, 'osC_Product') && $osC_Product->isValid() ? '-' . $osC_Product->getID() : '') . '-' . $osC_Language->getCode(), $data, CACHE_MODULES_BOXES_FOLD);
         }
 
         $this->_content = '';

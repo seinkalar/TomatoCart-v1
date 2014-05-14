@@ -259,7 +259,7 @@ class toC_Sefu {
     $Qproducts->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
     $Qproducts->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
     $Qproducts->bindInt(':language_id', $osC_Language->getID());
-    $Qproducts->setCache('sefu-products-' . $osC_Language->getCode());
+    $Qproducts->setCache('sefu-products-' . $osC_Language->getCode(), 0, CACHE_SEFU_FOLD);
     $Qproducts->execute();
 
     while ($Qproducts->next()) {
@@ -276,7 +276,7 @@ class toC_Sefu {
     $Qarticles->bindTable(':table_articles', TABLE_ARTICLES);
     $Qarticles->bindTable(':table_articles_description', TABLE_ARTICLES_DESCRIPTION);
     $Qarticles->bindInt(':language_id', $osC_Language->getID());
-    $Qarticles->setCache('sefu-articles-' . $osC_Language->getCode());
+    $Qarticles->setCache('sefu-articles-' . $osC_Language->getCode(), 0, CACHE_SEFU_FOLD);
     $Qarticles->execute();
 
     while ($Qarticles->next()) {
@@ -292,7 +292,7 @@ class toC_Sefu {
     $Qreviews = $osC_Database->query('select reviews_id, products_id from :table_reviews where languages_id=:language_id ');
     $Qreviews->bindTable(':table_reviews', TABLE_REVIEWS);
     $Qreviews->bindInt(':language_id', $osC_Language->getID());
-    $Qreviews->setCache('sefu-products-reviews-' . $osC_Language->getCode());
+    $Qreviews->setCache('sefu-products-reviews-' . $osC_Language->getCode(), 0, CACHE_SEFU_FOLD);
     $Qreviews->execute();
 
     while ($Qreviews->next()) {
@@ -307,7 +307,7 @@ class toC_Sefu {
     $Qcategories = $osC_Database->query('select articles_categories_id, articles_categories_url from :table_articles_categories_description where language_id=:language_id ');
     $Qcategories->bindTable(':table_articles_categories_description', TABLE_ARTICLES_CATEGORIES_DESCRIPTION);
     $Qcategories->bindInt(':language_id', $osC_Language->getID());
-    $Qcategories->setCache('sefu-article-categories-' . $osC_Language->getCode());
+    $Qcategories->setCache('sefu-article-categories-' . $osC_Language->getCode(), 0, CACHE_SEFU_FOLD);
     $Qcategories->execute();
 
     while ($Qcategories->next()) {
@@ -322,7 +322,7 @@ class toC_Sefu {
     $Qfaqs = $osC_Database->query('select faqs_id, faqs_url from :table_faqs_description where language_id=:language_id ');
     $Qfaqs->bindTable(':table_faqs_description', TABLE_FAQS_DESCRIPTION);
     $Qfaqs->bindInt(':language_id', $osC_Language->getID());
-    $Qfaqs->setCache('sefu-faqs-' . $osC_Language->getCode());
+    $Qfaqs->setCache('sefu-faqs-' . $osC_Language->getCode(), 0, CACHE_SEFU_FOLD);
     $Qfaqs->execute();
 
     while ($Qfaqs->next()) {
@@ -337,7 +337,7 @@ class toC_Sefu {
     $Qmanufacturers = $osC_Database->query('select manufacturers_id , manufacturers_friendly_url from :table_manufacturers_info where languages_id = :languages_id');
     $Qmanufacturers->bindTable(':table_manufacturers_info', TABLE_MANUFACTURERS_INFO);
     $Qmanufacturers->bindInt(':languages_id', $osC_Language->getID());
-    $Qmanufacturers->setCache('sefu-manufacturers-' . $osC_Language->getCode());
+    $Qmanufacturers->setCache('sefu-manufacturers-' . $osC_Language->getCode(), 0, CACHE_SEFU_FOLD);
     $Qmanufacturers->execute();
 
     while ($Qmanufacturers->next()) {

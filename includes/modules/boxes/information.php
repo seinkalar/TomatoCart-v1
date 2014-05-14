@@ -31,7 +31,7 @@
       $Qarticles->bindTable(':table_articles', TABLE_ARTICLES);
       $Qarticles->bindTable(':table_articles_description', TABLE_ARTICLES_DESCRIPTION);
       $Qarticles->bindInt(':language_id', $osC_Language->getID());
-      $Qarticles->setCache('box-information-' . $osC_Language->getCode(), 100);
+      $Qarticles->setCache('box-information-' . $osC_Language->getCode(), 100, CACHE_MODULES_BOXES_FOLD);
       $Qarticles->execute();
 
       $this->_content = '<ul>';

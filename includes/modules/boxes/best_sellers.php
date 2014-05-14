@@ -38,7 +38,7 @@
         $Qbestsellers->bindInt(':max_display_bestsellers', BOX_BEST_SELLERS_MAX_LIST);
 
         if (BOX_BEST_SELLERS_CACHE > 0) {
-          $Qbestsellers->setCache('box_best_sellers-' . $current_category_id . '-' . $osC_Language->getCode(), BOX_BEST_SELLERS_CACHE);
+          $Qbestsellers->setCache('box-best-sellers-' . $current_category_id . '-' . $osC_Language->getCode(), BOX_BEST_SELLERS_CACHE, CACHE_MODULES_BOXES_FOLD);
         }
 
         $Qbestsellers->execute();
@@ -50,7 +50,7 @@
         $Qbestsellers->bindInt(':max_display_bestsellers', BOX_BEST_SELLERS_MAX_LIST);
 
         if (BOX_BEST_SELLERS_CACHE > 0) {
-          $Qbestsellers->setCache('box_best_sellers-0-' . $osC_Language->getCode(), BOX_BEST_SELLERS_CACHE);
+          $Qbestsellers->setCache('box_best_sellers-0-' . $osC_Language->getCode(), BOX_BEST_SELLERS_CACHE, CACHE_MODULES_BOXES_FOLD);
         }
 
         $Qbestsellers->execute();
