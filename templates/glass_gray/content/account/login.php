@@ -36,8 +36,12 @@
         </ol>
     
         <p><?php echo sprintf($osC_Language->get('login_returning_customer_password_forgotten'), osc_href_link(FILENAME_ACCOUNT, 'password_forgotten', 'SSL')); ?></p>
-    
+        
+        <?php if (defined('SERVICE_FACEBOOK_LOGIN_STATUS') && SERVICE_FACEBOOK_LOGIN_STATUS == 1): ?>
+        <p align="right"><a style="float:left;" href="javascript:;" id="fbLogin"><?php echo $osC_Language->get('login_with_facebook'); ?></a><?php echo osc_draw_image_submit_button('button_login.gif', $osC_Language->get('button_sign_in')); ?></p>
+        <?php else: ?>
         <p align="right"><?php echo osc_draw_image_submit_button('button_login.gif', $osC_Language->get('button_sign_in')); ?></p>
+        <?php endif; ?>
       </div>
     
       </form>

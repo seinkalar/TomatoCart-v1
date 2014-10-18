@@ -64,6 +64,9 @@
                     
                     <div class="control-group">
                         <div class="controls">
+	                        <?php if (defined('SERVICE_FACEBOOK_LOGIN_STATUS') && SERVICE_FACEBOOK_LOGIN_STATUS == 1): ?>
+	                        <button class="btn btn-small btn-success pull-left" id="fbLogin"><?php echo $osC_Language->get('login_with_facebook'); ?></button>
+	                        <?php endif; ?>
                             <button type="submit" class="btn btn-small btn-success pull-right"><i class="icon-ok-sign icon-white"></i> <?php echo $osC_Language->get('button_sign_in'); ?></button>
                         </div>
                     </div>

@@ -116,7 +116,7 @@ require_once 'helper.php';
                             <?php 
                                 if ($osC_Customer->isLoggedOn()) { 
                             ?>
-                            <li><?php echo osc_link_object(osc_href_link(FILENAME_ACCOUNT, 'logoff', 'SSL'), $osC_Language->get('logoff')); ?></li>
+                            <li><?php echo osc_link_object(osc_href_link(FILENAME_ACCOUNT, 'logoff', 'SSL'), $osC_Language->get('logoff'), 'id="fbLogout"'); ?></li>
                             <?php 
                                 } else { 
                             ?>
@@ -359,6 +359,19 @@ require_once 'helper.php';
 <?php }else { ?>
 <script type="text/javascript" src="templates/<?php echo $osC_Template->getCode(); ?>/javascript/all.min.js"></script>
 <?php }?>
+
+<!-- Start: Facebook Login -->
+<?php if (defined('SERVICE_FACEBOOK_LOGIN_STATUS') && SERVICE_FACEBOOK_LOGIN_STATUS == 1): ?>
+<script>
+	var fbLoginConfig = {
+		appId: '<?php echo SERVICE_FACEBOOK_LOGIN_APPID; ?>',
+		tplCode: '<?php echo $osC_Template->getCode(); ?>'
+		
+	};
+</script>
+<script type="text/javascript" src="includes/javascript/fb_login.js"></script>
+<?php endif; ?>
+<!-- End: Facebook Login -->
 
 <script type="text/javascript">
   jQuery.noConflict();
