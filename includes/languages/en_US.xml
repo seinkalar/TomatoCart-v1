@@ -926,6 +926,11 @@
       <group>account</group>
     </definition>
     <definition>
+      <key>login_with_facebook</key>
+      <value><![CDATA[Login with facebook]]></value>
+      <group>account</group>
+    </definition>
+    <definition>
       <key>operation_heading_reminder</key>
       <value><![CDATA[Reminder:]]></value>
       <group>account</group>
