@@ -292,9 +292,8 @@
     function _getProducts() {
       global $osC_Database;
 
-      $Qproducts = $osC_Database->query('select op.orders_products_id, op.products_id, op.products_type, op.products_name, op.products_sku, op.products_price, op.products_tax, op.products_quantity, op.products_return_quantity, op.final_price, p.products_weight, p.products_weight_class, p.products_tax_class_id from :table_orders_products op, :table_products p where p.products_id = op.products_id and orders_id = :orders_id');
+      $Qproducts = $osC_Database->query('select op.orders_products_id, op.products_id, op.products_type, op.products_name, op.products_sku, op.products_price, op.products_tax, op.products_quantity, op.products_return_quantity, op.final_price from :table_orders_products op where orders_id = :orders_id');
       $Qproducts->bindTable(':table_orders_products', TABLE_ORDERS_PRODUCTS);
-      $Qproducts->bindTable(':table_products', TABLE_PRODUCTS);
       $Qproducts->bindInt(':orders_id', $this->_order_id);
       $Qproducts->execute();
       
@@ -309,10 +308,7 @@
                          'tax' => $Qproducts->value('products_tax'),
                          'tax_class_id' => $Qproducts->value('products_tax_class_id'),
                          'price' => $Qproducts->value('products_price'),
-                         'final_price' => $Qproducts->value('final_price'),
-                         'weight' => $Qproducts->value('products_weight'),
-                         'tax_class_id' => $Qproducts->value('products_tax_class_id'),
-                         'weight_class_id' => $Qproducts->value('products_weight_class'));
+                         'final_price' => $Qproducts->value('final_price'));
         
         if ($product['type'] == PRODUCT_TYPE_GIFT_CERTIFICATE) {
           $Qcertificate = $osC_Database->query('select gift_certificates_type, gift_certificates_code, senders_name, senders_email, recipients_name, recipients_email, messages from :table_gift_certificates where orders_id = :orders_id and orders_products_id = :orders_products_id');
