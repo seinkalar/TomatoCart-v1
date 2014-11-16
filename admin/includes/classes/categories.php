@@ -58,10 +58,20 @@
       
       $category_id = '';
       $error = false;
+      $original_categories_status;
 
       $osC_Database->startTransaction();
 
       if ( is_numeric($id) ) {
+      	$Qcat_status = $osC_Database->query('select categories_status from :table_categories where categories_id = :categories_id limit 1');
+      	$Qcat_status->bindTable(':table_categories', TABLE_CATEGORIES);
+      	$Qcat_status->bindInt(':categories_id', $id);
+      	$Qcat_status->execute();
+      	
+      	$original_categories_status = $Qcat_status->valueInt('categories_status');
+      	
+      	$Qcat_status->freeResult();
+      	
         //editing the parent category
         if (isset($data['subcategories'])) {
           $data['subcategories'][] = $id;
@@ -87,39 +97,42 @@
         $category_id = (is_numeric($id)) ? $id : $osC_Database->nextID();
         
         if(is_numeric($id)) {
-          if($data['categories_status']){
-            //editing the parent category
-            if (isset($data['subcategories'])) {
-              $data['subcategories'][] = $id;
-              
-              $Qpstatus = $osC_Database->query('update :table_products set products_status = 1 where products_id in (select products_id from :table_products_to_categories where categories_id in (:categories_ids))');
-              $Qpstatus->bindRaw(':categories_ids', implode(',', $data['subcategories']));
-            }else {
-              $Qpstatus = $osC_Database->query('update :table_products set products_status = 1 where products_id in (select products_id from :table_products_to_categories where categories_id = :categories_id)');
-              $Qpstatus->bindInt(":categories_id", $id);
-            }
-            
-            $Qpstatus->bindTable(':table_products', TABLE_PRODUCTS);
-            $Qpstatus->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
-            $Qpstatus->execute(); 
-          }else{
-            if($data['flag']) {
-              //editing the parent category
-              if (isset($data['subcategories'])) {
-                $data['subcategories'][] = $id;
-                
-                $Qpstatus = $osC_Database->query('update :table_products set products_status = 0 where products_id in (select products_id from :table_products_to_categories where categories_id in (:categories_ids))');
-                $Qpstatus->bindRaw(':categories_ids', implode(',', $data['subcategories']));
-              }else {
-                $Qpstatus = $osC_Database->query('update :table_products set products_status = 0 where products_id in (select products_id from :table_products_to_categories where categories_id = :categories_id)');
-                $Qpstatus->bindInt(":categories_id", $id);
-              }
-            
-              $Qpstatus->bindTable(':table_products', TABLE_PRODUCTS);
-              $Qpstatus->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
-              $Qpstatus->execute();
-            }          
-          }
+          //fix issue#241 - Disabled products in one category been enabled automatically
+          if ($data['categories_status'] != $original_categories_status) {
+          	if($data['categories_status'] ){
+          		//editing the parent category
+          		if (isset($data['subcategories'])) {
+          			$data['subcategories'][] = $id;
+          	
+          			$Qpstatus = $osC_Database->query('update :table_products set products_status = 1 where products_id in (select products_id from :table_products_to_categories where categories_id in (:categories_ids))');
+          			$Qpstatus->bindRaw(':categories_ids', implode(',', $data['subcategories']));
+          		}else {
+          			$Qpstatus = $osC_Database->query('update :table_products set products_status = 1 where products_id in (select products_id from :table_products_to_categories where categories_id = :categories_id)');
+          			$Qpstatus->bindInt(":categories_id", $id);
+          		}
+          	
+          		$Qpstatus->bindTable(':table_products', TABLE_PRODUCTS);
+          		$Qpstatus->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
+          		$Qpstatus->execute();
+          	}else{
+          		if($data['flag']) {
+          			//editing the parent category
+          			if (isset($data['subcategories'])) {
+          				$data['subcategories'][] = $id;
+          	
+          				$Qpstatus = $osC_Database->query('update :table_products set products_status = 0 where products_id in (select products_id from :table_products_to_categories where categories_id in (:categories_ids))');
+          				$Qpstatus->bindRaw(':categories_ids', implode(',', $data['subcategories']));
+          			}else {
+          				$Qpstatus = $osC_Database->query('update :table_products set products_status = 0 where products_id in (select products_id from :table_products_to_categories where categories_id = :categories_id)');
+          				$Qpstatus->bindInt(":categories_id", $id);
+          			}
+          	
+          			$Qpstatus->bindTable(':table_products', TABLE_PRODUCTS);
+          			$Qpstatus->bindTable(':table_products_to_categories', TABLE_PRODUCTS_TO_CATEGORIES);
+          			$Qpstatus->execute();
+          		}
+          	}
+          }	
         }
         
         if($osC_Database->isError()){
