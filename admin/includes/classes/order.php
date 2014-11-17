@@ -292,6 +292,7 @@
     function _getProducts() {
       global $osC_Database;
 
+      //fix issue #242 - Product is disappeared from previous old invoice and orders automatically
       $Qproducts = $osC_Database->query('select op.orders_products_id, op.products_id, op.products_type, op.products_name, op.products_sku, op.products_price, op.products_tax, op.products_quantity, op.products_return_quantity, op.final_price from :table_orders_products op where orders_id = :orders_id');
       $Qproducts->bindTable(':table_orders_products', TABLE_ORDERS_PRODUCTS);
       $Qproducts->bindInt(':orders_id', $this->_order_id);
