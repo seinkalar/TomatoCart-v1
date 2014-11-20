@@ -84,6 +84,13 @@
   }
 
   $Qcfg->freeResult();
+  
+// set the default timezone
+  if (defined('STORE_TIME_ZONE') && STORE_TIME_ZONE) {
+  	if (!date_default_timezone_set(STORE_TIME_ZONE)) {
+  		date_default_timezone_set('UTC');
+  	}
+  }
 
 // define our general functions used application-wide
   require('../includes/functions/general.php');
