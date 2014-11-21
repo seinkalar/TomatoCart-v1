@@ -297,5 +297,45 @@
 
       return false;
     }
+    
+    function getVariantsProducts($variants_groups_id) {
+    	global $osC_Database, $osC_Language;
+    	
+    	$result = array();
+    	
+    	$Qproducts = $osC_Database->query('select distinct pd.products_id, pd.products_name from :table_products_variants_entries pve inner join :table_products_variants pv on (pve.products_variants_id = pv.products_variants_id) inner join :table_products_description pd on (pv.products_id = pd.products_id and pd.language_id = :language_id) where pve.products_variants_groups_id = :products_variants_groups_id');
+    	$Qproducts->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
+    	$Qproducts->bindTable(':table_products_variants_entries', TABLE_PRODUCTS_VARIANTS_ENTRIES);
+    	$Qproducts->bindTable(':table_products_variants', TABLE_PRODUCTS_VARIANTS);
+    	$Qproducts->bindInt(':products_variants_groups_id', $variants_groups_id);
+    	$Qproducts->bindInt(':language_id', $osC_Language->getID());
+    	$Qproducts->execute();
+    	
+    	while ($Qproducts->next()) {
+    		$result[] = array('products_id' => $Qproducts->valueInt('products_id'), 'products_name' => $Qproducts->value('products_name'));
+    	}
+    	
+    	return $result;
+    }
+    
+    function getEntryProducts($variants_values_id) {
+    	global $osC_Database, $osC_Language;
+    	 
+    	$result = array();
+    	 
+    	$Qproducts = $osC_Database->query('select distinct pd.products_id, pd.products_name from :table_products_variants_entries pve inner join :table_products_variants pv on (pve.products_variants_id = pv.products_variants_id) inner join :table_products_description pd on (pv.products_id = pd.products_id and pd.language_id = :language_id) where pve.products_variants_values_id = :products_variants_values_id');
+    	$Qproducts->bindTable(':table_products_description', TABLE_PRODUCTS_DESCRIPTION);
+    	$Qproducts->bindTable(':table_products_variants_entries', TABLE_PRODUCTS_VARIANTS_ENTRIES);
+    	$Qproducts->bindTable(':table_products_variants', TABLE_PRODUCTS_VARIANTS);
+    	$Qproducts->bindInt(':products_variants_values_id', $variants_values_id);
+    	$Qproducts->bindInt(':language_id', $osC_Language->getID());
+    	$Qproducts->execute();
+    	 
+    	while ($Qproducts->next()) {
+    		$result[] = array('products_id' => $Qproducts->valueInt('products_id'), 'products_name' => $Qproducts->value('products_name'));
+    	}
+    	 
+    	return $result;
+    }
   }
 ?>

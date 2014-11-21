@@ -88,14 +88,18 @@
       $error = false;
       $feedback = array();
       
-      $Qproducts = $osC_Database->query('select count(*) as total_products from :table_products_variants_entries where products_variants_groups_id = :products_variants_groups_id');
-      $Qproducts->bindTable(':table_products_variants_entries', TABLE_PRODUCTS_VARIANTS_ENTRIES);
-      $Qproducts->bindInt(':products_variants_groups_id', $_REQUEST['products_variants_groups_id']);
-      $Qproducts->execute();
-          
-      if ( $Qproducts->value('total_products') > 0 ) {
-        $error = true;
-        $feedback[] = sprintf($osC_Language->get('delete_error_variant_group_in_use'), $Qproducts->value('total_products'));
+      $variants_groups_id = $_POST['products_variants_groups_id'];
+      
+      $products = osC_ProductVariants_Admin::getVariantsProducts($variants_groups_id);
+      $products_count = count($products);
+      
+      if ($products_count > 0) {
+      	$error = true;
+      	$feedback[] = sprintf($osC_Language->get('delete_error_variant_group_in_use'), $products_count);
+      	
+      	foreach($products as $product) {
+      		$feedback[] = $product['products_id'] . ': ' .  $product['products_name'] . '<br />';
+      	}
       }
       
       if ($error === false) {
@@ -105,7 +109,7 @@
           $response = array('success' => false, 'feedback' => $osC_Language->get('ms_error_action_not_performed'));    
         }
       } else {
-        $response = array('success' => false, 'feedback' => $osC_Language->get('ms_error_action_not_performed') . '<br />' . implode('<br />', $feedback));
+        $response = array('success' => false, 'feedback' => implode('<br /><br />', $feedback));
       }       
 
       echo $toC_Json->encode($response);
@@ -154,13 +158,21 @@
       
       $error = false;
       $feedback = array();
-
-      $osC_ObjectInfo = new osC_ObjectInfo(osC_ProductVariants_Admin::getEntryData($_REQUEST['products_variants_values_id']));
-      if ( $osC_ObjectInfo->get('total_products') > 0 ) {
-        $error = true;
-        $feedback[] = sprintf($osC_Language->get('delete_error_group_entry_in_use'), $osC_ObjectInfo->get('total_products'));
-      }
       
+      $variants_values_id = $_POST['products_variants_values_id'];
+      
+      $products = osC_ProductVariants_Admin::getEntryProducts($variants_values_id);
+      $products_count = count($products);
+      
+      if ($products_count > 0) {
+      	$error = true;
+      	$feedback[] = sprintf($osC_Language->get('delete_error_group_entry_in_use'), $products_count);
+      	 
+      	foreach($products as $product) {
+      		$feedback[] = $product['products_id'] . ': ' .  $product['products_name'] . '<br />';
+      	}
+      }
+
       if ($error === false) {
         if (osC_ProductVariants_Admin::deleteEntry($_REQUEST['products_variants_values_id'], $_REQUEST['products_variants_groups_id'])) {
           $response = array('success' => true ,'feedback' => $osC_Language->get('ms_success_action_performed'));
@@ -168,7 +180,7 @@
           $response = array('success' => false, 'feedback' => $osC_Language->get('ms_error_action_not_performed'));    
         }
       } else {
-        $response = array('success' => false, 'feedback' => $osC_Language->get('ms_error_action_not_performed') . '<br />' . implode('<br />', $feedback));
+        $response = array('success' => false, 'feedback' => implode('<br /><br />', $feedback));
       }      
 
       echo $toC_Json->encode($response);             
@@ -189,22 +201,30 @@
       $Qentries->bindInt(':language_id', $osC_Language->getID());
       $Qentries->execute();
       
+      $products = array();
       while ( $Qentries->next() ) {
-        $Qproducts = $osC_Database->query('select count(*) as total_products from :table_products_variants_entries where products_variants_values_id = :products_variants_values_id');
-        $Qproducts->bindTable(':table_products_variants_entries', TABLE_PRODUCTS_VARIANTS_ENTRIES);
-        $Qproducts->bindInt(':products_variants_values_id', $Qentries->valueInt('products_variants_values_id'));
-        $Qproducts->execute();
-        
-        if ( $Qproducts->valueInt('total_products') > 0 ) {
-          $check_products_array[] = $Qentries->value('products_variants_values_name');
-        }        
+      	$result = osC_ProductVariants_Admin::getEntryProducts($Qentries->valueInt('products_variants_values_id'));
+      	
+      	if (count($result) > 0) {
+      		foreach ($result as $item) {
+      			if ( ! array_key_exists($item['products_id'], $products)) {
+      				$products[$item['products_id']] = $item;
+      			}
+      		}
+      	}
       }
       
-      if ( !empty($check_products_array) ) {
-        $error = true;
-        $feedback[] = $osC_Language->get('batch_delete_error_group_entries_in_use') . '<p>' . implode(', ', $check_products_array) . '</p>';
-      }
+     	$products_count = count($products);
       
+     	if ($products_count > 0) {
+      	$error = true;
+      	$feedback[] = sprintf($osC_Language->get('delete_error_group_entry_in_use'), $products_count);
+      	 
+      	foreach($products as $product) {
+      		$feedback[] = $product['products_id'] . ': ' .  $product['products_name'];
+      	}
+      }
+            
       if ($error === false) {
         foreach ($batch as $id) {
           if (!osC_ProductVariants_Admin::deleteEntry($id, $_REQUEST['products_variants_groups_id'])) {
@@ -219,7 +239,7 @@
           $response = array('success' => false ,'feedback' => $osC_Language->get('ms_error_action_not_performed'));               
         }
       } else {
-        $response = array('success' => false, 'feedback' => $osC_Language->get('ms_error_action_not_performed') . '<br />' . implode('<br />', $feedback));
+        $response = array('success' => false, 'feedback' => implode('<br /><br />', $feedback));
       } 
         
       echo $toC_Json->encode($response);               
