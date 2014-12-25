@@ -1,0 +1,18 @@
+{
+  "name": "TomatoCart",
+  "license": "GPLv3 or later",
+  "description": "TomatoCart is open source ecommerce solution developed and maintained by a number of 64,000+ users from 50+ countries and regions",
+  "version": "1.1.9",
+  "homepage": "http://www.tomatocart.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tomatocart/TomatoCart-v1"
+  },
+  "main": "assets/javascript/app.js",
+  "dependencies": {
+    "bootstrap": "^3.3.1"
+  },
+  "bugs": {
+    "url": "https://github.com/tomatocart/TomatoCart-v1/issues"
+  }
+}
