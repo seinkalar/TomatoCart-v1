@@ -36,6 +36,7 @@ require_once 'helper.php';
     <?php if ($osC_Services->isStarted('debug') && defined('SERVICE_DEBUG_SHOW_CSS_JAVASCRIPT') && SERVICE_DEBUG_SHOW_CSS_JAVASCRIPT == 1) { ?>
     <link rel="stylesheet" type="text/css" href="templates/<?php echo $osC_Template->getCode(); ?>/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="templates/<?php echo $osC_Template->getCode(); ?>/css/stylesheet.css" />
+    <link rel="stylesheet" type="text/css" href="templates/<?php echo $osC_Template->getCode(); ?>/css/swipe.css" />
     <link rel="stylesheet" type="text/css" href="templates/<?php echo $osC_Template->getCode(); ?>/css/stylesheet.responsive.css" />
     <link rel="stylesheet" type="text/css" href="ext/autocompleter/Autocompleter.css" />
     <?php } else { ?>
@@ -356,6 +357,7 @@ require_once 'helper.php';
 <script type="text/javascript" src="includes/javascript/bookmark.js"></script>
 <script type="text/javascript" src="templates/<?php echo $osC_Template->getCode(); ?>/javascript/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="templates/<?php echo $osC_Template->getCode(); ?>/javascript/bootstrap.min.js"></script>
+<script type="text/javascript" src="templates/<?php echo $osC_Template->getCode(); ?>/javascript/swipe.js"></script>
 <?php }else { ?>
 <script type="text/javascript" src="templates/<?php echo $osC_Template->getCode(); ?>/javascript/all.min.js"></script>
 <?php }?>
@@ -365,6 +367,27 @@ require_once 'helper.php';
 </script>
 
 <script type="text/javascript">
+jQuery(function($) {
+	$('.swipe').Swipe({
+		speed: 400,
+	    continuous: true,
+	    disableScroll: false,
+	    callback: function(index, element) {
+	    	var indicators = $('.swipe .carousel-indicators li');
+	    	
+	    	indicators.removeClass('active');
+	    	indicators.each(function(key) {
+	    		if (key == index) {
+	    			$(this).addClass('active');
+	    			
+	    			return false;
+	    		}
+	    	});
+	    	
+	    }
+	});
+});
+
 window.addEvent('domready', function() {
     new PopupCart({
 			template: '<?php echo $osC_Template->getCode(); ?>',

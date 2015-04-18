@@ -1,0 +1,46 @@
+.swipe {
+  overflow: hidden;
+  visibility: hidden;
+  position: relative;
+  background: #FFFFFF;
+  vertical-align: middle;
+  padding-bottom: 20px;
+}
+.swipe-wrap {
+  overflow: hidden;
+  position: relative;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: box;
+  /*------content vertical------*/
+    -webkit-box-align: center;
+       -moz-box-align: center;
+       -ms-flex-align:center;
+            box-align: center;
+  /*------content horizontal------*/  
+  -webkit-box-pack: center;
+     -moz-box-pack: center;
+      -ms-flex-pack:center;
+          box-pack: center;
+}
+.swipe-wrap > div {
+  float:left;
+  width:100%;
+  position: relative;
+  text-align:center;
+}
+.swipe-wrap > div img {
+    width: 100%;
+    border:none;
+}
+.swipe .carousel-indicators li {
+    background-color: #72776F;
+}
+.swipe .carousel-indicators li.active {
+    background-color: #C7CFC3;
+}
+.swipe .carousel-indicators {
+  right: 45%;
+  top: 90%;
+}

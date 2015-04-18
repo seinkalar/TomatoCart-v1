@@ -32,12 +32,12 @@
 
 <div class="moduleBox">
 
-    <div class="content clearfix product-info btop">
+    <div class="content clearfix btop">
     	<div class="row-fluid">
             <div class="span5 clearfix">
                 <script type="text/javascript" src="templates/<?php echo $osC_Template->getCode(); ?>/javascript/milkbox/milkbox.js"></script>
                 
-                <div id="productImages">
+                <div id="productImages" class="visible-desktop">
                 <?php
                     echo osc_link_object('javascript:void(0)', $osC_Image->show($osC_Product->getImage(), $osC_Product->getTitle(), ' large-img="' . $osC_Image->getImageUrl($osC_Product->getImage(), 'large') . '" id="product_image" style="padding:0px;border:0px;"', 'product_info'),'id="defaultProductImage"');
                     echo '<div style="clear:both"></div>';
@@ -48,6 +48,26 @@
                     }
                 ?>
                 </div>
+                
+                <div class='swipe visible-phone'>
+                    <div class='swipe-wrap'>
+				     <?php foreach($images as $image):?>
+                        <div><?php echo $osC_Image->show($image['image'], $osC_Product->getTitle(), '', 'product_info'); ?></div> 
+				     <?php endforeach; ?>
+				    </div>
+				    
+				    <?php if (count($images) > 1): ?>
+				    <ol class="carousel-indicators">
+				        <?php foreach($images as $index => $image):?>
+				        <?php if ($index == 0): ?>
+				        <li class="active"></li>
+				        <?php else: ?>
+				        <li></li>
+				        <?php endif; ?>
+				        <?php endforeach; ?>
+				    </ol>
+				    <?php endif; ?>
+				</div>
             </div>
         
             <form class="form-inline span7" id="cart_quantity" name="cart_quantity" action="<?php echo osc_href_link(FILENAME_PRODUCTS, osc_get_all_get_params(array('action')) . '&action=cart_add'); ?>" method="post">
