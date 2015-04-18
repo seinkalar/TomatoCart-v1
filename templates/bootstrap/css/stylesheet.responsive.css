@@ -23,6 +23,7 @@ body {
 .navbar .btn-navbar{
     float: left;
 }
+
 @media (min-width: 980px) {
     /*fix table row inheritance for th, td*/
     th.visible-desktop, td.visible-desktop {
@@ -102,10 +103,19 @@ body {
         display: inline;
     }
     /*grid view*/
+    ul.grid {
+        border: 0;
+        font-weight: normal;
+        margin-top: 20px;
+    }
     ul.grid li {
         float: none;
-        width: 100%;
-        height: auto;
+		width: 49%;
+		height: auto;
+		display: inline-block;
+		padding: 0;
+		border: 0;
+		margin-bottom: 20px;
     }
     ul.grid li div.left {
         display: block;
@@ -113,15 +123,22 @@ body {
         position: relative;
         width: 100%;
         float: none;
+        text-align:center;
+    }
+    ul.grid li div.left a {
+        display:block;
+        text-align:center;
+        font-weight:normal;
     }
     ul.grid li div.left img {
         display: block;
-        float: left;
+        margin: 0 auto;
     }
     ul.grid li div.right {
         padding: 0 10px 0 0;
         display: block;
         width: 100%;
+        text-align:center;
     }
     ul.grid li div.right span.price {
         display: block;
@@ -160,5 +177,24 @@ body {
     .product-info #cart-quantity {
         width: 100%;
         float: none;
+    }
+    /* Module box*/
+    .moduleBox > h1, .moduleBox > h6 {
+        background: none;
+        border: 0;
+        padding: 10px 0;
+        font-size: 14px;
+        border-bottom: 1px solid #DDDDDD;
+    }
+    .moduleBox > h6 .view-all {
+        position: relative;
+        top: -2px;
+        font-weight: normal;
+        font-size: 12px;
+        padding: 2px 4px;
+        border: 1px solid #000000;
+    }
+    .moduleBox > h6 .view-all:hover {
+        text-decoration:none;
     }
 }
