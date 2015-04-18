@@ -26,7 +26,7 @@
 ?>
     <!-- module new_products start //-->
     <div class="moduleBox">
-        <h6><?php echo $osC_Box->getTitle(); ?></h6>
+		<h6><?php echo $osC_Box->getTitle(); ?></h6>
         
         <ul class="products-list grid clearfix">
         <?php 
@@ -48,7 +48,7 @@
                 <div class="left">
                     <?php echo osc_link_object(osc_href_link(FILENAME_PRODUCTS, $product['products_id']), $product['products_image'], 'id="img_ac_featureproductsmodule_' . $product['products_id'] . '"'); ?> 
                     <h3><?php echo osc_link_object(osc_href_link(FILENAME_PRODUCTS, $product['products_id']), $product['products_name']); ?></h3>
-                    <p class="description"><?php echo strip_tags($osC_Product->getDescription()); ?></p>
+                    <p class="description hidden-phone"><?php echo strip_tags($osC_Product->getDescription()); ?></p>
                 </div>
                 <div class="right">
                     <span class="price"><?php echo $osC_Product->getPriceFormated(true); ?></span>
