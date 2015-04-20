@@ -47,7 +47,9 @@ Toc.products_attributes.AttributeGroupsGrid = function(config) {
   config.rowActions.on('action', this.onRowAction, this);    
   config.plugins = config.rowActions;  
      
+  config.sm = new Ext.grid.CheckboxSelectionModel();
   config.cm = new Ext.grid.ColumnModel([
+  	config.sm,
     {id: 'products_attributes_groups_name', header: '<?php echo $osC_Language->get('table_heading_attributes_groups');?>', dataIndex: 'products_attributes_groups_name'},
     {header: '<?php echo $osC_Language->get('table_heading_total_entries');?>', dataIndex: 'total_entries', width: 100, align: 'right'},
     config.rowActions
@@ -64,6 +66,13 @@ Toc.products_attributes.AttributeGroupsGrid = function(config) {
       text: TocLanguage.btnAdd,
       iconCls: 'add',
       handler: this.onAdd,
+      scope: this
+    },
+    '-',
+    {
+      text: TocLanguage.btnDelete,
+      iconCls: 'remove',
+      handler: this.onBatchDelete,
       scope: this
     },
     '-',
@@ -140,6 +149,43 @@ Ext.extend(Toc.products_attributes.AttributeGroupsGrid, Ext.grid.GridPanel, {
           });
         }
       }, this);                                                               
+  },
+  
+  onBatchDelete: function() {
+    var keys = this.selModel.selections.keys;
+    
+    if(keys.length > 0) {    
+      var batch = keys.join(',');
+      
+      Ext.Msg.confirm(
+        TocLanguage.msgWarningTitle,
+        TocLanguage.msgDeleteConfirm,
+        function(btn) {
+          if(btn == 'yes') {      
+            Ext.Ajax.request({
+              url: Toc.CONF.CONN_URL,
+              params: { 
+                module: 'products_attributes',
+                action: 'delete_products_attributes_groups',
+                batch: batch                                        
+              },
+              callback: function(options, success, response){
+                var result = Ext.decode(response.responseText);
+              
+                if(result.success == true) {
+                  this.owner.app.showNotification({title: TocLanguage.msgSuccessTitle, html: result.feedback});
+                  this.getStore().reload();
+                } else {
+                  Ext.MessageBox.alert(TocLanguage.msgErrTitle, result.feedback);
+                }
+              },
+              scope: this                     
+            });                
+          }                                              
+        }, this);     
+    } else {
+      Ext.MessageBox.alert(TocLanguage.msgInfoTitle, TocLanguage.msgMustSelectOne);
+    }
   },
   
   onGrdRowClick: function(grid, rowIndex, e) {

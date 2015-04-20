@@ -95,6 +95,38 @@
       
       echo $toC_Json->encode($response);
     }    
+    
+    function deleteProductsAttributesGroups() {
+    	global $osC_Language, $toC_Json;
+    	
+    	$error = false;
+    	$feedback = array();
+    	
+    	$batch = explode(',', $_REQUEST['batch']);
+    	
+    	foreach ($batch as $product_attributes_groups_id) {
+    		$data = osC_Products_Attributes_Admin::getData($product_attributes_groups_id);
+    		if ( $data['total_products'] > 0 ) {
+    			$error = true;
+    			$feedback[] = sprintf($osC_Language->get('delete_error_attributes_group_in_use'), $data['total_products']);
+    		}
+    		break;
+    	}
+    	
+    	if ($error === false) {
+    		foreach ($batch as $groups_id) {
+    			if ( osC_Products_Attributes_Admin::delete($groups_id) ) {
+    				$response = array('success' => true ,'feedback' => $osC_Language->get('ms_success_action_performed'));
+    			} else {
+    				$response = array('success' => false ,'feedback' => $osC_Language->get('ms_error_action_not_performed'));
+    			}
+    		}
+    	}else {
+    		$response = array('success' => false ,'feedback' => implode('<br />', $feedback));
+    	}
+    	
+    	echo $toC_Json->encode($response);
+    }
           
     function listProductsAttributesEntries() {
       global $osC_Database, $toC_Json, $osC_Language;
